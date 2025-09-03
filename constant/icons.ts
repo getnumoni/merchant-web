@@ -6,5 +6,15 @@ const messageIcon = '/assets/icons/message-icon.svg';
 const profileIcon = '/assets/icons/profile-icon.svg';
 const blueVerifiedIcon = '/assets/icons/blue-verified-icon.svg';
 const rightArrowIcon = '/assets/icons/arrow-right.svg';
+const branchIcon = '/assets/icons/branch-icon.svg';
+const rewardIcon = '/assets/icons/reward-icon.svg';
+const peopleIcon = '/assets/icons/people.svg';
+const emptyBranchIcon = '/assets/icons/empty-icon.svg';
+const dealIcon = '/assets/icons/deal.svg';
+const graphDirectionIcon = '/assets/icons/graph-direction-icon.svg';
+const phoneNotificationIcon = '/assets/icons/phone-notification-icon.svg';
+const musicPauseIcon = '/assets/icons/music-pause-icon.svg';
+const cashBackIcon = '/assets/icons/cash-back-icon.svg';
 
-export { blueVerifiedIcon, crownIcon, messageIcon, notificationIcon, numoniLogoDark, numoniLogoLight, profileIcon, rightArrowIcon };
+export { blueVerifiedIcon, branchIcon, cashBackIcon, crownIcon, dealIcon, emptyBranchIcon, graphDirectionIcon, messageIcon, musicPauseIcon, notificationIcon, numoniLogoDark, numoniLogoLight, peopleIcon, phoneNotificationIcon, profileIcon, rewardIcon, rightArrowIcon };
+
