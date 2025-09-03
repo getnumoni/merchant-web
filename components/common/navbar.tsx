@@ -97,7 +97,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           {/* Right side - Quick Links, Upgrade, Notifications, User Profile */}
           <div className="flex items-center space-x-4">
             {/* Upgrade Business */}
-            <button className="flex items-center px-4 py-4 text-sm font-medium bg-white   hover:bg-gray-50  text-black relative overflow-hidden">
+            <button className="md:flex hidden items-center px-4 py-4 text-sm font-medium bg-white   hover:bg-gray-50  text-black relative overflow-hidden">
               <div className="absolute inset-0 rounded-full bg-gradient-to-r from-yellow-500 to-green-500 p-[2px]">
                 <div className="w-full h-full bg-white rounded-full"></div>
               </div>
