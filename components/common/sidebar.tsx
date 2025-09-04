@@ -26,7 +26,7 @@ const navigationItems = [
     ),
   },
   {
-    name: 'Reward Tabel',
+    name: 'Reward Table',
     path: REWARD_TABLE_URL,
     icon: (
       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
