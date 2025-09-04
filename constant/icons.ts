@@ -16,6 +16,8 @@ const graphDirectionIcon = '/assets/icons/graph-direction-icon.svg';
 const phoneNotificationIcon = '/assets/icons/phone-notification-icon.svg';
 const musicPauseIcon = '/assets/icons/music-pause-icon.svg';
 const cashBackIcon = '/assets/icons/cash-back-icon.svg';
+const storeIcon = '/assets/icons/store-icon.svg';
+const NigeriaIcon = '/assets/icons/nigeria-icon.svg';
 
-export { blueVerifiedIcon, branchIcon, cashBackIcon, crownIcon, dealIcon, emptyBranchIcon, graphDirectionIcon, messageIcon, musicPauseIcon, notificationIcon, numoniLogoDark, numoniLogoLight, peopleIcon, phoneNotificationIcon, profileIcon, rewardIcon, rightArrowIcon, rightArrowWhiteIcon };
+export { blueVerifiedIcon, branchIcon, cashBackIcon, crownIcon, dealIcon, emptyBranchIcon, graphDirectionIcon, messageIcon, musicPauseIcon, NigeriaIcon, notificationIcon, numoniLogoDark, numoniLogoLight, peopleIcon, phoneNotificationIcon, profileIcon, rewardIcon, rightArrowIcon, rightArrowWhiteIcon, storeIcon };
 
