@@ -18,6 +18,11 @@
    --color-sidebar: var(--sidebar);
    --color-theme-green: var(--theme-green);
    --color-theme-dark-green: var(--theme-dark-green);
+   --color-theme-lighter-green: var(--theme-lighter-green);
+   --color-theme-semi-dark-green: var(--theme-semi-dark-green);
+   --color-theme-dark-green-700: var(--theme-dark-green-700);
+   --color-theme-red-950: var(--theme-red-950);
+   --color-theme-gray: var(--theme-gray);
    --color-chart-5: var(--chart-5);
    --color-chart-4: var(--chart-4);
    --color-chart-3: var(--chart-3);
@@ -80,6 +85,11 @@
    --sidebar-ring: oklch(0.708 0 0);
    --theme-green: oklch(0.7787 0.2349 146.45);
    --theme-dark-green: oklch(0.6624 0.197 146.97);
+   --theme-gray: oklch(0.9851 0 0);
+   --theme-lighter-green: oklch(0.9422 0.0508 159.39);
+   --theme-semi-dark-green: oklch(0.6624 0.197 146.97);
+   --theme-dark-green-700: oklch(0.5406 0.15779 147.6758);
+   --theme-red-950: oklch(0.507 0.2056 29.27);
 }
 
 .dark {
