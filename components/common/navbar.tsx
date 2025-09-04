@@ -9,6 +9,8 @@ import {
 } from '@/components/ui/menubar';
 import { crownIcon, messageIcon, notificationIcon } from '@/constant/icons';
 import { getPageTitle } from '@/lib/helper';
+import { useBranchStore } from '@/stores/branch-store';
+import { Plus } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -19,8 +21,8 @@ interface NavbarProps {
 }
 
 export default function Navbar({ onMenuClick }: NavbarProps) {
-
   const pathname = usePathname();
+  const { openDialog } = useBranchStore();
 
   // Function to get action button based on current page
   const getActionButton = () => {
@@ -29,10 +31,11 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
 
     if (lastSegment === 'branch-level' || pathname.includes('branch-level')) {
       return (
-        <button className="flex items-center px-3 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500">
-          <svg className="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
+        <button
+          onClick={openDialog}
+          className="flex items-center px-3 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer"
+        >
+          <Plus className="mr-2 h-4 w-4" />
           Add Branch
         </button>
       );
