@@ -1,5 +1,10 @@
 import { ReactNode } from "react";
 
+type SidebarProps = {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
 type DashboardProps = {
   brandName?: string;
   merchantId?: string;
@@ -47,5 +52,5 @@ type MainBranchSummaryProps = {
   items?: SummaryItem[];
 }
 
-export type { BrandProfileProps, BrandSummaryProps, DashboardProps, MainBranchSummaryProps, QRCodeCardProps };
+export type { BrandProfileProps, BrandSummaryProps, DashboardProps, MainBranchSummaryProps, QRCodeCardProps, SidebarProps };
 
