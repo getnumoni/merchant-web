@@ -1,5 +1,12 @@
 {
-   "cSpell.words": ["Numoni", "opensans", "Tabel", "turbopack"],
+   "cSpell.words": [
+      "Ikeja",
+      "Lgas",
+      "Numoni",
+      "opensans",
+      "Tabel",
+      "turbopack"
+   ],
    "editor.codeActionsOnSave": {
       "source.fixAll": "explicit",
       "source.organizeImports": "explicit"
