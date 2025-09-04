@@ -1,3 +1,4 @@
+import { Toaster } from "@/components/ui/sonner";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -129,6 +130,8 @@ export default function RootLayout({
         className={` ${numoniQuicksand.variable} ${numoniOpenSans.variable} antialiased`}
       >
         {children}
+        <Toaster position="top-center" richColors />
+
       </body>
     </html>
   );
