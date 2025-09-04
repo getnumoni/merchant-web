@@ -1,9 +1,11 @@
 import EmptyReward from "./empty-reward";
+import RewardDashboard from "./reward-dashboard";
 
 export default function Reward() {
+  const isEmpty = false;
   return (
     <main>
-      <EmptyReward />
+      {isEmpty ? <EmptyReward /> : <RewardDashboard />}
     </main>
   )
 }
