@@ -21,6 +21,10 @@ const NigeriaIcon = '/assets/icons/nigeria-icon.svg';
 const pointIcon = '/assets/icons/points.svg';
 const peopleGrayIcon = '/assets/icons/people-gray.svg';
 const successIconCheck = '/assets/icons/success-check-icon.svg';
+const verifyIcon = '/assets/icons/verify.svg';
+const star = '/assets/icons/star.svg';
+const branchCloseIcon = '/assets/icons/branch-close-icon.svg';
+const editIcon = '/assets/icons/edit-icon.svg';
 
-export { blueVerifiedIcon, branchIcon, cashBackIcon, crownIcon, dealIcon, emptyBranchIcon, graphDirectionIcon, messageIcon, musicPauseIcon, NigeriaIcon, notificationIcon, numoniLogoDark, numoniLogoLight, peopleGrayIcon, peopleIcon, phoneNotificationIcon, pointIcon, profileIcon, rewardIcon, rightArrowIcon, rightArrowWhiteIcon, storeIcon, successIconCheck };
+export { blueVerifiedIcon, branchCloseIcon, branchIcon, cashBackIcon, crownIcon, dealIcon, editIcon, emptyBranchIcon, graphDirectionIcon, messageIcon, musicPauseIcon, NigeriaIcon, notificationIcon, numoniLogoDark, numoniLogoLight, peopleGrayIcon, peopleIcon, phoneNotificationIcon, pointIcon, profileIcon, rewardIcon, rightArrowIcon, rightArrowWhiteIcon, star, storeIcon, successIconCheck, verifyIcon };
 
