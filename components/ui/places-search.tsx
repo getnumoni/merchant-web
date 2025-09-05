@@ -32,15 +32,17 @@ export function PlacesSearch({
 }: PlacesSearchProps) {
   const [inputValue, setInputValue] = useState("")
   const [showSuggestions, setShowSuggestions] = useState(false)
+  const [isUserEditing, setIsUserEditing] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
   const { predictions, isLoading, searchPlaces, getPlaceDetails, clearPredictions } = usePlacesSearch()
 
   // Update input when selectedAddress changes (from current location)
+  // Only update if user is not actively editing
   useEffect(() => {
-    if (selectedAddress && selectedAddress !== inputValue) {
+    if (selectedAddress && selectedAddress !== inputValue && !isUserEditing) {
       setInputValue(selectedAddress)
     }
-  }, [selectedAddress, inputValue])
+  }, [selectedAddress, inputValue, isUserEditing])
 
   // Search when input changes
   useEffect(() => {
@@ -55,11 +57,13 @@ export function PlacesSearch({
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value)
+    setIsUserEditing(true) // User is actively editing
   }
 
   const handlePlaceSelect = async (prediction: { place_id: string; description: string }) => {
     setInputValue(prediction.description)
     setShowSuggestions(false)
+    setIsUserEditing(false) // Reset editing state when place is selected
     clearPredictions() // Clear predictions after selection
 
     const placeDetails = await getPlaceDetails(prediction.place_id)
@@ -78,6 +82,7 @@ export function PlacesSearch({
     // Delay hiding suggestions to allow clicking on them
     setTimeout(() => {
       setShowSuggestions(false)
+      setIsUserEditing(false) // Reset editing state when input loses focus
       clearPredictions() // Clear predictions when input loses focus
     }, 200)
   }
