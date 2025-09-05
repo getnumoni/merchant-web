@@ -52,5 +52,18 @@ type MainBranchSummaryProps = {
   items?: SummaryItem[];
 }
 
-export type { BrandProfileProps, BrandSummaryProps, DashboardProps, MainBranchSummaryProps, QRCodeCardProps, SidebarProps };
+type BranchSummaryData = {
+  id: string;
+  merchantName: string;
+  merchantId: string;
+  merchantLogo: string;
+  status: 'active' | 'closed' | 'pending';
+  todayTransactions: {
+    allocatedBudget: number;
+    amountSpent: number;
+    fees: number;
+  };
+}
+
+export type { BranchSummaryData, BrandProfileProps, BrandSummaryProps, DashboardProps, MainBranchSummaryProps, QRCodeCardProps, SidebarProps };
 

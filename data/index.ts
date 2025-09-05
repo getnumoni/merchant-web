@@ -106,5 +106,6 @@ const summaryData = [
     value: "-"
   }
 ];
+
 export { benefitsData, navigationItems, rewardTableData, summaryData, tabs, whatYouCanDoData };
 

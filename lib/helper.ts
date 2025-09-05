@@ -93,3 +93,38 @@ export const formatValue = (value: number): string => {
     maximumFractionDigits: 2
   });
 };
+
+
+export const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('en-NG', {
+    style: 'currency',
+    currency: 'NGN',
+    minimumFractionDigits: 2,
+  }).format(amount).replace('NGN', '₦');
+};
+
+export const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'active':
+      return 'bg-green-100 text-green-800 border-green-200';
+    case 'closed':
+      return 'bg-red-100 text-red-800 border-red-200';
+    case 'pending':
+      return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+    default:
+      return 'bg-gray-100 text-gray-800 border-gray-200';
+  }
+};
+
+export const getStatusText = (status: string) => {
+  switch (status) {
+    case 'active':
+      return 'Active';
+    case 'closed':
+      return 'Closed';
+    case 'pending':
+      return 'Pending';
+    default:
+      return 'Unknown';
+  }
+};
