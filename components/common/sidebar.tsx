@@ -2,14 +2,17 @@
 
 import { numoniLogoDark } from '@/constant/icons';
 import { navigationItems } from '@/data';
+import { isNavigationItemActive } from '@/lib/helper';
 import { SidebarProps } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
+  const allPaths = navigationItems.map(item => item.path);
 
   return (
     <>
@@ -39,8 +42,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           {/* Navigation */}
           <nav className="flex-1 px-4 py-6 space-y-2">
             {navigationItems.map((item) => {
-              const isActive = pathname === item.path;
+              const isActive = isNavigationItemActive(item.path, pathname, allPaths);
               const IconComponent = item.icon;
+
               return (
                 <Link
                   key={item.name}
