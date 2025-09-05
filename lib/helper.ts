@@ -1,3 +1,64 @@
+
+
+/**
+ * Determines if a navigation item should be marked as active based on the current path.
+ * 
+ * This function implements a hierarchical navigation system where only the most specific
+ * matching route is considered active. It prevents multiple navigation items from being
+ * active simultaneously when dealing with nested routes.
+ * 
+ * @param itemPath - The path of the navigation item to check (e.g., '/dashboard')
+ * @param currentPath - The current URL pathname (e.g., '/dashboard/branch-level/1')
+ * @param allPaths - Array of all available navigation paths for comparison
+ * 
+ * @returns `true` if the navigation item should be active, `false` otherwise
+ * 
+ * @example
+ * ```typescript
+ * const allPaths = ['/dashboard', '/dashboard/branch-level', '/dashboard/reward-table'];
+ * 
+ * // Exact match - always active
+ * isNavigationItemActive('/dashboard', '/dashboard', allPaths); // true
+ * 
+ * // Child route with no more specific parent - active
+ * isNavigationItemActive('/dashboard/branch-level', '/dashboard/branch-level/1', allPaths); // true
+ * 
+ * // Parent route when child exists - not active
+ * isNavigationItemActive('/dashboard', '/dashboard/branch-level', allPaths); // false
+ * 
+ * // No match - not active
+ * isNavigationItemActive('/dashboard', '/profile', allPaths); // false
+ * ```
+ * 
+ * @remarks
+ * The function uses a hierarchical approach:
+ * 1. Exact matches are always active
+ * 2. Child routes are only active if no more specific parent route exists
+ * 3. Parent routes are inactive when a more specific child route matches
+ * 
+ * This prevents the common issue of both parent and child navigation items
+ * being highlighted simultaneously in sidebar navigation.
+ */
+export const isNavigationItemActive = (itemPath: string, currentPath: string, allPaths: string[]) => {
+  // Exact match is always active
+  if (currentPath === itemPath) return true;
+
+  // Check if current path is a child of this item
+  if (!currentPath.startsWith(itemPath + '/')) return false;
+
+  // Find the most specific matching parent route
+  // A route is more specific if it's longer and the current path starts with it
+  const moreSpecificPaths = allPaths.filter(path =>
+    path !== itemPath &&
+    path.length > itemPath.length &&
+    (currentPath.startsWith(path + '/') || currentPath === path)
+  );
+
+  // Only active if no more specific route exists
+  return moreSpecificPaths.length === 0;
+};
+
+
 /**
  * Converts a pathname to a readable page title
  * @param path - The pathname string (e.g., "/dashboard/branch-level")
