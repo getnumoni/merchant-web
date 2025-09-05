@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import Image from "next/image";
 import { Button } from "../ui/button";
-import AddBranch from "./add-branch";
 
 export default function EmptyBranch() {
   const { openDialog } = useBranchStore();
@@ -79,8 +78,6 @@ export default function EmptyBranch() {
           </Button>
         </motion.div>
       </motion.div>
-
-      <AddBranch />
     </main>
   )
 }

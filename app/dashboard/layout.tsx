@@ -1,5 +1,6 @@
 'use client';
 
+import AddBranch from '@/components/branch-level/add-branch';
 import Navbar from '@/components/common/navbar';
 import Sidebar from '@/components/common/sidebar';
 import { useState } from 'react';
@@ -33,6 +34,9 @@ export default function DashboardLayout({
           {children}
         </div>
       </main>
+
+      {/* Global Add Branch Dialog */}
+      <AddBranch />
     </div>
   );
 }
