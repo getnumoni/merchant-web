@@ -1,9 +1,47 @@
+'use client';
+
 import { branchCloseIcon, editIcon, star, verifyIcon } from "@/constant/icons";
 import { sampleUserIcon } from "@/constant/images";
 import Image from "next/image";
+import { useState } from "react";
 import { Button } from "../ui/button";
+import ActiveBranchModal from "./active-branch-modal";
+import CloseBranchModal from "./close-branch-modal";
 
 export default function BranchDetails() {
+  const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
+  const [isActiveModalOpen, setIsActiveModalOpen] = useState(false);
+
+  const isBranchClosed = true;
+
+  const handleCloseBranch = () => {
+    setIsCloseModalOpen(true);
+  };
+
+  const handleConfirmClose = () => {
+    // Handle the actual branch closing logic here
+    console.log("Branch closed");
+    setIsCloseModalOpen(false);
+  };
+
+  const handleCancelClose = () => {
+    setIsCloseModalOpen(false);
+  };
+
+  const handleActivateBranch = () => {
+    setIsActiveModalOpen(true);
+  };
+
+  const handleConfirmActivate = () => {
+    // Handle the actual branch activation logic here
+    console.log("Branch activated");
+    setIsActiveModalOpen(false);
+  };
+
+  const handleCancelActivate = () => {
+    setIsActiveModalOpen(false);
+  };
+
   return (
     <div>
       <section className="bg-white rounded-2xl p-3 sm:p-4 my-4">
@@ -37,19 +75,45 @@ export default function BranchDetails() {
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-2 lg:gap-2">
-            <Button className="bg-white border border-gray-200 text-black shadow-none hover:bg-transparent cursor-pointer px-3 sm:px-4 py-3 sm:py-5 text-xs sm:text-sm flex items-center justify-center gap-2">
-              <Image src={branchCloseIcon} alt="branch-close-icon" width={16} height={16} />
-              <span className="hidden sm:inline">Close Branch</span>
-              <span className="sm:hidden">Close</span>
-            </Button>
+            {!isBranchClosed && (
+              <Button
+                onClick={handleCloseBranch}
+                className="bg-white border border-gray-200 text-black shadow-none hover:bg-transparent cursor-pointer px-3 sm:px-4 py-3 sm:py-5 text-xs sm:text-sm flex items-center justify-center gap-2"
+              >
+                <Image src={branchCloseIcon} alt="branch-close-icon" width={16} height={16} />
+                <span className="hidden sm:inline">Close Branch</span>
+                <span className="sm:hidden">Close</span>
+              </Button>
+            )}
             <Button className="bg-black border border-gray-200 text-white shadow-none hover:bg-black cursor-pointer px-3 sm:px-4 py-3 sm:py-5 text-xs sm:text-sm flex items-center justify-center gap-2">
               <Image src={editIcon} alt="edit-icon" width={16} height={16} />
               <span className="hidden sm:inline">Edit Details</span>
               <span className="sm:hidden">Edit</span>
             </Button>
+            {isBranchClosed && (
+              <Button
+                onClick={handleActivateBranch}
+                className="bg-green-600 hover:bg-green-700 text-white shadow-none cursor-pointer px-3 sm:px-4 py-3 sm:py-5 text-xs sm:text-sm flex items-center justify-center gap-2"
+              >
+                <span className="hidden sm:inline">Activate Branch</span>
+                <span className="sm:hidden">Activate</span>
+              </Button>
+            )}
           </div>
         </div>
       </section>
+
+      <CloseBranchModal
+        isOpen={isCloseModalOpen}
+        onClose={handleCancelClose}
+        onConfirm={handleConfirmClose}
+      />
+
+      <ActiveBranchModal
+        isOpen={isActiveModalOpen}
+        onClose={handleCancelActivate}
+        onConfirm={handleConfirmActivate}
+      />
     </div>
   );
 }
