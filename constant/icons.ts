@@ -25,6 +25,18 @@ const verifyIcon = '/assets/icons/verify.svg';
 const star = '/assets/icons/star.svg';
 const branchCloseIcon = '/assets/icons/branch-close-icon.svg';
 const editIcon = '/assets/icons/edit-icon.svg';
+const calenderIcon = '/assets/icons/calender-icon.svg';
+const greenLocationIcon = '/assets/icons/green-location-icon.svg';
+const avatarIcon = '/assets/icons/avatar-icon.svg';
+const phoneIcon = '/assets/icons/phone-icon.svg';
+const emailIcon = '/assets/icons/email-icon.svg';
+const moniepointIcon = '/assets/icons/moniepoint-icon.svg';
+const whatsappIcon = '/assets/icons/whatsapp-icon.svg';
+const facebookIcon = '/assets/icons/facebook-icon.svg';
+const instagramIcon = '/assets/icons/instagram-icon.svg';
+const twitterIcon = '/assets/icons/twitter-icon.svg';
+const filterIcon = '/assets/icons/filter-icon.svg';
+const activeBranchIcon = '/assets/icons/activate-store-icon.svg';
 
-export { blueVerifiedIcon, branchCloseIcon, branchIcon, cashBackIcon, crownIcon, dealIcon, editIcon, emptyBranchIcon, graphDirectionIcon, messageIcon, musicPauseIcon, NigeriaIcon, notificationIcon, numoniLogoDark, numoniLogoLight, peopleGrayIcon, peopleIcon, phoneNotificationIcon, pointIcon, profileIcon, rewardIcon, rightArrowIcon, rightArrowWhiteIcon, star, storeIcon, successIconCheck, verifyIcon };
+export { activeBranchIcon, avatarIcon, blueVerifiedIcon, branchCloseIcon, branchIcon, calenderIcon, cashBackIcon, crownIcon, dealIcon, editIcon, emailIcon, emptyBranchIcon, facebookIcon, filterIcon, graphDirectionIcon, greenLocationIcon, instagramIcon, messageIcon, moniepointIcon, musicPauseIcon, NigeriaIcon, notificationIcon, numoniLogoDark, numoniLogoLight, peopleGrayIcon, peopleIcon, phoneIcon, phoneNotificationIcon, pointIcon, profileIcon, rewardIcon, rightArrowIcon, rightArrowWhiteIcon, star, storeIcon, successIconCheck, twitterIcon, verifyIcon, whatsappIcon };
 
