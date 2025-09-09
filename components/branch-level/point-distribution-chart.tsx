@@ -12,12 +12,12 @@ export default function PointDistributionChart({
   data = pointDistributionData,
 }: PointDistributionChartProps) {
   const maxValue = Math.max(...data.map(item => Math.abs(item.value)));
-  const maxHeight = 320; // Maximum height for bars in pixels (adjusted to match TopPerformingBranch)
+  const maxHeight = 350; // Maximum height for bars in pixels (adjusted to match TopPerformingBranch)
 
   return (
-    <div className="bg-white rounded-2xl p-6 mb-6">
+    <div className="bg-white rounded-2xl p-6 ">
       {/* Custom Chart Container */}
-      <div className="relative" style={{ height: '400px' }}>
+      <div className="relative" style={{ height: '510px' }}>
         {/* Y-axis labels */}
         <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-500 pr-2">
           <span>20,000</span>
