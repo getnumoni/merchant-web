@@ -43,27 +43,29 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
 
     // Default to Quick Links for Dashboard and other pages
     return (
-      <Menubar className="border-0 bg-transparent shadow-none">
-        <MenubarMenu>
-          <MenubarTrigger className="flex items-center px-5 py-3 text-sm font-medium text-white bg-theme-dark-green rounded-2xl hover:bg-theme-dark-green cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-theme-dark-green data-[state=open]:bg-theme-dark-green data-[state=open]:text-white hover:text-white">
-            Quick Links
-            <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
-          </MenubarTrigger>
-          <MenubarContent className="w-48">
-            <MenubarItem>
-              <Link href="#" className="w-full">Link 1</Link>
-            </MenubarItem>
-            <MenubarItem>
-              <Link href="#" className="w-full">Link 2</Link>
-            </MenubarItem>
-            <MenubarItem>
-              <Link href="#" className="w-full">Link 3</Link>
-            </MenubarItem>
-          </MenubarContent>
-        </MenubarMenu>
-      </Menubar>
+      <div suppressHydrationWarning>
+        <Menubar className="border-0 bg-transparent shadow-none">
+          <MenubarMenu>
+            <MenubarTrigger className="flex items-center px-5 py-3 text-sm font-medium text-white bg-theme-dark-green rounded-2xl hover:bg-theme-dark-green cursor-pointer focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-theme-dark-green data-[state=open]:bg-theme-dark-green data-[state=open]:text-white hover:text-white">
+              Quick Links
+              <svg className="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </MenubarTrigger>
+            <MenubarContent className="w-48">
+              <MenubarItem>
+                <Link href="#" className="w-full">Link 1</Link>
+              </MenubarItem>
+              <MenubarItem>
+                <Link href="#" className="w-full">Link 2</Link>
+              </MenubarItem>
+              <MenubarItem>
+                <Link href="#" className="w-full">Link 3</Link>
+              </MenubarItem>
+            </MenubarContent>
+          </MenubarMenu>
+        </Menubar>
+      </div>
     );
   };
 
