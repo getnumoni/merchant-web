@@ -1,23 +1,25 @@
+import PointDistributionChart from "../branch-level/point-distribution-chart";
+import EmptyState from "../common/empty-state";
+import AnalyticsTable from "./analytics-table";
+
 export default function AnalyticalTrend() {
+  const isEmpty = false;
   return (
     <div className="space-y-4 sm:space-y-6">
-      <h2 className="text-base sm:text-lg font-semibold text-gray-900">Analytics & Trends</h2>
-      <div className="space-y-3 sm:space-y-4">
-        <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-          Comprehensive analytics dashboard showing trends, patterns, and insights from
-          your reward program. Monitor key performance indicators, track redemption rates,
-          and identify opportunities for program optimization.
-        </p>
-        <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
-          Analyze customer behavior, reward effectiveness, and program ROI to make
-          data-driven decisions that enhance customer experience and business growth.
-        </p>
-        <div className="bg-green-50 p-3 sm:p-4 rounded-lg">
-          <p className="text-xs sm:text-sm text-green-700 leading-relaxed">
-            <strong>Analytics Features:</strong> Real-time dashboards, trend analysis,
-            predictive insights, and custom reporting tools to help you understand
-            the impact of your reward program.
-          </p>
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+        <PointDistributionChart />
+
+        <div className="bg-theme-gray-600 rounded-xl p-3">
+          <h2 className="text-base sm:text-lg font-semibold text-black">Reward By Branch</h2>
+          <p className="text-sm sm:text-sm text-gray-600">Overview of points rewarded by top-performing branches.</p>
+
+          <div className="bg-white rounded-2xl p-6 my-3">
+            {
+              isEmpty ? <EmptyState title="No data yet" description="No customer has interacted with your brand yet. No points have been earned, claimed, or rewarded." /> :
+                <AnalyticsTable />
+            }
+
+          </div>
         </div>
       </div>
     </div>

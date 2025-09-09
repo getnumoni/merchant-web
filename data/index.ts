@@ -1,5 +1,6 @@
 import { BranchIcon, DashboardIcon, RewardIcon } from "@/components/common/icon-svg";
-import { calenderIcon, dealIcon, giftIcon, graphDirectionIcon, grayPointIcon, musicPauseIcon, phoneNotificationIcon } from "@/constant/icons";
+import { avatarIcon, branchIcon, calenderIcon, dealIcon, giftIcon, graphDirectionIcon, grayPointIcon, musicPauseIcon, phoneNotificationIcon } from "@/constant/icons";
+import { sampleUserIcon } from "@/constant/images";
 import { BRANCH_LEVEL_URL, DASHBOARD_URL, REWARD_TABLE_URL } from "@/constant/routes";
 
 const navigationItems = [
@@ -175,7 +176,9 @@ const customerData = [
     earned: "4,091",
     branch: "Chicken republic Ikeja Branch",
     loyaltyRank: 1,
-    profileIcon: "/assets/images/sample-user-icon.png"
+    profileIcon: avatarIcon,
+    merchantIcon: sampleUserIcon
+
   },
   {
     id: 2,
@@ -184,7 +187,8 @@ const customerData = [
     earned: "3,524",
     branch: "Chicken republic Ikeja Branch",
     loyaltyRank: 2,
-    profileIcon: "/assets/images/sample-user-icon.png"
+    profileIcon: avatarIcon,
+    merchantIcon: sampleUserIcon
   },
   {
     id: 3,
@@ -193,7 +197,8 @@ const customerData = [
     earned: "2,678",
     branch: "Chicken republic Ikeja Branch",
     loyaltyRank: 3,
-    profileIcon: "/assets/images/sample-user-icon.png"
+    profileIcon: avatarIcon,
+    merchantIcon: sampleUserIcon
   },
   {
     id: 4,
@@ -202,7 +207,8 @@ const customerData = [
     earned: "1,346",
     branch: "Chicken republic Abuja Branch",
     loyaltyRank: null,
-    profileIcon: "/assets/images/sample-user-icon.png"
+    profileIcon: avatarIcon,
+    merchantIcon: branchIcon
   },
   {
     id: 5,
@@ -211,7 +217,8 @@ const customerData = [
     earned: "1,346",
     branch: "Chicken republic Vi Branch",
     loyaltyRank: null,
-    profileIcon: "/assets/images/sample-user-icon.png"
+    profileIcon: avatarIcon,
+    merchantIcon: sampleUserIcon
   },
   {
     id: 6,
@@ -220,7 +227,8 @@ const customerData = [
     earned: "1,346",
     branch: "Chicken republic Ketu Branch",
     loyaltyRank: null,
-    profileIcon: "/assets/images/sample-user-icon.png"
+    profileIcon: avatarIcon,
+    merchantIcon: sampleUserIcon
   }
 ];
 
