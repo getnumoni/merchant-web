@@ -23,6 +23,8 @@
    --color-theme-dark-green-700: var(--theme-dark-green-700);
    --color-theme-red-950: var(--theme-red-950);
    --color-theme-gray: var(--theme-gray);
+   --color-theme-gray-200: var(--theme-gray-200);
+   --color-theme-gray-600: var(--theme-gray-600);
    --color-chart-5: var(--chart-5);
    --color-chart-4: var(--chart-4);
    --color-chart-3: var(--chart-3);
@@ -90,6 +92,8 @@
    --theme-semi-dark-green: oklch(0.6624 0.197 146.97);
    --theme-dark-green-700: oklch(0.5406 0.15779 147.6758);
    --theme-red-950: oklch(0.507 0.2056 29.27);
+   --theme-gray-600: oklch(0.9521 0 0);
+   --theme-gray-200: oklch(0.9702 0 0);
 }
 
 .dark {
