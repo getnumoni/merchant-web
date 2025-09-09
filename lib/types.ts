@@ -65,5 +65,32 @@ type BranchSummaryData = {
   };
 }
 
-export type { BranchSummaryData, BrandProfileProps, BrandSummaryProps, DashboardProps, MainBranchSummaryProps, QRCodeCardProps, SidebarProps };
+
+type ActiveBranchModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+}
+
+type RewardModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  onCancel?: () => void;
+  icon?: ReactNode;
+  iconColor?: 'red' | 'green' | 'blue' | 'yellow' | 'gray';
+  title: string;
+  description: string;
+  subDescription?: string;
+  primaryButtonText?: string;
+  secondaryButtonText?: string;
+  primaryButtonVariant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  secondaryButtonVariant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
+  primaryButtonColor?: string;
+  secondaryButtonColor?: string;
+  isLoading?: boolean;
+  disabled?: boolean;
+}
+
+export type { ActiveBranchModalProps, BranchSummaryData, BrandProfileProps, BrandSummaryProps, DashboardProps, MainBranchSummaryProps, QRCodeCardProps, RewardModalProps, SidebarProps };
 

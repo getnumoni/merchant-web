@@ -1,6 +1,7 @@
 'use client';
 
 import { activeBranchIcon } from "@/constant/icons";
+import { ActiveBranchModalProps } from "@/lib/types";
 import Image from "next/image";
 import { Button } from "../ui/button";
 import {
@@ -11,11 +12,7 @@ import {
   DialogTitle
 } from "../ui/dialog";
 
-interface ActiveBranchModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-}
+
 
 export default function ActiveBranchModal({ isOpen, onClose, onConfirm }: ActiveBranchModalProps) {
   return (
