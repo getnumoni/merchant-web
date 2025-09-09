@@ -52,7 +52,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                   className={cn(
                     "flex items-center px-3 py-4 text-sm font-medium rounded-lg transition-colors",
                     isActive
-                      ? "bg-gradient-to-r from-white to-green-50 text-theme-dark-green border-r-4 font-bold border-theme-green"
+                      ? "bg-gradient-to-r from-white to-green-50 text-theme-dark-green border-r-4 font-bold border-theme-dark-green-700"
                       : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                   )}
                 >
