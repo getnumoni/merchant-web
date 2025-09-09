@@ -61,7 +61,7 @@ export default function FilterDropdown({
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "w-full sm:w-[120px] justify-between px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-black bg-white border border-gray-300 rounded-lg hover:bg-gray-50",
+            "w-full sm:w-[260px] justify-between px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-black bg-white border border-gray-300 rounded-xl hover:bg-gray-50 hover:border-theme-dark-green-700",
             buttonClassName
           )}
         >

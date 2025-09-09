@@ -1,19 +1,5 @@
+import { CustomerSectionProps } from "@/lib/types";
 import CustomerCard from "./customer-card";
-
-interface Customer {
-  id: number;
-  name: string;
-  spent: string;
-  earned: string;
-  branch: string;
-  loyaltyRank: number | null;
-  profileIcon: string;
-}
-
-interface CustomerSectionProps {
-  title: string;
-  customers: Customer[];
-}
 
 export default function CustomerSection({ title, customers }: CustomerSectionProps) {
   return (
