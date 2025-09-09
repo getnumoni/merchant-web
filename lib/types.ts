@@ -92,5 +92,26 @@ type RewardModalProps = {
   disabled?: boolean;
 }
 
-export type { ActiveBranchModalProps, BranchSummaryData, BrandProfileProps, BrandSummaryProps, DashboardProps, MainBranchSummaryProps, QRCodeCardProps, RewardModalProps, SidebarProps };
+type Customer = {
+  id: number;
+  name: string;
+  spent: string;
+  earned: string;
+  branch: string;
+  loyaltyRank: number | null;
+  merchantIcon: string;
+  profileIcon: string;
+}
+
+type CustomerCardProps = {
+  customer: Customer;
+}
+
+type CustomerSectionProps = {
+  title: string;
+  customers: Customer[];
+}
+
+
+export type { ActiveBranchModalProps, BranchSummaryData, BrandProfileProps, BrandSummaryProps, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, MainBranchSummaryProps, QRCodeCardProps, RewardModalProps, SidebarProps };
 
