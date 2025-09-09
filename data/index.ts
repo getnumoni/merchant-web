@@ -1,6 +1,6 @@
-import { BranchIcon, DashboardIcon, DealIcon, RewardIcon } from "@/components/common/icon-svg";
-import { dealIcon, graphDirectionIcon, musicPauseIcon, phoneNotificationIcon, pointIcon, successIconCheck } from "@/constant/icons";
-import { BRANCH_LEVEL_URL, DASHBOARD_URL, DEALS_AND_PROMOS_URL, REWARD_TABLE_URL } from "@/constant/routes";
+import { BranchIcon, DashboardIcon, RewardIcon } from "@/components/common/icon-svg";
+import { calenderIcon, dealIcon, giftIcon, graphDirectionIcon, grayPointIcon, musicPauseIcon, phoneNotificationIcon } from "@/constant/icons";
+import { BRANCH_LEVEL_URL, DASHBOARD_URL, REWARD_TABLE_URL } from "@/constant/routes";
 
 const navigationItems = [
   {
@@ -18,11 +18,11 @@ const navigationItems = [
     path: REWARD_TABLE_URL,
     icon: RewardIcon
   },
-  {
-    name: 'Deals & Promos',
-    path: DEALS_AND_PROMOS_URL,
-    icon: DealIcon
-  }
+  // {
+  //   name: 'Deals & Promos',
+  //   path: DEALS_AND_PROMOS_URL,
+  //   icon: DealIcon
+  // }
 ]
 
 // Data for "What You Can Do" section
@@ -71,7 +71,7 @@ const benefitsData = [
 
 const tabs = [
   { id: "reward-table", label: "Reward Table" },
-  { id: "customers-score", label: "Customers Score" },
+  // { id: "customers-score", label: "Customers Score" },
   { id: "points-allocation", label: "Points Allocation" },
   { id: "analytics-trends", label: "Analytics & Trends" }
 ];
@@ -86,22 +86,22 @@ const rewardTableData = [
 
 const summaryData = [
   {
-    icon: dealIcon,
+    icon: giftIcon,
     label: "Reward Type",
     value: "Up to 5% cash-back"
   },
   {
-    icon: pointIcon,
+    icon: grayPointIcon,
     label: "Claim Type",
     value: "Instant"
   },
   {
-    icon: successIconCheck,
+    icon: calenderIcon,
     label: "Issuing Date",
     value: "From today"
   },
   {
-    icon: successIconCheck,
+    icon: calenderIcon,
     label: "End Date",
     value: "-"
   }
@@ -136,5 +136,107 @@ const transactionData = [
   { id: 25, name: "From Knowledge", date: "Sep 1, 2025", time: "8:45 AM", amount: "30,500", status: "Received" }
 ];
 
-export { benefitsData, navigationItems, rewardTableData, summaryData, tabs, transactionData, whatYouCanDoData };
+// Point Allocation Dashboard Data
+const branches = [
+  "Chicken Republic Ikeja",
+  "Chicken Republic Vi",
+  "Chicken Republic Abuja",
+  "Chicken Republic Ketu",
+  "Chicken Republic Surulere"
+];
+
+const regions = [
+  "Lagos", "Kogi", "Abuja", "Delta", "Bayelsa", "Rivers", "Kano", "Kaduna",
+  "Ogun", "Oyo", "Osun", "Ondo", "Edo", "Enugu", "Anambra", "Imo", "Abia"
+];
+
+const timelineOptions = [
+  "Last Hour",
+  "Today",
+  "Yesterday",
+  "This Week",
+  "Last Week",
+  "This Month",
+  "Custom Range"
+];
+
+const months = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"
+];
+
+const years = ["2023", "2024", "2025"];
+
+const customerData = [
+  {
+    id: 1,
+    name: "Adebimpe Adedola",
+    spent: "2,967,415",
+    earned: "4,091",
+    branch: "Chicken republic Ikeja Branch",
+    loyaltyRank: 1,
+    profileIcon: "/assets/images/sample-user-icon.png"
+  },
+  {
+    id: 2,
+    name: "Adebimpe Adedola",
+    spent: "2,041,112",
+    earned: "3,524",
+    branch: "Chicken republic Ikeja Branch",
+    loyaltyRank: 2,
+    profileIcon: "/assets/images/sample-user-icon.png"
+  },
+  {
+    id: 3,
+    name: "Adebimpe Adedola",
+    spent: "1,234,551",
+    earned: "2,678",
+    branch: "Chicken republic Ikeja Branch",
+    loyaltyRank: 3,
+    profileIcon: "/assets/images/sample-user-icon.png"
+  },
+  {
+    id: 4,
+    name: "Adebimpe Adedola",
+    spent: "967,415",
+    earned: "1,346",
+    branch: "Chicken republic Abuja Branch",
+    loyaltyRank: null,
+    profileIcon: "/assets/images/sample-user-icon.png"
+  },
+  {
+    id: 5,
+    name: "Adebimpe Adedola",
+    spent: "967,415",
+    earned: "1,346",
+    branch: "Chicken republic Vi Branch",
+    loyaltyRank: null,
+    profileIcon: "/assets/images/sample-user-icon.png"
+  },
+  {
+    id: 6,
+    name: "Adebimpe Adedola",
+    spent: "967,415",
+    earned: "1,346",
+    branch: "Chicken republic Ketu Branch",
+    loyaltyRank: null,
+    profileIcon: "/assets/images/sample-user-icon.png"
+  }
+];
+
+export {
+  benefitsData,
+  branches,
+  customerData,
+  months,
+  navigationItems,
+  regions,
+  rewardTableData,
+  summaryData,
+  tabs,
+  timelineOptions,
+  transactionData,
+  whatYouCanDoData,
+  years
+};
 

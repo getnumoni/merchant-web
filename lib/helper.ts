@@ -189,3 +189,41 @@ export const getStatusText = (status: string) => {
       return 'Unknown';
   }
 };
+
+/**
+ * Gets the appropriate Tailwind CSS class for icon colors in modals
+ * @param color - The color string (e.g., "red", "green", "blue", "yellow", "gray")
+ * @returns A Tailwind CSS text color class
+ */
+export const getIconColorClass = (color: string): string => {
+  switch (color) {
+    case 'red':
+      return 'text-red-500';
+    case 'green':
+      return 'text-green-500';
+    case 'blue':
+      return 'text-blue-500';
+    case 'yellow':
+      return 'text-yellow-500';
+    case 'gray':
+      return 'text-gray-500';
+    default:
+      return 'text-red-500';
+  }
+};
+
+/**
+ * Gets button styles for custom colors in modals
+ * @param variant - The button variant
+ * @param color - Optional custom color
+ * @returns Style object with backgroundColor and borderColor
+ */
+export const getButtonStyle = (variant: string, color?: string): React.CSSProperties => {
+  if (color) {
+    return {
+      backgroundColor: color,
+      borderColor: color,
+    };
+  }
+  return {};
+};
