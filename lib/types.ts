@@ -113,5 +113,41 @@ type CustomerSectionProps = {
 }
 
 
-export type { ActiveBranchModalProps, BranchSummaryData, BrandProfileProps, BrandSummaryProps, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, MainBranchSummaryProps, QRCodeCardProps, RewardModalProps, SidebarProps };
+type RewardRulesSectionProps = {
+  earnMethod: string;
+  minSpending: string;
+  setMinSpending: (value: string) => void;
+  maxSpending: string;
+  setMaxSpending: (value: string) => void;
+  rewardPercentage: string;
+  setRewardPercentage: (value: string) => void;
+  rewardRules: Array<{ min: string, max: string, percentage: string }>;
+  setRewardRules: (rules: Array<{ min: string, max: string, percentage: string }>) => void;
+  showTable: boolean;
+  setShowTable: (show: boolean) => void;
+}
+
+type RewardCapSectionProps = {
+  rewardCap: string;
+  setRewardCap: (value: string) => void;
+}
+
+type ReceiveMethodSectionProps = {
+  receiveMethod: string;
+  setReceiveMethod: (value: string) => void;
+}
+
+type ExpirationSectionProps = {
+  pointExpiration: string;
+  setPointExpiration: (value: string) => void;
+}
+
+type DateSectionProps = {
+  startDate: string;
+  setStartDate: (value: string) => void;
+  endDate: string;
+  setEndDate: (value: string) => void;
+}
+
+export type { ActiveBranchModalProps, BranchSummaryData, BrandProfileProps, BrandSummaryProps, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ExpirationSectionProps, MainBranchSummaryProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRulesSectionProps, SidebarProps };
 
