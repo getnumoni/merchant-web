@@ -14,6 +14,7 @@ import { numoniLogoDark } from "@/constant/icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -34,6 +35,7 @@ type SignInFormData = z.infer<typeof signInSchema>;
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
 
   const form = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
@@ -47,6 +49,7 @@ export default function SignInForm() {
     console.log("Sign in attempt:", data);
     // Here you would typically make an API call
     // await signIn(data);
+    router.push("/dashboard");
   };
 
   return (
@@ -131,25 +134,7 @@ export default function SignInForm() {
               >
                 {form.formState.isSubmitting ? "Signing In..." : "Sign In"}
               </Button>
-              {/* <Button
-              type="button"
-              variant="outline"
-              className="px-4 py-3 rounded-lg border border-gray-300 hover:bg-gray-50"
-            >
-              <Fingerprint className="h-5 w-5 text-gray-600" />
-            </Button> */}
             </div>
-
-            {/* Forgot Password */}
-            {/* <div className="text-center space-y-2">
-              <p className="text-gray-600 text-sm">Forgotten Your password?</p>
-              <button
-                type="button"
-                className="text-green-600 text-sm font-medium underline hover:text-green-700 transition-colors"
-              >
-                Reset Password Here
-              </button>
-            </div> */}
           </form>
         </Form>
       </div>
