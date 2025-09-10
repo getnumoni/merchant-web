@@ -1,9 +1,15 @@
+'use client';
+
 import { cashBackIcon, rightArrowWhiteIcon } from "@/constant/icons";
 import { benefitsData, whatYouCanDoData } from "@/data";
 import Image from "next/image";
+import { useState } from "react";
 import { Button } from "../ui/button";
+import CreateRewardRuleModal from "./create-reward-rule-modal";
 
 export default function EmptyReward() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <main>
       <main className="bg-white rounded-2xl p-6">
@@ -54,11 +60,20 @@ export default function EmptyReward() {
         <p className="text-center text-gray-900 text-xl font-medium">
           Ready to create your table? Click the button below.
         </p>
-        <Button className="bg-theme-dark-green hover:bg-theme-green text-white rounded-lg p-6 flex items-center gap-2 shadow-sm max-w-md w-full cursor-pointer">
+        <Button
+          onClick={() => setIsModalOpen(true)}
+          className="bg-theme-dark-green hover:bg-theme-dark-green text-white rounded-lg p-6 flex items-center gap-2 shadow-sm max-w-md w-full cursor-pointer"
+        >
           Create Reward table
           <Image src={rightArrowWhiteIcon} alt="arrow-right" width={20} height={20} />
         </Button>
       </section>
+
+      {/* Modal */}
+      <CreateRewardRuleModal
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+      />
     </main>
   );
 }
