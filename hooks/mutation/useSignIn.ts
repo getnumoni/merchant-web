@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 export const useSignIn = () => {
   const router = useRouter()
   const { mutate, isPending } = useMutation({
-    mutationFn: (data: signInPayload) => api.post("/auth/signin", data),
+    mutationFn: (data: signInPayload) => api.post("/auth/signIn", data),
     onSuccess: ({ data }) => {
       if (data) {
         console.log('sign in response', data);
