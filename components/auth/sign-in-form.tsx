@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { numoniLogoDark } from "@/constant/icons";
+import { useSignIn } from "@/hooks/mutation/useSignIn";
+import { generateUUID } from "@/lib/helper";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
@@ -36,6 +38,8 @@ type SignInFormData = z.infer<typeof signInSchema>;
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const { handleSignIn, isPending } = useSignIn();
+
 
   const form = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
@@ -46,10 +50,15 @@ export default function SignInForm() {
   });
 
   const onSubmit = async (data: SignInFormData) => {
-    console.log("Sign in attempt:", data);
-    // Here you would typically make an API call
-    // await signIn(data);
-    router.push("/dashboard");
+    // console.log("Sign in attempt:", data);
+
+    const payload = {
+      username: data.email,
+      password: data.password,
+      usertype: 'MERCHANT',
+      deviceId: generateUUID(),
+    }
+    handleSignIn(payload);
   };
 
   return (
@@ -131,8 +140,10 @@ export default function SignInForm() {
                 type="submit"
                 disabled={form.formState.isSubmitting}
                 className="flex-1 bg-theme-dark-green hover:bg-green-700 disabled:bg-green-400 text-white py-6 rounded-lg font-medium transition-colors"
+                loadingText="Signing In..."
+                isLoading={isPending}
               >
-                {form.formState.isSubmitting ? "Signing In..." : "Sign In"}
+                Sign In
               </Button>
             </div>
           </form>
