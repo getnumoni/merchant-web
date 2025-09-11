@@ -3,6 +3,7 @@ import { AuthUser, signInPayload } from "@/lib/types";
 import { useUserAuthStore } from "@/stores/user-auth-store";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export const useSignIn = () => {
   const router = useRouter();
@@ -26,13 +27,15 @@ export const useSignIn = () => {
 
         // Store user data in the auth store
         setUser(userData);
+        toast.success("Signed in successfully");
 
         // Navigate to dashboard
         router.push("/dashboard");
       }
     },
-    onError: (error) => {
-      console.log('Sign in error:', error);
+    onError: (error: { response: { data: { message: string } } }) => {
+      // console.log('Sign in error:', error);
+      toast.error(error?.response?.data?.message ?? "Failed to login")
       setLoading(false);
     },
   });
