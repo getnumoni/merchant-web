@@ -138,8 +138,8 @@ export default function SignInForm() {
             <div className="flex gap-3">
               <Button
                 type="submit"
-                disabled={form.formState.isSubmitting}
-                className="flex-1 bg-theme-dark-green hover:bg-green-700 disabled:bg-green-400 text-white py-6 rounded-lg font-medium transition-colors"
+                disabled={form.formState.isSubmitting || isPending}
+                className="flex-1 bg-theme-dark-green hover:bg-green-700 disabled:bg-green-400 text-white py-6 rounded-lg font-medium transition-colors disabled:cursor-not-allowed disabled:bg-theme-dark-green"
                 loadingText="Signing In..."
                 isLoading={isPending}
               >
