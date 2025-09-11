@@ -1,6 +1,7 @@
 //lib/api.ts
 
 import axios from "axios";
+import { getAuthCookies } from "./cookies-utils";
 
 
 
@@ -12,7 +13,9 @@ const api = axios.create({
 
 //api interceptor
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token");
+
+  //get token from persistent storage
+  const token = getAuthCookies().accessToken;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
