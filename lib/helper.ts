@@ -232,3 +232,8 @@ export const getButtonStyle = (variant: string, color?: string): React.CSSProper
 export const generateUUID = () => {
   return crypto.randomUUID();
 }
+
+
+export function isStaticAsset(pathname: string) {
+  return /\.(svg|png|jpg|jpeg|gif|webp|ico|css|js|woff|woff2|ttf|eot|otf)$/i.test(pathname);
+}

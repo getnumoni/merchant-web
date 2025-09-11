@@ -161,5 +161,28 @@ type signInPayload = {
   deviceId: string;
 }
 
-export type { ActiveBranchModalProps, BranchSummaryData, BrandProfileProps, BrandSummaryProps, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ExpirationSectionProps, MainBranchSummaryProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRulesSectionProps, SidebarProps, signInPayload, TanstackProviderProps };
+type AuthUser = {
+  id: string;
+  username: string;
+  usertype: string;
+  roles: string[];
+  token: string;
+  refreshToken: string;
+}
+
+type AuthUserStore = {
+  user: AuthUser | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  logoutInProgress: boolean;
+
+  // Actions
+  setUser: (user: AuthUser) => void;
+  clearUser: () => void;
+  updateTokens: (token: string, refreshToken: string) => void;
+  setLoading: (loading: boolean) => void;
+  setLogoutInProgress: (inProgress: boolean) => void;
+}
+
+export type { ActiveBranchModalProps, AuthUser, AuthUserStore, BranchSummaryData, BrandProfileProps, BrandSummaryProps, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ExpirationSectionProps, MainBranchSummaryProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRulesSectionProps, SidebarProps, signInPayload, TanstackProviderProps };
 

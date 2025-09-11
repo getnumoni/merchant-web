@@ -8,21 +8,40 @@ import {
   MenubarTrigger,
 } from '@/components/ui/menubar';
 import { profileIcon } from '@/constant/icons';
+import { useUserAuthStore } from '@/stores/user-auth-store';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function UserProfile() {
+  const { user, isAuthenticated, clearUser } = useUserAuthStore();
+  const router = useRouter();
+
+  const handleSignOut = () => {
+    clearUser();
+    router.push('/auth/sign-in');
+  };
+
+  // If not authenticated, don't render the profile
+  if (!isAuthenticated || !user) {
+    return null;
+  }
+
+  // Extract username from email (everything before @)
+  const displayName = user.username.includes('@')
+    ? user.username.split('@')[0]
+    : user.username;
+
   return (
     <Menubar className="bg-transparent border-none shadow-none">
       <MenubarMenu>
         <MenubarTrigger className="flex items-center space-x-3 text-gray-600 hover:text-gray-900 hover:bg-transparent focus:bg-none rounded-full focus:outline-none focus:ring-2 border ">
-          {/* User Avatar - Chicken Republic logo placeholder */}
+          {/* User Avatar */}
           <div className="h-8 w-8 rounded-full flex items-center justify-center">
             <Image src={profileIcon} alt="profile-icon" width={32} height={32} />
           </div>
           <div className="hidden sm:block text-left">
-            <div className="text-sm font-medium text-gray-900">John Doe</div>
-            <div className="text-xs text-gray-500">Main Brand Profile</div>
+            <div className="text-sm font-medium text-gray-900">{displayName}</div>
+            <div className="text-xs text-gray-500">{user.usertype}</div>
           </div>
           <div className="hidden sm:block w-px h-6 bg-gray-300 mx-2"></div>
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,14 +49,16 @@ export default function UserProfile() {
           </svg>
         </MenubarTrigger>
         <MenubarContent className="w-48">
-          <MenubarItem>
+          {/* <MenubarItem>
             <Link href="#" className="w-full">Profile</Link>
           </MenubarItem>
           <MenubarItem>
             <Link href="#" className="w-full">Settings</Link>
-          </MenubarItem>
+          </MenubarItem> */}
           <MenubarItem>
-            <Link href="#" className="w-full">Sign out</Link>
+            <button onClick={handleSignOut} className="w-full text-left">
+              Sign out
+            </button>
           </MenubarItem>
         </MenubarContent>
       </MenubarMenu>
