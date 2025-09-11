@@ -1,5 +1,10 @@
 import { ReactNode } from "react";
 
+
+type TanstackProviderProps = {
+  children: ReactNode
+}
+
 type SidebarProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -149,5 +154,12 @@ type DateSectionProps = {
   setEndDate: (value: string) => void;
 }
 
-export type { ActiveBranchModalProps, BranchSummaryData, BrandProfileProps, BrandSummaryProps, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ExpirationSectionProps, MainBranchSummaryProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRulesSectionProps, SidebarProps };
+type signInPayload = {
+  username: string;
+  password: string;
+  usertype: string;
+  deviceId: string;
+}
+
+export type { ActiveBranchModalProps, BranchSummaryData, BrandProfileProps, BrandSummaryProps, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ExpirationSectionProps, MainBranchSummaryProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRulesSectionProps, SidebarProps, signInPayload, TanstackProviderProps };
 

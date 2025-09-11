@@ -1,4 +1,4 @@
-import { Toaster } from "@/components/ui/sonner";
+import TanstackProvider from "@/context/tanstack-provider";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -129,9 +129,9 @@ export default function RootLayout({
       <body
         className={` ${numoniQuicksand.variable} ${numoniOpenSans.variable} antialiased`}
       >
-        {children}
-        <Toaster position="top-center" richColors />
-
+        <TanstackProvider>
+          {children}
+        </TanstackProvider>
       </body>
     </html>
   );

@@ -227,3 +227,8 @@ export const getButtonStyle = (variant: string, color?: string): React.CSSProper
   }
   return {};
 };
+
+
+export const generateUUID = () => {
+  return crypto.randomUUID();
+}
