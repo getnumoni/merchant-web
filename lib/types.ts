@@ -236,5 +236,33 @@ type Rewards = {
   endDate: string | null;
 }
 
-export type { ActiveBranchModalProps, AdminNavigationItem, AuthUser, AuthUserStore, BranchSummaryData, BrandProfileProps, BrandSummaryProps, CreateRewardsPayload, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ExpirationSectionProps, MainBranchSummaryProps, MilestoneTargetSectionProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRule, RewardRulesSectionProps, Rewards, SidebarProps, signInPayload, TanstackProviderProps };
+// Axios error type for API error handling
+type AxiosError = {
+  response?: {
+    data?: {
+      message?: string;
+    };
+    status?: number;
+  };
+  message?: string;
+};
+
+// Error display component props
+type ErrorDisplayProps = {
+  error?: string;
+  isError?: boolean;
+  onRetry?: () => void;
+  className?: string;
+};
+
+// Point analytics component props
+type PointAnalyticsProps = {
+  isPending: boolean;
+  rewardTableData: Rewards | null;
+  errorMessage?: string;
+  isError: boolean;
+  onRetry?: () => void;
+};
+
+export type { ActiveBranchModalProps, AdminNavigationItem, AuthUser, AuthUserStore, AxiosError, BranchSummaryData, BrandProfileProps, BrandSummaryProps, CreateRewardsPayload, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ErrorDisplayProps, ExpirationSectionProps, MainBranchSummaryProps, MilestoneTargetSectionProps, PointAnalyticsProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRule, RewardRulesSectionProps, Rewards, SidebarProps, signInPayload, TanstackProviderProps };
 

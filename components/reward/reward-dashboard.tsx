@@ -1,18 +1,30 @@
 import { cashBackIcon, peopleIcon, pointIcon, successIconCheck } from "@/constant/icons";
 import useGetRewards from "@/hooks/query/useGetRewards";
 import { formatNumber } from "@/lib/helper";
+import { AxiosError } from "@/lib/types";
 import Image from "next/image";
+import ErrorDisplay from "../common/error-display";
 import { GraphDirectionIcon } from "../common/icon-svg";
 import PointAnalytics from "./point-analytics";
 
 export default function RewardDashboard() {
 
-  const { data, isPending } = useGetRewards({});
+  const { data, isPending, error, isError, refetch } = useGetRewards({});
+
+  const errorMessage = (error as AxiosError)?.response?.data?.message;
 
   const rewardTableData = data?.data[0];
 
   return (
     <main>
+      {/* Error Display */}
+      <ErrorDisplay
+        error={errorMessage}
+        isError={isError}
+        onRetry={refetch}
+        className="mb-4"
+      />
+
       <section className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white rounded-2xl p-4 ">
         {/* Budget Cap Card */}
         <div className="relative overflow-hidden bg-gradient-to-br from-green-800 to-green-900 text-white rounded-xl p-6 flex flex-col">
@@ -94,7 +106,13 @@ export default function RewardDashboard() {
         </div>
       </section>
 
-      <PointAnalytics isPending={isPending} rewardTableData={rewardTableData} />
+      <PointAnalytics
+        isPending={isPending}
+        rewardTableData={rewardTableData}
+        errorMessage={errorMessage}
+        isError={isError}
+        onRetry={refetch}
+      />
     </main>
   )
 }
