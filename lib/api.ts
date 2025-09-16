@@ -45,14 +45,16 @@ api.interceptors.response.use(
             { refreshToken }
           );
 
-          const { accessToken, refreshToken: newRefreshToken } = response.data;
+          // console.log("refresh token response", response.data);
+          const { token: accessToken, refreshToken: newRefreshToken } = response.data;
 
           // Get current user data from cookies
           const { userType, userId } = getAuthCookies();
 
-          // Update cookies with new tokens
-          if (userType && userId && typeof userType === 'string' && typeof userId === 'string') {
-            setAuthCookies(userType, userId, accessToken, newRefreshToken);
+
+          // Update cookies with new tokens only
+          if (accessToken && newRefreshToken && userType && userId) {
+            setAuthCookies(userType as string, userId as string, accessToken, newRefreshToken);
           }
 
           // Update the original request with new token
