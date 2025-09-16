@@ -8,8 +8,8 @@ import { RewardCapSectionProps } from "@/lib/types";
 export default function RewardCapSection({ rewardCap, setRewardCap }: RewardCapSectionProps) {
   return (
     <div className="space-y-2">
-      <label className="text-sm font-medium text-gray-900">Reward Cap</label>
-      <p className="text-xs text-gray-600">(Set The Maximum Points Your Brand Can Give Out Within A Period.)</p>
+      <label htmlFor="rewardCap" className="text-sm font-medium text-gray-900">Reward Cap  <span className="text-xs text-gray-600">(Set The Maximum Points Your Brand Can Give Out Within A Period.)</span> <span className="text-red-500">*</span></label>
+
       <div className="relative">
         <Input
           type="number"
