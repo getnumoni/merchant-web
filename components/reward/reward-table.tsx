@@ -1,14 +1,42 @@
 'use client'
 
-import { redMusicPauseIcon, warningIcon } from "@/constant/icons";
-import { rewardTableData, summaryData } from "@/data";
+import { Skeleton } from "@/components/ui/skeleton";
+import { calenderIcon, giftIcon, grayPointIcon, redMusicPauseIcon, warningIcon } from "@/constant/icons";
+import {
+  createRewardsSummaryData,
+  getRewardsRules,
+  shouldShowEmptyState,
+  shouldShowRules,
+  shouldShowSkeleton
+} from "@/lib/helper";
+import { RewardRule, Rewards } from "@/lib/types";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import RewardNotification from "./reward-notification";
 
-export default function RewardTable() {
+export default function RewardTable({ rewards, isPending }: { rewards: Rewards | null, isPending: boolean }) {
   const [countdown, setCountdown] = useState(30);
   const [showNotifications, setShowNotifications] = useState(false);
+
+  // Debug logging
+  console.log("RewardTable - rewards:", rewards);
+
+  // Get rules and summary data using helper functions
+  const rules = getRewardsRules(rewards);
+  const summaryDataRaw = createRewardsSummaryData(rewards);
+
+  // Add actual icons to summary data
+  const summaryData = summaryDataRaw.map(item => ({
+    ...item,
+    icon: item.icon === "giftIcon" ? giftIcon :
+      item.icon === "grayPointIcon" ? grayPointIcon :
+        calenderIcon
+  }));
+
+  // Helper functions for rendering
+  const showSkeleton = shouldShowSkeleton(isPending, rules.length);
+  const showRules = shouldShowRules(rules.length);
+  const showEmptyState = shouldShowEmptyState(isPending, rules.length);
 
   //set countdown and time out. //if countdown is 0, pause notifications
   useEffect(() => {
@@ -40,16 +68,41 @@ export default function RewardTable() {
                   </tr>
                 </thead>
                 <tbody>
-                  {rewardTableData.map((row) => (
+                  {showSkeleton && (
+                    // Loading skeleton for table rows
+                    Array.from({ length: 3 }).map((_, index) => (
+                      <tr key={index} className="border-b border-theme-gray last:border-b-0">
+                        <td className="px-4 py-3">
+                          <Skeleton className="h-4 w-12" />
+                        </td>
+                        <td className="px-4 py-3">
+                          <Skeleton className="h-4 w-12" />
+                        </td>
+                        <td className="px-4 py-3">
+                          <Skeleton className="h-4 w-8" />
+                        </td>
+                      </tr>
+                    ))
+                  )}
+
+                  {showRules && rules.map((rule: RewardRule, index: number) => (
                     <tr
-                      key={row.min}
+                      key={index}
                       className="border-b border-theme-gray last:border-b-0"
                     >
-                      <td className="px-4 py-3 text-sm text-gray-900">{row.min}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900">{row.max}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900">{row.reward}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900">{rule.minSpend}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900">{rule.maxSpend}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900">{rule.rewardValue}%</td>
                     </tr>
                   ))}
+
+                  {showEmptyState && (
+                    <tr>
+                      <td colSpan={3} className="px-4 py-8 text-center text-gray-500">
+                        No reward rules found
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
@@ -59,7 +112,27 @@ export default function RewardTable() {
           <div className="bg-white rounded-xl p-3">
             <h2 className="text-lg font-semibold text-theme-gray-700 ">Table Summary</h2>
             <div className="border border-theme-gray rounded-xl p-3">
-              {summaryData.map((item, index) => (
+              {showSkeleton && (
+                // Loading skeleton for summary items
+                Array.from({ length: 4 }).map((_, index) => (
+                  <div key={index}>
+                    <div className="flex items-center justify-between py-3">
+                      <div className="flex items-center gap-2">
+                        <Skeleton className="w-5 h-5" />
+                        <Skeleton className="h-4 w-24" />
+                      </div>
+                      <div className="min-w-0">
+                        <Skeleton className="h-4 w-20" />
+                      </div>
+                    </div>
+                    {index < 3 && (
+                      <hr className="border-theme-gray" />
+                    )}
+                  </div>
+                ))
+              )}
+
+              {!showSkeleton && summaryData.map((item, index) => (
                 <div key={item.label}>
                   <div className="flex items-center justify-between py-3">
                     <div className="flex items-center gap-2">
