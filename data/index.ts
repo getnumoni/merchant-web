@@ -2,6 +2,8 @@ import { BranchIcon, DashboardIcon, RewardIcon } from "@/components/common/icon-
 import { avatarIcon, branchIcon, calenderIcon, dealIcon, giftIcon, graphDirectionIcon, grayPointIcon, musicPauseIcon, phoneNotificationIcon } from "@/constant/icons";
 import { sampleUserIcon } from "@/constant/images";
 import { BRANCH_LEVEL_URL, DASHBOARD_URL, REWARD_TABLE_URL } from "@/constant/routes";
+import { AdminNavigationItem } from "@/lib/types";
+import { BarChart3, Bell, Building, FileBarChart, FileText, Heart, LayoutDashboard, Plus, Shield, User, Users } from "lucide-react";
 
 const navigationItems = [
   {
@@ -232,8 +234,87 @@ const customerData = [
   }
 ];
 
+
+const adminNavigationItem: AdminNavigationItem[] = [
+  {
+    name: 'Overview',
+    path: '/admin',
+    icon: LayoutDashboard
+  },
+  {
+    name: 'Notifications',
+    path: '/admin/notifications',
+    icon: Bell,
+    badge: '12'
+  },
+  {
+    name: 'Merchants',
+    icon: Users,
+    children: [
+      { name: 'All Merchants', path: '/admin/merchants', icon: Users },
+      { name: 'Add Merchant', path: '/admin/merchants/add', icon: Plus },
+      { name: 'Merchant Analytics', path: '/admin/merchants/analytics', icon: BarChart3 }
+    ]
+  },
+  {
+    name: 'Customers',
+    icon: User,
+    children: [
+      { name: 'Add new customers', path: '/admin/customers/add', icon: Plus },
+      { name: 'All customers', path: '/admin/customers', icon: User },
+      { name: 'Customers transactions', path: '/admin/customers/transactions', icon: FileText }
+    ]
+  },
+  {
+    name: 'Charities',
+    icon: Heart,
+    children: [
+      { name: 'All Charities', path: '/admin/charities', icon: Heart },
+      { name: 'Add Charity', path: '/admin/charities/add', icon: Plus },
+      { name: 'Charity Reports', path: '/admin/charities/reports', icon: FileBarChart }
+    ]
+  },
+  {
+    name: 'Admin Management',
+    path: '/admin/management',
+    icon: Building
+  },
+  {
+    name: 'Roles & Permission',
+    path: '/admin/roles',
+    icon: Shield
+  },
+  {
+    name: 'Activity Logs',
+    icon: FileText,
+    children: [
+      { name: 'All Logs', path: '/admin/logs', icon: FileText },
+      { name: 'User Activities', path: '/admin/logs/users', icon: User },
+      { name: 'System Logs', path: '/admin/logs/system', icon: Building }
+    ]
+  },
+  {
+    name: 'Sales Report',
+    icon: BarChart3,
+    children: [
+      { name: 'Daily Sales', path: '/admin/reports/sales/daily', icon: BarChart3 },
+      { name: 'Monthly Sales', path: '/admin/reports/sales/monthly', icon: BarChart3 },
+      { name: 'Yearly Sales', path: '/admin/reports/sales/yearly', icon: BarChart3 }
+    ]
+  },
+  {
+    name: 'Points Report',
+    path: '/admin/reports/points',
+    icon: FileBarChart
+  },
+  {
+    name: 'Charity Report',
+    path: '/admin/reports/charity',
+    icon: Heart
+  }
+];
 export {
-  benefitsData,
+  adminNavigationItem, benefitsData,
   branches,
   customerData,
   months,
