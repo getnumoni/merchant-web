@@ -1,10 +1,11 @@
 "use client";
 import { tabs } from "@/data";
-import { Rewards } from "@/lib/types";
+import { PointAnalyticsProps } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { GiftIcon } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import ErrorDisplay from "../common/error-display";
 import { MusicPauseIcon } from "../common/icon-svg";
 import { Button } from "../ui/button";
 import AnalyticalTrend from "./analytical-trend";
@@ -12,7 +13,13 @@ import PointsAllocated from "./points-allocated";
 import RewardModal from "./reward-modal";
 import RewardTable from "./reward-table";
 
-export default function PointAnalytics({ isPending, rewardTableData }: { isPending: boolean, rewardTableData: Rewards }) {
+export default function PointAnalytics({
+  isPending,
+  rewardTableData,
+  errorMessage,
+  isError,
+  onRetry
+}: PointAnalyticsProps) {
   const [activeTab, setActiveTab] = useState("reward-table");
   const [pauseModalOpen, setPauseModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -76,6 +83,14 @@ export default function PointAnalytics({ isPending, rewardTableData }: { isPendi
         </div>
       </div>
 
+
+      {/* Error Display */}
+      <ErrorDisplay
+        error={errorMessage || undefined}
+        isError={isError}
+        onRetry={onRetry}
+        className="mb-4"
+      />
 
       {/* Main Content Card */}
       <div className="bg-white rounded-2xl ">
