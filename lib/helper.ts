@@ -1,4 +1,5 @@
 
+import { RewardRule } from './types';
 
 /**
  * Determines if a navigation item should be marked as active based on the current path.
@@ -237,3 +238,162 @@ export const generateUUID = () => {
 export function isStaticAsset(pathname: string) {
   return /\.(svg|png|jpg|jpeg|gif|webp|ico|css|js|woff|woff2|ttf|eot|otf)$/i.test(pathname);
 }
+
+
+export const getRewardType = (earnMethod: string) => {
+  switch (earnMethod) {
+    case "percentage":
+      return "PERCENTAGE_BASED";
+    case "fixed":
+      return "FIXED_POINTS";
+    default:
+      return "PERCENTAGE_BASED";
+  }
+};
+
+export const getDistributionType = (receiveMethod: string) => {
+  switch (receiveMethod) {
+    case "instantly":
+      return "INSTANT";
+    case "later":
+      return "MILESTONE_BASED";
+    default:
+      return "INSTANT";
+  }
+};
+
+/**
+ * Formats reward type from API enum to user-friendly display text
+ * @param rewardType - The reward type from API (e.g., "PERCENTAGE_BASED")
+ * @returns Formatted string for display (e.g., "Percentage Based")
+ */
+export const formatRewardType = (rewardType: string) => {
+  switch (rewardType) {
+    case "PERCENTAGE_BASED":
+      return "Percentage Based";
+    case "FIXED_POINTS":
+      return "Fixed Points";
+    default:
+      return rewardType;
+  }
+};
+
+/**
+ * Formats distribution type from API enum to user-friendly display text
+ * @param distributionType - The distribution type from API (e.g., "INSTANT")
+ * @returns Formatted string for display (e.g., "Instant")
+ */
+export const formatDistributionType = (distributionType: string) => {
+  switch (distributionType) {
+    case "INSTANT":
+      return "Instant";
+    case "MILESTONE_BASED":
+      return "Milestone Based";
+    default:
+      return distributionType;
+  }
+};
+
+/**
+ * Safely extracts rules from rewards object
+ * @param rewards - The rewards object or null
+ * @returns Array of rules or empty array if no rewards/rules
+ */
+export const getRewardsRules = (rewards: { rules?: Array<RewardRule> } | null): Array<RewardRule> => {
+  if (!rewards || !rewards.rules) return [];
+  return rewards.rules;
+};
+
+/**
+ * Formats a date string with fallback
+ * @param dateString - Date string or null
+ * @param fallback - Fallback text if date is null
+ * @returns Formatted date string or fallback
+ */
+export const formatDate = (dateString: string | null, fallback: string) => {
+  if (!dateString) return fallback;
+  return new Date(dateString).toLocaleDateString();
+};
+
+/**
+ * Creates summary data array from rewards object
+ * @param rewards - The rewards object or null
+ * @returns Array of summary data objects
+ */
+export const createRewardsSummaryData = (rewards: {
+  rewardType: string;
+  distributionType: string;
+  startDate: string | null;
+  endDate: string | null;
+} | null) => {
+  if (!rewards) return [];
+
+  return [
+    {
+      icon: "giftIcon", // Will be replaced with actual icon in component
+      label: "Reward Type",
+      value: formatRewardType(rewards.rewardType)
+    },
+    {
+      icon: "grayPointIcon", // Will be replaced with actual icon in component
+      label: "Claim Type",
+      value: formatDistributionType(rewards.distributionType)
+    },
+    {
+      icon: "calenderIcon", // Will be replaced with actual icon in component
+      label: "Issuing Date",
+      value: formatDate(rewards.startDate, "From today")
+    },
+    {
+      icon: "calenderIcon", // Will be replaced with actual icon in component
+      label: "End Date",
+      value: formatDate(rewards.endDate, "-")
+    }
+  ];
+};
+
+/**
+ * Determines if skeleton should be shown
+ * @param isPending - Loading state
+ * @param rulesLength - Number of rules
+ * @returns Boolean indicating if skeleton should show
+ */
+export const shouldShowSkeleton = (isPending: boolean, rulesLength: number) => {
+  return isPending && rulesLength === 0;
+};
+
+/**
+ * Determines if rules should be displayed
+ * @param rulesLength - Number of rules
+ * @returns Boolean indicating if rules should show
+ */
+export const shouldShowRules = (rulesLength: number) => {
+  return rulesLength > 0;
+};
+
+/**
+ * Determines if empty state should be shown
+ * @param isPending - Loading state
+ * @param rulesLength - Number of rules
+ * @returns Boolean indicating if empty state should show
+ */
+export const shouldShowEmptyState = (isPending: boolean, rulesLength: number) => {
+  return !isPending && rulesLength === 0;
+};
+
+/**
+ * Formats a number with thousands separators and decimal places
+ * @param value - The number to format
+ * @param decimals - Number of decimal places (default: 2)
+ * @returns Formatted number string (e.g., "100,000.00")
+ */
+export const formatNumber = (value: number | string, decimals: number = 2): string => {
+  const numValue = typeof value === 'string' ? parseFloat(value) : value;
+
+  if (isNaN(numValue)) return '0.00';
+
+  return numValue.toLocaleString('en-US', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals
+  });
+};
