@@ -184,5 +184,20 @@ type AuthUserStore = {
   setLogoutInProgress: (inProgress: boolean) => void;
 }
 
-export type { ActiveBranchModalProps, AuthUser, AuthUserStore, BranchSummaryData, BrandProfileProps, BrandSummaryProps, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ExpirationSectionProps, MainBranchSummaryProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRulesSectionProps, SidebarProps, signInPayload, TanstackProviderProps };
+type CreateRewardsPayload = {
+  merchantId: string;
+  rewardType: string;
+  rules: Array<{
+    minSpend: number;
+    maxSpend: number;
+    rewardValue: number;
+  }>;
+  rewardCap: number;
+  distributionType: string;
+  milestoneTarget: number;
+  pointExpirationDays: number;
+  status: string;
+}
+
+export type { ActiveBranchModalProps, AuthUser, AuthUserStore, BranchSummaryData, BrandProfileProps, BrandSummaryProps, CreateRewardsPayload, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ExpirationSectionProps, MainBranchSummaryProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRulesSectionProps, SidebarProps, signInPayload, TanstackProviderProps };
 
