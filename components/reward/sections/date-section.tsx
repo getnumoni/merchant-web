@@ -1,10 +1,35 @@
 "use client";
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DateSectionProps } from "@/lib/types";
-
+import { cn } from "@/lib/utils";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon } from "lucide-react";
 
 export default function DateSection({ startDate, setStartDate, endDate, setEndDate }: DateSectionProps) {
+  // Convert string dates to Date objects for the calendar
+  const startDateObj = startDate ? new Date(startDate) : undefined;
+  const endDateObj = endDate ? new Date(endDate) : undefined;
+
+  // Handle date selection and convert to ISO string
+  const handleStartDateSelect = (date: Date | undefined) => {
+    if (date) {
+      setStartDate(date.toISOString());
+    } else {
+      setStartDate("");
+    }
+  };
+
+  const handleEndDateSelect = (date: Date | undefined) => {
+    if (date) {
+      setEndDate(date.toISOString());
+    } else {
+      setEndDate("");
+    }
+  };
+
   return (
     <div className="grid grid-cols-2 gap-4">
       {/* Start Issuing Reward From */}
@@ -12,34 +37,65 @@ export default function DateSection({ startDate, setStartDate, endDate, setEndDa
         <label className="text-sm font-semibold text-gray-900">
           Start Issuing Reward From <span className="text-red-500">*</span>
         </label>
-        <Select value={startDate} onValueChange={setStartDate}>
-          <SelectTrigger className="w-full py-6 mt-2">
-            <SelectValue placeholder="August 19 (Today)" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="today">August 19 (Today)</SelectItem>
-            <SelectItem value="tomorrow">August 20 (Tomorrow)</SelectItem>
-            <SelectItem value="next-week">Next Week</SelectItem>
-            <SelectItem value="next-month">Next Month</SelectItem>
-          </SelectContent>
-        </Select>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              data-empty={!startDateObj}
+              className={cn(
+                "w-full py-6 mt-2 justify-start text-left font-normal",
+                !startDateObj && "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {startDateObj ? format(startDateObj, "PPP") : <span>Pick a start date</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={startDateObj}
+              onSelect={handleStartDateSelect}
+              disabled={(date) => date < new Date()}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
       </div>
 
       {/* Close Reward On */}
       <div className="space-y-2">
         <label className="text-sm font-semibold text-gray-900">Close Reward On</label>
-        <Select value={endDate} onValueChange={setEndDate}>
-          <SelectTrigger className="w-full py-6 mt-2">
-            <SelectValue placeholder="Choose" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="never">Never</SelectItem>
-            <SelectItem value="1-month">1 Month</SelectItem>
-            <SelectItem value="3-months">3 Months</SelectItem>
-            <SelectItem value="6-months">6 Months</SelectItem>
-            <SelectItem value="1-year">1 Year</SelectItem>
-          </SelectContent>
-        </Select>
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              data-empty={!endDateObj}
+              className={cn(
+                "w-full py-6 mt-2 justify-start text-left font-normal",
+                !endDateObj && "text-muted-foreground"
+              )}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {endDateObj ? format(endDateObj, "PPP") : <span>Pick an end date (optional)</span>}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-auto p-0" align="start">
+            <Calendar
+              mode="single"
+              selected={endDateObj}
+              onSelect={handleEndDateSelect}
+              disabled={(date) => {
+                // Disable dates before today and before start date
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const startDateMin = startDateObj || today;
+                return date < startDateMin;
+              }}
+              initialFocus
+            />
+          </PopoverContent>
+        </Popover>
       </div>
     </div>
   );

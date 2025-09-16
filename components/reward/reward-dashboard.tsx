@@ -1,9 +1,16 @@
 import { cashBackIcon, peopleIcon, pointIcon, successIconCheck } from "@/constant/icons";
+import useGetRewards from "@/hooks/query/useGetRewards";
+import { formatNumber } from "@/lib/helper";
 import Image from "next/image";
 import { GraphDirectionIcon } from "../common/icon-svg";
 import PointAnalytics from "./point-analytics";
 
 export default function RewardDashboard() {
+
+  const { data, isPending } = useGetRewards({});
+
+  const rewardTableData = data?.data[0];
+
   return (
     <main>
       <section className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-white rounded-2xl p-4 ">
@@ -17,7 +24,7 @@ export default function RewardDashboard() {
           <div className="relative z-10">
             <h3 className="text-white text-sm font-medium mb-4">Budget Cap</h3>
           </div>
-          <div className="relative z-10 text-3xl font-bold mb-4 flex-1 flex items-center">20,000.00</div>
+          <div className="relative z-10 text-3xl font-bold mb-4 flex-1 flex items-center">{formatNumber(rewardTableData?.rewardCap || 0)}</div>
           <div className="relative z-10">
             <hr className="border-white/10 mb-4" />
             <div className="flex items-center gap-2">
@@ -38,7 +45,7 @@ export default function RewardDashboard() {
               <Image src={pointIcon} alt="Reward" width={18} height={18} />
             </div>
           </div>
-          <div className="text-3xl font-bold mb-4 flex-1">0.00</div>
+          <div className="text-3xl font-bold mb-4 flex-1">{formatNumber(0)}</div>
           <hr className="border-gray-100 mb-4" />
           <div className="flex items-center gap-2">
             <div className="bg-gray-100 rounded-full px-2 py-1 flex items-center gap-1">
@@ -57,7 +64,7 @@ export default function RewardDashboard() {
               <Image src={pointIcon} alt="Reward" width={18} height={18} />
             </div>
           </div>
-          <div className="text-3xl font-bold mb-4 flex-1">20,000.00</div>
+          <div className="text-3xl font-bold mb-4 flex-1">{formatNumber(20000)}</div>
           <hr className="border-gray-100 mb-2" />
           <div className="flex items-center gap-2">
             <div className="bg-[#F5F5F5] rounded-full p-2 flex items-center gap-1 w-full justify-center">
@@ -75,7 +82,7 @@ export default function RewardDashboard() {
               <Image src={peopleIcon} alt="People" width={18} height={18} />
             </div>
           </div>
-          <div className="text-3xl font-bold mb-4 flex-1">56</div>
+          <div className="text-3xl font-bold mb-4 flex-1">{formatNumber(56, 0)}</div>
           <hr className="border-gray-100 mb-4" />
           <div className="flex items-center gap-2">
             <div className="bg-gray-100 rounded-full px-2 py-1 flex items-center gap-1">
@@ -87,7 +94,7 @@ export default function RewardDashboard() {
         </div>
       </section>
 
-      <PointAnalytics />
+      <PointAnalytics isPending={isPending} rewardTableData={rewardTableData} />
     </main>
   )
 }

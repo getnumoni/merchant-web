@@ -6,8 +6,8 @@ import { toast } from "sonner";
 
 export const useCreateRewards = () => {
   const queryClient = useQueryClient();
-  const { mutate, isPending } = useMutation({
-    mutationFn: (data: CreateRewardsPayload) => api.post("/merchant/rewards", data),
+  const { mutate, isPending, isSuccess } = useMutation({
+    mutationFn: (data: CreateRewardsPayload) => api.post("/merchant/reward", data),
     onSuccess: () => {
       toast.success("Rewards created successfully");
     },
@@ -16,7 +16,7 @@ export const useCreateRewards = () => {
       toast.error(error?.response?.data?.message ?? "Failed to create rewards");
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["rewards"] });
+      queryClient.invalidateQueries({ queryKey: ["reward"] });
     },
   });
 
@@ -24,5 +24,5 @@ export const useCreateRewards = () => {
     mutate(data);
   };
 
-  return { handleCreateRewards, isPending };
+  return { handleCreateRewards, isPending, isSuccess };
 };

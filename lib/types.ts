@@ -137,6 +137,11 @@ type RewardCapSectionProps = {
   setRewardCap: (value: string) => void;
 }
 
+type MilestoneTargetSectionProps = {
+  milestoneTarget: string;
+  setMilestoneTarget: (value: string) => void;
+}
+
 type ReceiveMethodSectionProps = {
   receiveMethod: string;
   setReceiveMethod: (value: string) => void;
@@ -197,6 +202,9 @@ type CreateRewardsPayload = {
   milestoneTarget: number;
   pointExpirationDays: number;
   status: string;
+  startDate: string | null;
+  endDate: string | null;
+
 }
 
 
@@ -208,5 +216,25 @@ type AdminNavigationItem = {
   badge?: string;
 }
 
-export type { ActiveBranchModalProps, AdminNavigationItem, AuthUser, AuthUserStore, BranchSummaryData, BrandProfileProps, BrandSummaryProps, CreateRewardsPayload, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ExpirationSectionProps, MainBranchSummaryProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRulesSectionProps, SidebarProps, signInPayload, TanstackProviderProps };
+type RewardRule = {
+  minSpend: number;
+  maxSpend: number;
+  rewardValue: number;
+};
+
+type Rewards = {
+  id: string;
+  merchantId: string;
+  rewardType: string;
+  rules: Array<RewardRule>;
+  rewardCap: number;
+  distributionType: string;
+  milestoneTarget: number;
+  pointExpirationDays: number;
+  status: string;
+  startDate: string | null;
+  endDate: string | null;
+}
+
+export type { ActiveBranchModalProps, AdminNavigationItem, AuthUser, AuthUserStore, BranchSummaryData, BrandProfileProps, BrandSummaryProps, CreateRewardsPayload, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ExpirationSectionProps, MainBranchSummaryProps, MilestoneTargetSectionProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRule, RewardRulesSectionProps, Rewards, SidebarProps, signInPayload, TanstackProviderProps };
 

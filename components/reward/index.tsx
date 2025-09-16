@@ -6,9 +6,11 @@ import LoadingSkeleton from "./loading-skeleton";
 import RewardDashboard from "./reward-dashboard";
 
 export default function Reward() {
-  const { data, isPending, error, isError, refetch } = useGetRewards({ merchantId: "68c8341293944be0f81776d4" });
+  const { data, isPending, error, isError, refetch } = useGetRewards({});
 
-  console.log('data', data);
+  const rewards = data?.data[0];
+
+  // console.log('data', rewards);
 
   // Show loading skeleton while data is being fetched
   if (isPending) {
@@ -37,7 +39,7 @@ export default function Reward() {
   }
 
   // Check if data is empty or has no rewards
-  const isEmpty = !data || (Array.isArray(data) && data.length === 0) || (data && !data.rewards);
+  const isEmpty = !data || rewards?.length === 0;
 
   return (
     <main>

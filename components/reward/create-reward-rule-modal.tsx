@@ -1,13 +1,17 @@
 "use client";
 
 import { giftIcon } from "@/constant/icons";
+import { useCreateRewards } from "@/hooks/mutation/useCreateRewards";
+import { getAuthCookies } from "@/lib/cookies-utils";
+import { getDistributionType, getRewardType } from "@/lib/helper";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog";
 import DateSection from "./sections/date-section";
 import EarnMethodSection from "./sections/earn-method-section";
 import ExpirationSection from "./sections/expiration-section";
+import MilestoneTargetSection from "./sections/milestone-target-section";
 import ReceiveMethodSection from "./sections/receive-method-section";
 import RewardCapSection from "./sections/reward-cap-section";
 import RewardRulesSection from "./sections/reward-rules-section";
@@ -18,8 +22,14 @@ interface CreateRewardRuleModalProps {
 }
 
 export default function CreateRewardRuleModal({ open, onOpenChange }: CreateRewardRuleModalProps) {
+  //get merchant id from cookies
+  const { userId } = getAuthCookies();
+
+  // console.log("userId", userId);
+  const merchantId = userId as string;
   const [earnMethod, setEarnMethod] = useState<string>("");
   const [rewardCap, setRewardCap] = useState<string>("");
+  const [milestoneTarget, setMilestoneTarget] = useState<string>("");
   const [receiveMethod, setReceiveMethod] = useState<string>("");
   const [pointExpiration, setPointExpiration] = useState<string>("");
   const [startDate, setStartDate] = useState<string>("");
@@ -32,33 +42,46 @@ export default function CreateRewardRuleModal({ open, onOpenChange }: CreateRewa
   const [rewardRules, setRewardRules] = useState<Array<{ min: string, max: string, percentage: string }>>([]);
   const [showTable, setShowTable] = useState<boolean>(false);
 
+  // Mutation hook
+  const { handleCreateRewards, isPending, isSuccess } = useCreateRewards();
+
   // Check if all required fields are filled
-  const isFormValid = earnMethod && receiveMethod && startDate && rewardRules.length > 0;
+  const isFormValid = earnMethod && receiveMethod && startDate && rewardRules.length > 0 && milestoneTarget && rewardCap;
 
   const handleSave = () => {
-    const formData = {
-      earnMethod,
-      rewardCap,
-      receiveMethod,
-      pointExpiration,
-      startDate,
-      endDate,
-      rewardRules
+    // Map form values to API enum values
+
+    // Prepare payload according to CreateRewardsPayload type
+    const payload = {
+      merchantId: merchantId, // Replace with actual merchant ID from context/store
+      rewardType: getRewardType(earnMethod),
+      rules: rewardRules.map(rule => ({
+        minSpend: parseFloat(rule.min) || 0,
+        maxSpend: parseFloat(rule.max) || 0,
+        rewardValue: parseFloat(rule.percentage) || 0
+      })),
+      rewardCap: parseFloat(rewardCap) || 0,
+      distributionType: getDistributionType(receiveMethod),
+      milestoneTarget: parseInt(milestoneTarget) || 0,
+      pointExpirationDays: parseInt(pointExpiration) || 0,
+      status: "ACTIVE", // Using uppercase as per API example
+      startDate: startDate || null,
+      endDate: endDate || null
     };
 
-    console.log("=== REWARD RULE FORM DATA ===");
-    console.log("Earn Method:", earnMethod);
-    console.log("Reward Cap:", rewardCap);
-    console.log("Receive Method:", receiveMethod);
-    console.log("Point Expiration:", pointExpiration);
-    console.log("Start Date:", startDate);
-    console.log("End Date:", endDate);
-    console.log("Reward Rules:", rewardRules);
-    console.log("Full Form Data:", formData);
+    console.log("=== REWARD RULE PAYLOAD ===");
+    console.log("Payload:", payload);
     console.log("=============================");
 
-    onOpenChange(false);
+    // Call the mutation hook
+    handleCreateRewards(payload);
   };
+
+  useEffect(() => {
+    if (isSuccess) {
+      onOpenChange(false);
+    }
+  }, [isSuccess, onOpenChange]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -107,6 +130,11 @@ export default function CreateRewardRuleModal({ open, onOpenChange }: CreateRewa
             setReceiveMethod={setReceiveMethod}
           />
 
+          <MilestoneTargetSection
+            milestoneTarget={milestoneTarget}
+            setMilestoneTarget={setMilestoneTarget}
+          />
+
           <ExpirationSection
             pointExpiration={pointExpiration}
             setPointExpiration={setPointExpiration}
@@ -126,11 +154,13 @@ export default function CreateRewardRuleModal({ open, onOpenChange }: CreateRewa
             <p className="text-sm text-gray-500 font-semibold">You Can Change This Configurations On Setting Page</p>
             <Button
               onClick={handleSave}
-              disabled={!isFormValid}
-              className={`px-4 py-2 text-sm ${isFormValid
+              disabled={!isFormValid || isPending}
+              className={`px-4 py-2 text-sm ${isFormValid && !isPending
                 ? "bg-green-600 hover:bg-green-700 text-white"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}
+              isLoading={isPending}
+              loadingText="Saving..."
             >
               Save & Apply
             </Button>
