@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ComponentType, ReactNode } from "react";
 
 
 type TanstackProviderProps = {
@@ -199,5 +199,14 @@ type CreateRewardsPayload = {
   status: string;
 }
 
-export type { ActiveBranchModalProps, AuthUser, AuthUserStore, BranchSummaryData, BrandProfileProps, BrandSummaryProps, CreateRewardsPayload, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ExpirationSectionProps, MainBranchSummaryProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRulesSectionProps, SidebarProps, signInPayload, TanstackProviderProps };
+
+type AdminNavigationItem = {
+  name: string;
+  path?: string;
+  icon: ComponentType<{ size?: number; className?: string }>;
+  children?: AdminNavigationItem[];
+  badge?: string;
+}
+
+export type { ActiveBranchModalProps, AdminNavigationItem, AuthUser, AuthUserStore, BranchSummaryData, BrandProfileProps, BrandSummaryProps, CreateRewardsPayload, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ExpirationSectionProps, MainBranchSummaryProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRulesSectionProps, SidebarProps, signInPayload, TanstackProviderProps };
 

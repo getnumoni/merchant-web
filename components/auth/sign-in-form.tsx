@@ -16,7 +16,6 @@ import { generateUUID } from "@/lib/helper";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye, EyeOff } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -37,7 +36,7 @@ type SignInFormData = z.infer<typeof signInSchema>;
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const router = useRouter();
+
   const { handleSignIn, isPending } = useSignIn();
 
 
@@ -139,7 +138,7 @@ export default function SignInForm() {
               <Button
                 type="submit"
                 disabled={form.formState.isSubmitting || isPending}
-                className="flex-1 bg-theme-dark-green hover:bg-green-700 disabled:bg-green-400 text-white py-6 rounded-lg font-medium transition-colors disabled:cursor-not-allowed disabled:bg-theme-dark-green"
+                className="flex-1 bg-theme-dark-green hover:bg-green-700  text-white py-6 rounded-lg font-medium transition-colors disabled:cursor-not-allowed disabled:bg-theme-dark-green"
                 loadingText="Signing In..."
                 isLoading={isPending}
               >
