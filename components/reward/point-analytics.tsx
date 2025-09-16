@@ -1,5 +1,6 @@
 "use client";
 import { tabs } from "@/data";
+import { Rewards } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { GiftIcon } from "lucide-react";
 import Image from "next/image";
@@ -11,7 +12,7 @@ import PointsAllocated from "./points-allocated";
 import RewardModal from "./reward-modal";
 import RewardTable from "./reward-table";
 
-export default function PointAnalytics() {
+export default function PointAnalytics({ isPending, rewardTableData }: { isPending: boolean, rewardTableData: Rewards }) {
   const [activeTab, setActiveTab] = useState("reward-table");
   const [pauseModalOpen, setPauseModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -79,7 +80,7 @@ export default function PointAnalytics() {
       {/* Main Content Card */}
       <div className="bg-white rounded-2xl ">
         {activeTab === "reward-table" && (
-          <RewardTable />
+          <RewardTable rewards={rewardTableData} isPending={isPending} />
         )}
 
         {/* {activeTab === "customers-score" && (
