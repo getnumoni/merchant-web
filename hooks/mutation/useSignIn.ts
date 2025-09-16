@@ -34,7 +34,7 @@ export const useSignIn = () => {
       }
     },
     onError: (error: { response: { data: { message: string } } }) => {
-      // console.log('Sign in error:', error);
+      console.log('Sign in error:', error);
       toast.error(error?.response?.data?.message ?? "Failed to login")
       setLoading(false);
     },
