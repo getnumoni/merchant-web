@@ -15,7 +15,6 @@ export default function BranchFormFooter({
   currentStep,
   onPrev,
   onNext,
-  onSubmit,
   isLastStep,
   isPending = false
 }: BranchFormFooterProps) {
