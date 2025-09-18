@@ -12,8 +12,6 @@ interface SocialMediaProfilesProps {
 }
 
 export default function SocialMediaProfiles({ socialMedia }: SocialMediaProfilesProps) {
-  const { whatsApp, instagram, x, linkedin, snapchat, website } = socialMedia;
-
   // Create array of available social media platforms by mapping data with social media URLs
   const socialPlatforms = socialMediaPlatforms
     .map(platform => ({
