@@ -10,6 +10,16 @@ const nextConfig: NextConfig = {
         permanent: false,
       },
     ]
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cpip-dev-public.s3.eu-west-1.amazonaws.com',
+        port: '',
+        pathname: '**',
+      },
+    ],
   }
 };
 

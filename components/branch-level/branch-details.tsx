@@ -1,14 +1,13 @@
 'use client';
 
 import { branchCloseIcon, editIcon, star, verifyIcon } from "@/constant/icons";
-import { sampleUserIcon } from "@/constant/images";
 import Image from "next/image";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import ActiveBranchModal from "./active-branch-modal";
 import CloseBranchModal from "./close-branch-modal";
 
-export default function BranchDetails() {
+export default function BranchDetails({ branchName, branchId, branchLogo }: { branchName: string, branchId: string, branchLogo: string }) {
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
   const [isActiveModalOpen, setIsActiveModalOpen] = useState(false);
 
@@ -47,20 +46,23 @@ export default function BranchDetails() {
       <section className="bg-white rounded-2xl p-3 sm:p-4 my-4">
         <div className="bg-theme-gray rounded-2xl p-3 sm:p-4 flex flex-col lg:flex-row lg:justify-between gap-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
-            <Image
-              src={sampleUserIcon}
-              alt="branch-logo"
-              width={80}
-              height={80}
-              className="rounded-full w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0"
-            />
+            {/* Merchant Logo */}
+            <div className="w-[50px] h-[50px] rounded-full overflow-hidden flex-shrink-0">
+              <Image
+                src={branchLogo}
+                alt={`${branchName} logo`}
+                width={50}
+                height={50}
+                className="w-full h-full object-cover"
+              />
+            </div>
             <div className="flex-1 min-w-0">
               <div className="flex flex-row sm:items-center gap-1 sm:gap-2">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">Chicken Republic Ikeja</h3>
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">{branchName}</h3>
                 <Image src={verifyIcon} alt="verify-icon" width={16} height={16} className="flex-shrink-0" />
               </div>
               <p className="text-xs sm:text-sm text-gray-600 mt-1">
-                Merchant ID: <span className="text-theme-dark-green font-medium">#nu225577</span>
+                Merchant ID: <span className="text-theme-dark-green font-medium">{branchId}</span>
               </p>
               <hr className="border-gray-100 my-2 sm:my-3" />
               <div className="flex flex-row sm:items-center gap-2">

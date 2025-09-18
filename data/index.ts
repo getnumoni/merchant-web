@@ -1,5 +1,5 @@
 import { BranchIcon, DashboardIcon, RewardIcon } from "@/components/common/icon-svg";
-import { avatarIcon, branchIcon, calenderIcon, dealIcon, giftIcon, graphDirectionIcon, grayPointIcon, musicPauseIcon, phoneNotificationIcon } from "@/constant/icons";
+import { avatarIcon, branchIcon, calenderIcon, dealIcon, emailIcon, giftIcon, graphDirectionIcon, grayPointIcon, instagramIcon, musicPauseIcon, phoneNotificationIcon, twitterIcon, whatsappIcon } from "@/constant/icons";
 import { sampleUserIcon } from "@/constant/images";
 import { BRANCH_LEVEL_URL, DASHBOARD_URL, REWARD_TABLE_URL } from "@/constant/routes";
 import { AdminNavigationItem } from "@/lib/types";
@@ -313,6 +313,47 @@ const adminNavigationItem: AdminNavigationItem[] = [
     icon: Heart
   }
 ];
+
+// Social Media Platforms Configuration
+const socialMediaPlatforms = [
+  {
+    key: 'whatsapp',
+    name: 'WhatsApp',
+    icon: whatsappIcon,
+    color: 'text-green-600'
+  },
+  {
+    key: 'instagram',
+    name: 'Instagram',
+    icon: instagramIcon,
+    color: 'text-pink-600'
+  },
+  {
+    key: 'x',
+    name: 'X(Twitter)',
+    icon: twitterIcon,
+    color: 'text-gray-600'
+  },
+  {
+    key: 'linkedin',
+    name: 'LinkedIn',
+    icon: emailIcon, // Using email icon as fallback
+    color: 'text-blue-700'
+  },
+  {
+    key: 'snapchat',
+    name: 'Snapchat',
+    icon: emailIcon, // Using email icon as fallback
+    color: 'text-yellow-600'
+  },
+  {
+    key: 'website',
+    name: 'Website',
+    icon: emailIcon, // Using email icon as fallback
+    color: 'text-gray-700'
+  }
+];
+
 export {
   adminNavigationItem, benefitsData,
   branches,
@@ -321,6 +362,7 @@ export {
   navigationItems,
   regions,
   rewardTableData,
+  socialMediaPlatforms,
   summaryData,
   tabs,
   timelineOptions,
