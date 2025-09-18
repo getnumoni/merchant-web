@@ -166,9 +166,10 @@ export const formatCurrency = (amount: number) => {
 };
 
 export const getStatusColor = (status: string) => {
-  switch (status) {
+  switch (status.toLowerCase()) {
     case 'active':
       return 'bg-green-100 text-green-800 border-green-200';
+    case 'inactive':
     case 'closed':
       return 'bg-red-100 text-red-800 border-red-200';
     case 'pending':
@@ -179,11 +180,12 @@ export const getStatusColor = (status: string) => {
 };
 
 export const getStatusText = (status: string) => {
-  switch (status) {
+  switch (status.toLowerCase()) {
     case 'active':
       return 'Active';
+    case 'inactive':
     case 'closed':
-      return 'Closed';
+      return 'Inactive';
     case 'pending':
       return 'Pending';
     default:
@@ -396,4 +398,88 @@ export const formatNumber = (value: number | string, decimals: number = 2): stri
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals
   });
+};
+
+/**
+ * Formats social media URLs for different platforms
+ * 
+ * This function intelligently formats URLs based on the platform type.
+ * It preserves already complete URLs and formats incomplete ones appropriately.
+ * 
+ * @param url - The URL to format (can be complete, partial, or just a username/handle)
+ * @param platform - The social media platform ('whatsapp', 'instagram', 'x', 'linkedin', 'snapchat', 'website')
+ * @returns Formatted URL ready for use
+ * 
+ * @example
+ * // Complete URLs are returned as-is
+ * formatUrl('https://wa.link/a6zomo', 'whatsapp') // Returns: 'https://wa.link/a6zomo'
+ * formatUrl('https://x.com/_iamclement_', 'x') // Returns: 'https://x.com/_iamclement_'
+ * 
+ * @example
+ * // Partial URLs get https protocol added
+ * formatUrl('wa.link/a6zomo', 'whatsapp') // Returns: 'https://wa.link/a6zomo'
+ * formatUrl('x.com/_iamclement_', 'x') // Returns: 'https://x.com/_iamclement_'
+ * 
+ * @example
+ * // Usernames/handles get platform-specific formatting
+ * formatUrl('_iamclement_', 'x') // Returns: 'https://x.com/_iamclement_'
+ * formatUrl('username', 'instagram') // Returns: 'https://instagram.com/username'
+ * formatUrl('+2348012345679', 'whatsapp') // Returns: 'https://wa.me/2348012345679'
+ * 
+ * @example
+ * // Website URLs just get https protocol
+ * formatUrl('example.com', 'website') // Returns: 'https://example.com'
+ * formatUrl('https://example.com', 'website') // Returns: 'https://example.com'
+ */
+export const formatUrl = (url: string, platform: string): string => {
+  // If URL is already complete (starts with http/https), return as-is
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+
+  // Handle different platforms for incomplete URLs
+  switch (platform) {
+    case 'whatsapp':
+      // Handle different WhatsApp URL formats
+      if (url.includes('wa.link/') || url.includes('wa.me/')) {
+        return url.startsWith('http') ? url : `https://${url}`;
+      }
+      // Extract phone number and format for wa.me
+      return `https://wa.me/${url.replace(/[^\d]/g, '')}`;
+
+    case 'instagram':
+      // Handle different Instagram URL formats
+      if (url.includes('instagram.com/')) {
+        return url.startsWith('http') ? url : `https://${url}`;
+      }
+      return `https://instagram.com/${url}`;
+
+    case 'x':
+      // Handle different X/Twitter URL formats
+      if (url.includes('twitter.com/') || url.includes('x.com/')) {
+        return url.startsWith('http') ? url : `https://${url}`;
+      }
+      return `https://x.com/${url}`;
+
+    case 'linkedin':
+      // Handle different LinkedIn URL formats
+      if (url.includes('linkedin.com/')) {
+        return url.startsWith('http') ? url : `https://${url}`;
+      }
+      return `https://linkedin.com/in/${url}`;
+
+    case 'snapchat':
+      // Handle different Snapchat URL formats
+      if (url.includes('snapchat.com/')) {
+        return url.startsWith('http') ? url : `https://${url}`;
+      }
+      return `https://snapchat.com/add/${url}`;
+
+    case 'website':
+      // For websites, just ensure https protocol
+      return url.startsWith('http') ? url : `https://${url}`;
+
+    default:
+      return url;
+  }
 };

@@ -70,6 +70,31 @@ type BranchSummaryData = {
   };
 }
 
+type Branch = {
+  branchId: string;
+  merchantId: string;
+  name: string;
+  logo: string;
+  status: 'ACTIVE' | 'INACTIVE' | 'PENDING';
+}
+
+type GetBranchesResponse = {
+  data: Branch[];
+  success: boolean;
+  count: number;
+  message: string;
+  accessedBy: string;
+}
+
+type SocialMediaData = {
+  whatsApp?: string | null;
+  instagram?: string | null;
+  x?: string | null;
+  linkedin?: string | null;
+  snapchat?: string | null;
+  website?: string | null;
+}
+
 
 type ActiveBranchModalProps = {
   isOpen: boolean;
@@ -264,6 +289,37 @@ type PointAnalyticsProps = {
   onRetry?: () => void;
 };
 
+type singleBranchDetails = {
+  lga: string;
+  openingTime: string;
+  latitude: string;
+  description: string;
+  linkedin: string | null;
+  instagram: string | null;
+  managerProfilePhoto: string;
+  snapchat: string | null;
+  emailAddress: string;
+  closingTime: string;
+  merchantId: string;
+  logo: string;
+  minimumPaymentAmount: string;
+  bankAccountNumber: string;
+  id: string;
+  state: string;
+  longitude: string;
+  bankAccountName: string;
+  bankCode: string;
+  images: string[];
+  website: string;
+  address: string;
+  whatsApp: string;
+  managerId: string;
+  phoneNumber: string;
+  name: string;
+  x: string | null;
+  region: string;
+  status: string;
+}
 
-export type { ActiveBranchModalProps, AdminNavigationItem, AuthUser, AuthUserStore, AxiosError, BranchSummaryData, BrandProfileProps, BrandSummaryProps, CreateRewardsPayload, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ErrorDisplayProps, ExpirationSectionProps, MainBranchSummaryProps, MilestoneTargetSectionProps, PointAnalyticsProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRule, RewardRulesSectionProps, Rewards, SidebarProps, signInPayload, TanstackProviderProps };
+export type { ActiveBranchModalProps, AdminNavigationItem, AuthUser, AuthUserStore, AxiosError, Branch, BranchSummaryData, BrandProfileProps, BrandSummaryProps, CreateRewardsPayload, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ErrorDisplayProps, ExpirationSectionProps, GetBranchesResponse, MainBranchSummaryProps, MilestoneTargetSectionProps, PointAnalyticsProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRule, RewardRulesSectionProps, Rewards, SidebarProps, signInPayload, singleBranchDetails, SocialMediaData, TanstackProviderProps };
 
