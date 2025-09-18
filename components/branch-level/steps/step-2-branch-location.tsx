@@ -46,6 +46,8 @@ export default function Step2BranchLocation({ }: Step2Props) {
     setValue('city', place.address_components?.find((comp) => comp.types.includes('locality'))?.long_name || '', { shouldValidate: true });
     setValue('state', place.address_components?.find((comp) => comp.types.includes('administrative_area_level_1'))?.long_name || '', { shouldValidate: true });
     setValue('zipCode', place.address_components?.find((comp) => comp.types.includes('postal_code'))?.long_name || '', { shouldValidate: true });
+    setValue('latitude', lat, { shouldValidate: true });
+    setValue('longitude', lng, { shouldValidate: true });
   }
 
   const handleLocationSelect = (lat: number, lng: number, address: string) => {
@@ -57,6 +59,8 @@ export default function Step2BranchLocation({ }: Step2Props) {
 
     // Update form fields with the selected location data
     setValue('address', address, { shouldValidate: true });
+    setValue('latitude', lat, { shouldValidate: true });
+    setValue('longitude', lng, { shouldValidate: true });
 
     // Extract city, state, and zipCode from the address string
     // This is a simple parsing approach - you might want to use a more robust geocoding service

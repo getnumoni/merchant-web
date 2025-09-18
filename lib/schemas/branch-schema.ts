@@ -5,6 +5,7 @@ export const branchFormSchema = z.object({
   logo: z.string().optional(),
   branchName: z.string().min(1, 'Branch name is required'),
   branchRegion: z.string().min(1, 'Branch region is required'),
+  branchState: z.string().min(1, 'Branch state is required'),
   lga: z.string().min(1, 'LGA is required'),
   openingTime: z.string().optional(),
   closingTime: z.string().optional(),
@@ -19,6 +20,8 @@ export const branchFormSchema = z.object({
   city: z.string().optional(),
   state: z.string().optional(),
   zipCode: z.string().optional(),
+  latitude: z.number().optional(),
+  longitude: z.number().optional(),
 
   // Step 3: Manager
   managerPhoto: z.string().optional(),
@@ -46,6 +49,7 @@ export type BranchFormData = z.infer<typeof branchFormSchema>
 export const step1Schema = branchFormSchema.pick({
   branchName: true,
   branchRegion: true,
+  branchState: true,
   lga: true,
   description: true,
   phone: true,

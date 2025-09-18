@@ -1,9 +1,11 @@
 "use client"
 
-import nigeriaData from "@/data/nigeria-state-and-lgas.json";
+import useGetAllRegions from "@/hooks/query/useGetAllRegions";
+import useGetLga from "@/hooks/query/useGetLga";
+import useGetStates from "@/hooks/query/useGetStates";
 import { BranchFormData } from "@/lib/schemas/branch-schema";
-import { useEffect, useState } from "react";
-import { Control, useWatch } from "react-hook-form";
+import { useEffect } from "react";
+import { Control, UseFormSetValue, useWatch } from "react-hook-form";
 import { FormImageUpload } from "../../ui/form-image-upload";
 import { FormInputTopLabel } from "../../ui/form-input";
 import { FormLogoUpload } from "../../ui/form-logo-upload";
@@ -11,11 +13,7 @@ import { FormPhoneInput } from "../../ui/form-phone-input";
 import { FormSelectTopLabel } from "../../ui/form-select";
 import { FormTextareaTopLabel } from "../../ui/form-textarea";
 
-// Generate states from Nigeria data
-const states = nigeriaData.map(state => ({
-  value: state.alias,
-  label: state.state
-}));
+// Remove the hardcoded states - we'll use API data
 
 const timeOptions = [
   { value: "6:00 AM", label: "6:00 AM" },
@@ -39,18 +37,56 @@ const timeOptions = [
 
 interface Step1Props {
   control: Control<BranchFormData>;
+  setValue: UseFormSetValue<BranchFormData>;
   onLogoChange: (base64: string | null) => void;
   onBusinessPhotosChange: (base64Array: string[]) => void;
 }
 
-export default function Step1BranchInfo({ control, onLogoChange, onBusinessPhotosChange }: Step1Props) {
-  const [lgas, setLgas] = useState<{ value: string; label: string }[]>([]);
+export default function Step1BranchInfo({ control, setValue, onLogoChange, onBusinessPhotosChange }: Step1Props) {
+  const { data: regionsData, isPending: regionsPending } = useGetAllRegions();
 
-  // Watch the selected state
-  const selectedState = useWatch({
+  // Watch the selected region and state
+  const selectedRegion = useWatch({
     control,
     name: "branchRegion"
   });
+
+  const selectedState = useWatch({
+    control,
+    name: "branchState"
+  });
+
+  // Fetch states based on selected region
+  const { data: statesData, isPending: statesPending } = useGetStates({
+    region: selectedRegion || ""
+  });
+
+  // Fetch LGAs based on selected state
+  const { data: lgasData, isPending: lgasPending } = useGetLga({
+    state: selectedState || ""
+  });
+
+  // Map the regions from API response to the expected format
+  const regions = regionsData?.data?.data?.map((region: string) => ({
+    value: region,
+    label: region
+  })) || [];
+
+  // Map the states from API response to the expected format
+  const states = statesData?.data?.data?.map((state: string) => ({
+    value: state,
+    label: state
+  })) || [];
+
+  // Map the LGAs from API response to the expected format
+  const lgas = lgasData?.data?.data?.map((lga: string) => ({
+    value: lga,
+    label: lga
+  })) || [];
+
+  // console.log('regions', regions);
+  // console.log('states', states);
+  // console.log('lgas', lgas);
 
   // Watch the selected opening time
   const selectedOpeningTime = useWatch({
@@ -58,21 +94,22 @@ export default function Step1BranchInfo({ control, onLogoChange, onBusinessPhoto
     name: "openingTime"
   });
 
-  // Update LGAs when state changes
+  // Reset state and LGA when region changes
+  useEffect(() => {
+    if (selectedRegion) {
+      // Reset state and LGA when region changes
+      setValue("branchState", "");
+      setValue("lga", "");
+    }
+  }, [selectedRegion, setValue]);
+
+  // Reset LGA when state changes
   useEffect(() => {
     if (selectedState) {
-      const stateData = nigeriaData.find(state => state.alias === selectedState);
-      if (stateData) {
-        const stateLgas = stateData.lgas.map(lga => ({
-          value: lga.toLowerCase().replace(/\s+/g, '-'),
-          label: lga
-        }));
-        setLgas(stateLgas);
-      }
-    } else {
-      setLgas([]);
+      // Reset LGA when state changes
+      setValue("lga", "");
     }
-  }, [selectedState]);
+  }, [selectedState, setValue]);
 
   // Filter closing time options based on opening time
   const getClosingTimeOptions = () => {
@@ -108,13 +145,24 @@ export default function Step1BranchInfo({ control, onLogoChange, onBusinessPhoto
           required
         />
 
+        <FormSelectTopLabel
+          control={control}
+          name="branchRegion"
+          label="Branch Region"
+          options={regions}
+          placeholder={regionsPending ? "Loading regions..." : "Choose Region"}
+          disabled={regionsPending}
+          required
+        />
+
         <div className="grid grid-cols-2 gap-4">
           <FormSelectTopLabel
             control={control}
-            name="branchRegion"
-            label="Branch Region"
+            name="branchState"
+            label="Branch State"
             options={states}
-            placeholder="Choose State"
+            placeholder={!selectedRegion ? "Select Region First" : statesPending ? "Loading states..." : "Choose State"}
+            disabled={!selectedRegion || statesPending}
             required
           />
 
@@ -123,8 +171,8 @@ export default function Step1BranchInfo({ control, onLogoChange, onBusinessPhoto
             name="lga"
             label="LGA"
             options={lgas}
-            placeholder={selectedState ? "Choose LGA" : "Select State First"}
-            disabled={!selectedState}
+            placeholder={!selectedState ? "Select State First" : lgasPending ? "Loading LGAs..." : "Choose LGA"}
+            disabled={!selectedState || lgasPending}
             required
           />
         </div>
