@@ -98,7 +98,6 @@ export default function AddBranch() {
               currentStep={currentStep}
               onPrev={handlePrev}
               onNext={() => handleNext(currentStep)}
-              onSubmit={handleSubmit}
               isLastStep={currentStep === 5}
               isPending={isPending}
             />
