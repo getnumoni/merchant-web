@@ -1,11 +1,12 @@
 "use client"
 
+import { useGenerateBankToken } from "@/hooks/mutation/useGenerateBankToken";
 import { useBranchFormHandlers } from "@/hooks/use-branch-form-handlers";
 import { BranchFormData, branchFormSchema } from "@/lib/schemas/branch-schema";
 import { getStepDescription } from "@/lib/step-utils";
 import { useBranchStore } from "@/stores/branch-store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Dialog, DialogContent } from "../ui/dialog";
 import { Form } from "../ui/form";
@@ -15,6 +16,9 @@ import BranchStepContent from "./branch-step-content";
 
 export default function AddBranch() {
   const { currentStep, formData, isOpen, closeDialog } = useBranchStore();
+  const { handleGenerateBankToken } = useGenerateBankToken();
+  const hasGeneratedToken = useRef(false);
+  const [isAccountVerified, setIsAccountVerified] = useState<boolean>(false);
 
   const form = useForm<BranchFormData>({
     resolver: zodResolver(branchFormSchema),
@@ -49,6 +53,7 @@ export default function AddBranch() {
       snapchat: formData.snapchat || '',
       bank: formData.bank || '',
       accountNumber: formData.accountNumber || '',
+      bankAccountName: formData.bankAccountName || '',
       minPayment: formData.minPayment || '',
     },
   });
@@ -63,7 +68,23 @@ export default function AddBranch() {
     handleSubmit,
     isPending,
     isSuccess,
-  } = useBranchFormHandlers(form.setValue, form.trigger, form.getValues());
+  } = useBranchFormHandlers(form.setValue, form.trigger, form.getValues(), isAccountVerified);
+
+  // Generate bank token when modal opens (only once per modal session)
+  useEffect(() => {
+    if (isOpen && !hasGeneratedToken.current) {
+      // No need to pass credentials - they're handled server-side
+      handleGenerateBankToken();
+      hasGeneratedToken.current = true;
+    }
+  }, [isOpen, handleGenerateBankToken]);
+
+  // Reset token generation flag when modal closes
+  useEffect(() => {
+    if (!isOpen) {
+      hasGeneratedToken.current = false;
+    }
+  }, [isOpen]);
 
   // Close modal when branch creation is successful
   useEffect(() => {
@@ -91,6 +112,7 @@ export default function AddBranch() {
                 onLogoChange={handleLogoChange}
                 onBusinessPhotosChange={handleBusinessPhotosChange}
                 onManagerPhotoChange={handleManagerPhotoChange}
+                onAccountVerificationChange={setIsAccountVerified}
               />
             </div>
 
