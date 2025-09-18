@@ -7,7 +7,7 @@ import { Badge } from "../ui/badge";
 import SocialMediaProfiles from "./social-media-profiles";
 
 export default function AboutBranch({ singleBranch }: { singleBranch: singleBranchDetails }) {
-  const { lga, openingTime, latitude, description, linkedin, instagram, managerProfilePhoto, snapchat, emailAddress, closingTime, merchantId, logo, minimumPaymentAmount, bankAccountNumber, id, state, longitude, bankAccountName, bankCode, images, website, address, whatsApp, managerId, phoneNumber, name, x, region, status } = singleBranch;
+  const { description, linkedin, instagram, managerProfilePhoto, snapchat, x, website, address, whatsApp, status } = singleBranch;
 
 
   return <main className="bg-white rounded-2xl p-3 sm:p-4 lg:p-6 my-4">

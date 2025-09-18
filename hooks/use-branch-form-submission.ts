@@ -48,7 +48,7 @@ export const useBranchFormSubmission = () => {
       managerId: user?.id || '',
       bankCode: completeData.bank,
       bankAccountNumber: completeData.accountNumber,
-      bankAccountName: completeData.managerName,
+      bankAccountName: completeData.bankAccountName || completeData.managerName, // Use verified account name, fallback to manager name
       minimumPaymentAmount: completeData.minPayment,
     };
 

@@ -51,6 +51,7 @@ const initialFormData: Partial<BranchFormData> = {
   snapchat: '',
   bank: '',
   accountNumber: '',
+  bankAccountName: '',
   minPayment: '',
 }
 

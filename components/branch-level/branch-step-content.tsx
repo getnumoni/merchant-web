@@ -13,6 +13,7 @@ interface BranchStepContentProps {
   onLogoChange: (base64: string | null) => void;
   onBusinessPhotosChange: (base64Array: string[]) => void;
   onManagerPhotoChange: (base64: string | null) => void;
+  onAccountVerificationChange?: (isValid: boolean) => void;
 }
 
 export default function BranchStepContent({
@@ -22,6 +23,7 @@ export default function BranchStepContent({
   onLogoChange,
   onBusinessPhotosChange,
   onManagerPhotoChange,
+  onAccountVerificationChange,
 }: BranchStepContentProps) {
   switch (currentStep) {
     case 1:
@@ -49,7 +51,7 @@ export default function BranchStepContent({
       );
 
     case 5:
-      return <Step5CollectionAccount control={control} />;
+      return <Step5CollectionAccount control={control} setValue={setValue} onAccountVerificationChange={onAccountVerificationChange} />;
 
     default:
       return null;

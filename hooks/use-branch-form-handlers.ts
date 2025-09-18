@@ -8,7 +8,8 @@ import { useBranchFormValidation } from "./use-branch-form-validation";
 export const useBranchFormHandlers = (
   setValue: UseFormSetValue<BranchFormData>,
   trigger: UseFormTrigger<BranchFormData>,
-  formValues: BranchFormData
+  formValues: BranchFormData,
+  isAccountVerified?: boolean
 ) => {
   const { nextStep, prevStep, setLogo, setBusinessPhotos, setManagerPhoto } = useBranchStore();
   const { submitBranch, isPending, isSuccess } = useBranchFormSubmission();
@@ -32,6 +33,12 @@ export const useBranchFormHandlers = (
   };
 
   const handleNext = async (currentStep: number) => {
+    // For step 5, also check account verification
+    if (currentStep === 5 && !isAccountVerified) {
+      toast.error("Please verify your bank account before proceeding");
+      return;
+    }
+
     const isValid = await validateStep(currentStep, formValues);
     if (isValid) {
       nextStep();
