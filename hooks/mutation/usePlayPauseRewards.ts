@@ -6,8 +6,11 @@ export const usePlayPauseRewards = ({ rewardId }: { rewardId: string }) => {
   const queryClient = useQueryClient();
   const { mutate, isPending, isSuccess } = useMutation({
     mutationFn: () => api.put(`/merchant/reward/toggleStatus/${rewardId}`),
-    onSuccess: () => {
-      toast.success("Rewards played/paused successfully");
+    onSuccess: (data) => {
+      if (data) {
+        toast.success(data?.data?.message ?? "Rewards played/paused successfully");
+        queryClient.invalidateQueries({ queryKey: ["reward"] });
+      }
     },
     onError: (error: { response: { data: { message: string } } }) => {
       console.log("Failed to play/pause rewards", error);
