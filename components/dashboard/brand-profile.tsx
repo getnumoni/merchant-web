@@ -42,8 +42,14 @@ export default function BrandProfile({
     <section className="shadow-none border-none rounded-2xl p-4 bg-[#FAFAFA]">
       <div className="flex flex-col items-center text-center">
         {logoUrl && (
-          <div className="bg-white rounded-full p-3 mb-3 w-30 h-30">
-            <Image src={logoUrl} alt={brandName} width={60} height={60} className="rounded-full w-30 h-30" />
+          <div className=" rounded-full p-3 mb-3 w-40 h-40 flex items-center justify-center overflow-hidden">
+            <Image
+              src={logoUrl}
+              alt={brandName}
+              width={60}
+              height={60}
+              className="rounded-full object-cover w-full h-full"
+            />
           </div>
         )}
         <div className="flex items-center gap-2 mb-1">

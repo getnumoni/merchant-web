@@ -47,7 +47,7 @@ export default function UserProfile() {
                 alt="profile-icon"
                 width={32}
                 height={32}
-                className="rounded-full"
+                className="rounded-full h-8 w-12"
               />
             ) : (
               <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
