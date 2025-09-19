@@ -1,23 +1,51 @@
 import { Button } from "@/components/ui/button";
 import { blueVerifiedIcon, rightArrowIcon } from "@/constant/icons";
-import { sampleUserIcon } from "@/constant/images";
 import { BrandProfileProps } from "@/lib/types";
 import Image from "next/image";
+import { Skeleton } from "../ui/skeleton";
 
 
 
 export default function BrandProfile({
-  brandName = "Chicken Republic",
-  merchantId = "#nu225577",
-  logoUrl = sampleUserIcon,
+  brandName = "",
+  merchantId = "",
+  logoUrl = "",
+  isLoading,
   onAccountSettings
 }: BrandProfileProps) {
+
+  if (isLoading) {
+    return (
+      <section className="shadow-none border-none rounded-2xl p-4 bg-[#FAFAFA]">
+        <div className="flex flex-col items-center text-center">
+          {/* Logo skeleton */}
+          <div className=" rounded-full p-3 mb-3 w-30 h-30">
+            <Skeleton className="rounded-full w-30 h-30" />
+          </div>
+
+          {/* Brand name skeleton */}
+          <div className="flex items-center gap-2 mb-1">
+            <Skeleton className="h-6 w-32" />
+            <Skeleton className="w-4 h-4 rounded-full" />
+          </div>
+
+          {/* Merchant ID skeleton */}
+          <Skeleton className="h-4 w-40 mb-4" />
+
+          {/* Button skeleton */}
+          <Skeleton className="h-10 w-full rounded-md" />
+        </div>
+      </section>
+    );
+  }
   return (
     <section className="shadow-none border-none rounded-2xl p-4 bg-[#FAFAFA]">
       <div className="flex flex-col items-center text-center">
-        <div className="bg-white rounded-2xl p-3 mb-3">
-          <Image src={logoUrl} alt={brandName} width={60} height={60} className="rounded-full" />
-        </div>
+        {logoUrl && (
+          <div className="bg-white rounded-full p-3 mb-3 w-30 h-30">
+            <Image src={logoUrl} alt={brandName} width={60} height={60} className="rounded-full w-30 h-30" />
+          </div>
+        )}
         <div className="flex items-center gap-2 mb-1">
           <h2 className="text-lg font-bold text-gray-900">{brandName}</h2>
           <Image src={blueVerifiedIcon} alt="verified-badge" width={16} height={16} />

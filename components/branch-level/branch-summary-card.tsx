@@ -34,7 +34,7 @@ export default function BranchSummaryCard({ data }: BranchSummaryCardProps) {
 
           {/* Merchant Details */}
           <div>
-            <Link href={`/dashboard/branch-level/${data.branchId}`}>
+            <Link href={`/dashboard/branch-level/${data.branchId}/?branchName=${data.name}`}>
               <h3 className="sm:text-lg text-base font-semibold text-gray-900 mb-1 hover:text-theme-dark-green">
                 {name}
               </h3>
