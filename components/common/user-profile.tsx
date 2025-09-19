@@ -7,13 +7,17 @@ import {
   MenubarMenu,
   MenubarTrigger,
 } from '@/components/ui/menubar';
-import { profileIcon } from '@/constant/icons';
+import useGetMerchant from '@/hooks/query/useGetMerchant';
 import { useUserAuthStore } from '@/stores/user-auth-store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 export default function UserProfile() {
   const { user, isAuthenticated, clearUser } = useUserAuthStore();
+  const { data: merchant } = useGetMerchant();
+
+  const merchantInfo = merchant?.data;
+
   const router = useRouter();
 
   const handleSignOut = () => {
@@ -27,9 +31,9 @@ export default function UserProfile() {
   }
 
   // Extract username from email (everything before @)
-  const displayName = user.username.includes('@')
-    ? user.username.split('@')[0]
-    : user.username;
+  // const displayName = user.username.includes('@')
+  //   ? user.username.split('@')[0]
+  //   : user.username;
 
   return (
     <Menubar className="bg-transparent border-none shadow-none">
@@ -37,10 +41,18 @@ export default function UserProfile() {
         <MenubarTrigger className="flex items-center space-x-3 text-gray-600 hover:text-gray-900 hover:bg-transparent focus:bg-none rounded-full focus:outline-none focus:ring-2 border ">
           {/* User Avatar */}
           <div className="h-8 w-8 rounded-full flex items-center justify-center">
-            <Image src={profileIcon} alt="profile-icon" width={32} height={32} />
+            {merchantInfo?.businessImagePath ? (
+              <Image src={merchantInfo.businessImagePath} alt="profile-icon" width={32} height={32} />
+            ) : (
+              <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
+                <svg className="h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                </svg>
+              </div>
+            )}
           </div>
           <div className="hidden sm:block text-left">
-            <div className="text-sm font-medium text-gray-900">{displayName}</div>
+            <div className="text-sm font-medium text-gray-900">{merchantInfo?.brandName}</div>
             <div className="text-xs text-gray-500">{user.usertype}</div>
           </div>
           <div className="hidden sm:block w-px h-6 bg-gray-300 mx-2"></div>
