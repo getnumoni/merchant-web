@@ -11,7 +11,7 @@ const useChangeBranchStatus = () => {
 `, data),
     onSuccess: ({ data }) => {
       if (data) {
-        toast.success("Branch status changed successfully");
+        toast.success(data.message ?? "Branch status changed successfully");
         queryClient.invalidateQueries({ queryKey: ["branch"] });
       }
     },
