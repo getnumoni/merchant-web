@@ -3,7 +3,7 @@
 import AddBranch from '@/components/branch-level/add-branch';
 import Navbar from '@/components/common/navbar';
 import Sidebar from '@/components/common/sidebar';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 
 export default function DashboardLayout({
   children,
@@ -26,7 +26,9 @@ export default function DashboardLayout({
       <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
 
       {/* Navbar */}
-      <Navbar onMenuClick={toggleSidebar} />
+      <Suspense fallback={<div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-40 lg:left-64 h-14 sm:h-16" />}>
+        <Navbar onMenuClick={toggleSidebar} />
+      </Suspense>
 
       {/* Main content area */}
       <main className="pt-16 lg:ml-64">
