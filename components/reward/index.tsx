@@ -8,7 +8,6 @@ import RewardDashboard from "./reward-dashboard";
 export default function Reward() {
   const { data, isPending } = useGetRewards({});
 
-  console.log('rewards data:', data);
 
   // Show loading skeleton while data is being fetched
   if (isPending) {

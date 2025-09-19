@@ -14,7 +14,7 @@ import {
 
 
 
-export default function ActiveBranchModal({ isOpen, onClose, onConfirm }: ActiveBranchModalProps) {
+export default function ActiveBranchModal({ isOpen, onClose, onConfirm, isLoading = false }: ActiveBranchModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-lg">
@@ -33,10 +33,20 @@ export default function ActiveBranchModal({ isOpen, onClose, onConfirm }: Active
         </DialogHeader>
 
         <section className="flex flex-row gap-4 mt-6 w-full sm:w-6/12 mx-auto">
-
+          <Button
+            onClick={onClose}
+            variant="outline"
+            disabled={isLoading}
+            className="flex-1 bg-white border border-gray-200 text-black hover:bg-gray-50 px-6 py-6 rounded-lg font-medium shadow-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Cancel
+          </Button>
           <Button
             onClick={onConfirm}
-            className="flex-1 bg-green-600 hover:bg-green-700 text-white px-6 py-6 rounded-lg font-medium shadow-none cursor-pointer"
+            disabled={isLoading}
+            isLoading={isLoading}
+            loadingText="Activating..."
+            className="flex-1 bg-theme-dark-green hover:bg-theme-dark-green text-white px-6 py-6 rounded-lg font-medium shadow-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-theme-dark-green"
           >
             Activate Branch
           </Button>

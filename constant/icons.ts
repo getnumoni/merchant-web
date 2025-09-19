@@ -44,7 +44,8 @@ const redMusicPauseIcon = '/assets/icons/red-music-pause-icon.svg';
 const firstMedalIcon = '/assets/icons/1st-medal.svg';
 const secondMedalIcon = '/assets/icons/2nd-medal.svg';
 const thirdMedalIcon = '/assets/icons/3rd-medal.svg';
+const musicPlayIcon = '/assets/icons/music-play-icon.svg';
 
 
-export { activeBranchIcon, avatarIcon, blueVerifiedIcon, branchCloseIcon, branchIcon, calenderIcon, cashBackIcon, crownIcon, dealIcon, editIcon, emailIcon, emptyBranchIcon, facebookIcon, filterIcon, firstMedalIcon, giftIcon, graphDirectionIcon, grayPointIcon, greenLocationIcon, instagramIcon, messageIcon, moniepointIcon, musicPauseIcon, NigeriaIcon, notificationIcon, numoniLogoDark, numoniLogoLight, peopleGrayIcon, peopleIcon, phoneIcon, phoneNotificationIcon, pointIcon, profileIcon, redMusicPauseIcon, rewardIcon, rightArrowIcon, rightArrowWhiteIcon, secondMedalIcon, star, storeIcon, successIconCheck, thirdMedalIcon, twitterIcon, verifyIcon, warningIcon, whatsappIcon };
+export { activeBranchIcon, avatarIcon, blueVerifiedIcon, branchCloseIcon, branchIcon, calenderIcon, cashBackIcon, crownIcon, dealIcon, editIcon, emailIcon, emptyBranchIcon, facebookIcon, filterIcon, firstMedalIcon, giftIcon, graphDirectionIcon, grayPointIcon, greenLocationIcon, instagramIcon, messageIcon, moniepointIcon, musicPauseIcon, musicPlayIcon, NigeriaIcon, notificationIcon, numoniLogoDark, numoniLogoLight, peopleGrayIcon, peopleIcon, phoneIcon, phoneNotificationIcon, pointIcon, profileIcon, redMusicPauseIcon, rewardIcon, rightArrowIcon, rightArrowWhiteIcon, secondMedalIcon, star, storeIcon, successIconCheck, thirdMedalIcon, twitterIcon, verifyIcon, warningIcon, whatsappIcon };
 

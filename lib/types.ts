@@ -102,6 +102,7 @@ type ActiveBranchModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  isLoading?: boolean;
 }
 
 type RewardModalProps = {

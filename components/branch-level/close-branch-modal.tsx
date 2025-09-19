@@ -15,9 +15,10 @@ interface CloseBranchModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
+  isLoading?: boolean;
 }
 
-export default function CloseBranchModal({ isOpen, onClose, onConfirm }: CloseBranchModalProps) {
+export default function CloseBranchModal({ isOpen, onClose, onConfirm, isLoading = false }: CloseBranchModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-xl">
@@ -39,13 +40,17 @@ export default function CloseBranchModal({ isOpen, onClose, onConfirm }: CloseBr
           <Button
             onClick={onClose}
             variant="outline"
-            className="flex-1 bg-white border border-gray-200 text-black hover:bg-gray-50 px-6 py-6 rounded-lg font-medium shadow-none cursor-pointer"
+            disabled={isLoading}
+            className="flex-1 bg-white border border-gray-200 text-black hover:bg-gray-50 px-6 py-6 rounded-lg font-medium shadow-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Keep Branch Active
           </Button>
           <Button
             onClick={onConfirm}
-            className="flex-1 bg-red-600 hover:bg-red-700 text-white px-6 py-6 rounded-lg font-medium shadow-none cursor-pointer"
+            disabled={isLoading}
+            isLoading={isLoading}
+            loadingText="Closing..."
+            className="flex-1 bg-red-600 hover:bg-red-700 text-white px-6 py-6 rounded-lg font-medium shadow-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-theme-gray-200s"
           >
             Close Branch
           </Button>

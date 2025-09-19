@@ -1,8 +1,9 @@
 'use client';
 
 import { branchCloseIcon, editIcon, star, verifyIcon } from "@/constant/icons";
+import useChangeBranchStatus from "@/hooks/mutation/useChangeBranchStatus";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import ActiveBranchModal from "./active-branch-modal";
 import CloseBranchModal from "./close-branch-modal";
@@ -11,8 +12,17 @@ export default function BranchDetails({ branchName, branchId, branchLogo, branch
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
   const [isActiveModalOpen, setIsActiveModalOpen] = useState(false);
 
+  const { handleChangeBranchStatus, isPending, isSuccess } = useChangeBranchStatus();
 
   const isBranchClosed = branchStatus === "INACTIVE";
+
+  // Close modals on success
+  useEffect(() => {
+    if (isSuccess) {
+      setIsCloseModalOpen(false);
+      setIsActiveModalOpen(false);
+    }
+  }, [isSuccess]);
 
 
 
@@ -21,9 +31,12 @@ export default function BranchDetails({ branchName, branchId, branchLogo, branch
   };
 
   const handleConfirmClose = () => {
-    // Handle the actual branch closing logic here
-    console.log("Branch closed");
-    setIsCloseModalOpen(false);
+    const payload = {
+      branchId: branchId,
+      status: "INACTIVE"
+    };
+
+    handleChangeBranchStatus(payload);
   };
 
   const handleCancelClose = () => {
@@ -35,9 +48,12 @@ export default function BranchDetails({ branchName, branchId, branchLogo, branch
   };
 
   const handleConfirmActivate = () => {
-    // Handle the actual branch activation logic here
-    console.log("Branch activated");
-    setIsActiveModalOpen(false);
+    const payload = {
+      branchId: branchId,
+      status: "ACTIVE"
+    };
+
+    handleChangeBranchStatus(payload);
   };
 
   const handleCancelActivate = () => {
@@ -112,12 +128,14 @@ export default function BranchDetails({ branchName, branchId, branchLogo, branch
         isOpen={isCloseModalOpen}
         onClose={handleCancelClose}
         onConfirm={handleConfirmClose}
+        isLoading={isPending}
       />
 
       <ActiveBranchModal
         isOpen={isActiveModalOpen}
         onClose={handleCancelActivate}
         onConfirm={handleConfirmActivate}
+        isLoading={isPending}
       />
     </div>
   );

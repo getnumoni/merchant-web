@@ -19,7 +19,7 @@ export default function RewardTable({ rewards, isPending }: { rewards: Rewards |
   const [showNotifications, setShowNotifications] = useState(false);
 
   // Debug logging
-  console.log("RewardTable - rewards:", rewards);
+  // console.log("RewardTable - rewards:", rewards);
 
   // Get rules and summary data using helper functions
   const rules = getRewardsRules(rewards);

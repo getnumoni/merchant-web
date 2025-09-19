@@ -1,10 +1,12 @@
 "use client";
+import { musicPlayIcon } from "@/constant/icons";
 import { tabs } from "@/data";
+import { usePlayPauseRewards } from "@/hooks/mutation/usePlayPauseRewards";
 import { PointAnalyticsProps } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { GiftIcon } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ErrorDisplay from "../common/error-display";
 import { MusicPauseIcon } from "../common/icon-svg";
 import { Button } from "../ui/button";
@@ -21,21 +23,33 @@ export default function PointAnalytics({
   onRetry
 }: PointAnalyticsProps) {
   const [activeTab, setActiveTab] = useState("reward-table");
-  const [pauseModalOpen, setPauseModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'pause' | 'resume'>('pause');
 
-  const handlePauseRewards = async () => {
-    setIsLoading(true);
-    try {
-      // Simulate API call to pause rewards
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      console.log("Rewards paused successfully");
-      setPauseModalOpen(false);
-    } catch (error) {
-      console.error("Failed to pause rewards:", error);
-    } finally {
-      setIsLoading(false);
+  const rewardStatus = rewardTableData?.status === "ACTIVE";
+  const rewardId = rewardTableData?.id || "";
+
+  const { handlePlayPauseRewards, isPending: isRewardActionPending, isSuccess } = usePlayPauseRewards({ rewardId });
+
+  // Close modal on success
+  useEffect(() => {
+    if (isSuccess) {
+      setModalOpen(false);
     }
+  }, [isSuccess]);
+
+  const handlePauseRewards = () => {
+    setModalType('pause');
+    setModalOpen(true);
+  };
+
+  const handleResumeRewards = () => {
+    setModalType('resume');
+    setModalOpen(true);
+  };
+
+  const handleConfirmAction = () => {
+    handlePlayPauseRewards();
   };
 
   return (
@@ -71,14 +85,29 @@ export default function PointAnalytics({
             <span className="hidden sm:inline">Edit Table</span>
             <span className="sm:hidden">Edit</span>
           </button>
-          <Button
-            onClick={() => setPauseModalOpen(true)}
-            className="bg-theme-red-950 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center space-x-2 text-sm hover:bg-theme-red"
-          >
-            <MusicPauseIcon className="w-4 h-4 text-white" />
-            <span className="hidden sm:inline text-white font-semibold">Pause Reward</span>
-            <span className="sm:hidden text-white font-semibold">Pause</span>
-          </Button>
+          {
+            rewardStatus ? (
+              <Button
+                onClick={handlePauseRewards}
+                className="bg-theme-red-950 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center space-x-2 text-sm hover:bg-theme-red"
+              >
+                <MusicPauseIcon className="w-4 h-4 text-white" />
+                <span className="hidden sm:inline text-white font-semibold">Pause Reward</span>
+                <span className="sm:hidden text-white font-semibold">Pause</span>
+              </Button>
+            ) : (
+              <Button
+                onClick={handleResumeRewards}
+                className="bg-theme-dark-green text-white px-3 sm:px-4 sm:py-4 py-2 rounded-lg flex items-center justify-center space-x-2 text-sm hover:bg-theme-dark-green"
+              >
+                <Image src={musicPlayIcon} alt="Resume Reward" width={16} height={16} />
+                <span className="hidden sm:inline text-white font-semibold">Resume Reward</span>
+                <span className="sm:hidden text-white font-semibold">Resume</span>
+              </Button>
+            )
+          }
+
+
 
         </div>
       </div>
@@ -111,22 +140,30 @@ export default function PointAnalytics({
         )}
       </div>
 
-      {/* Pause Rewards Modal */}
+      {/* Dynamic Rewards Modal */}
       <RewardModal
-        isOpen={pauseModalOpen}
-        onClose={() => setPauseModalOpen(false)}
-        onConfirm={handlePauseRewards}
-        icon={<GiftIcon size={48} className="text-theme-red-950" />}
-        iconColor="red"
-        title="Pause Rewards?"
-        description="Manually stop point allocations to customers until you're ready to resume. Customers will no longer earn points until you reactivate rewards."
-        subDescription="Proceed?"
-        primaryButtonText="Yes, Pause Rewards"
-        secondaryButtonText="No, Keep Rewards"
-        primaryButtonVariant="destructive"
-        primaryButtonColor="#DC2626"
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onConfirm={handleConfirmAction}
+        icon={
+          modalType === 'pause'
+            ? <GiftIcon size={48} className="text-theme-red-950" />
+            : <GiftIcon size={48} className="text-theme-dark-green" />
+        }
+        iconColor={modalType === 'pause' ? 'red' : 'green'}
+        title={modalType === 'pause' ? "Pause Rewards?" : "Resume Rewards?"}
+        description={
+          modalType === 'pause'
+            ? "Manually stop point allocations to customers until you're ready to resume. Customers will no longer earn points until you reactivate rewards."
+            : "Reactivate point allocations so customers can start earning again."
+        }
+        subDescription={modalType === 'pause' ? "Proceed?" : undefined}
+        primaryButtonText={modalType === 'pause' ? "Yes, Pause Rewards" : "Resume Rewards"}
+        secondaryButtonText={modalType === 'pause' ? "No, Keep Rewards" : "Keep Rewards Paused"}
+        primaryButtonVariant={modalType === 'pause' ? "destructive" : "default"}
+        primaryButtonColor={modalType === 'pause' ? "#DC2626" : "#00B140"}
         secondaryButtonColor="#F3F4F6"
-        isLoading={isLoading}
+        isLoading={isRewardActionPending}
       />
     </main>
   );
