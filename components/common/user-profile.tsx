@@ -42,7 +42,13 @@ export default function UserProfile() {
           {/* User Avatar */}
           <div className="h-8 w-8 rounded-full flex items-center justify-center">
             {merchantInfo?.businessImagePath ? (
-              <Image src={merchantInfo.businessImagePath} alt="profile-icon" width={32} height={32} />
+              <Image
+                src={merchantInfo.businessImagePath}
+                alt="profile-icon"
+                width={32}
+                height={32}
+                className="rounded-full"
+              />
             ) : (
               <div className="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
                 <svg className="h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
