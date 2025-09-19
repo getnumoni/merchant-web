@@ -8,20 +8,15 @@ import RewardDashboard from "./reward-dashboard";
 export default function Reward() {
   const { data, isPending } = useGetRewards({});
 
-  const rewards = data?.data[0];
-
-
-  // console.log('data', rewards);
+  console.log('rewards data:', data);
 
   // Show loading skeleton while data is being fetched
   if (isPending) {
     return <LoadingSkeleton />;
   }
 
-
-
   // Check if data is empty or has no rewards
-  const isEmpty = !data || rewards?.length === 0;
+  const isEmpty = !data?.data || data.data.length === 0;
 
   return (
     <main>
