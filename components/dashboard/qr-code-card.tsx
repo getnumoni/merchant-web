@@ -81,7 +81,7 @@ export default function QRCodeCard({
         <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 sm:gap-4">
           <div className="rounded-lg flex-shrink-0 w-32 h-32 sm:w-36 sm:h-36 md:w-40 md:h-40 lg:w-44 lg:h-44 xl:w-48 xl:h-48">
             <QRCodeDisplay
-              value={qrCodeUrl}
+              value={qrCodeUrl || ""}
               size={180}
             />
           </div>
