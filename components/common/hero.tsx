@@ -1,5 +1,6 @@
 'use client';
 
+import useGetMerchant from "@/hooks/query/useGetMerchant";
 import { DashboardProps } from "@/lib/types";
 import { usePathname } from "next/navigation";
 import BrandProfile from "../dashboard/brand-profile";
@@ -9,10 +10,6 @@ import QRCodeCard from "../dashboard/qr-code-card";
 
 
 export default function Hero({
-  brandName = "Chicken Republic",
-  merchantId = "#nu225577",
-  logoUrl,
-  qrCodeUrl,
   qrTitle = "Brand's QR Code",
   qrDescription = "Print your store's QR code and display it for customers. They can scan to make quick transfers.",
   summaryContent,
@@ -21,6 +18,9 @@ export default function Hero({
   onShare
 }: DashboardProps) {
   const pathname = usePathname();
+
+  const { data: merchant, isPending } = useGetMerchant();
+  const merchantInfo = merchant?.data;
 
   // Determine which summary component to show based on route
   const getSummaryComponent = () => {
@@ -33,18 +33,20 @@ export default function Hero({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 bg-white rounded-2xl p-4">
       <BrandProfile
-        brandName={brandName}
-        merchantId={merchantId}
-        logoUrl={logoUrl}
+        brandName={merchantInfo?.businessName}
+        merchantId={merchantInfo?.merchantId}
+        logoUrl={merchantInfo?.businessImagePath}
         onAccountSettings={onAccountSettings}
+        isLoading={isPending}
       />
 
       <QRCodeCard
-        qrCodeUrl={qrCodeUrl}
+        qrCodeUrl={merchantInfo?.qrCode}
         title={qrTitle}
         description={qrDescription}
         onDownload={onDownload}
         onShare={onShare}
+        isLoading={isPending}
       />
 
       {getSummaryComponent()}

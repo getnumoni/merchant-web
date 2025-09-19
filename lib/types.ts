@@ -37,6 +37,7 @@ type QRCodeCardProps = {
   description?: string;
   onDownload?: () => void;
   onShare?: () => void;
+  isLoading?: boolean;
 }
 
 type BrandProfileProps = {
@@ -44,6 +45,7 @@ type BrandProfileProps = {
   merchantId?: string;
   logoUrl?: string;
   onAccountSettings?: () => void;
+  isLoading?: boolean;
 }
 
 type SummaryItem = {
@@ -338,6 +340,12 @@ type VerifyBankPayload = {
   accountNumber: string;
 }
 
+type ChangeBranchStatusPayload = {
+  branchId: string;
+  status: string;
+}
 
-export type { ActiveBranchModalProps, AdminNavigationItem, AuthUser, AuthUserStore, AxiosError, BankPayload, BankToken, Branch, BranchSummaryData, BrandProfileProps, BrandSummaryProps, CreateRewardsPayload, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ErrorDisplayProps, ExpirationSectionProps, GetBranchesResponse, MainBranchSummaryProps, MilestoneTargetSectionProps, PointAnalyticsProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRule, RewardRulesSectionProps, Rewards, SidebarProps, signInPayload, singleBranchDetails, SocialMediaData, TanstackProviderProps, VerifyBankPayload };
+
+
+export type { ActiveBranchModalProps, AdminNavigationItem, AuthUser, AuthUserStore, AxiosError, BankPayload, BankToken, Branch, BranchSummaryData, BrandProfileProps, BrandSummaryProps, ChangeBranchStatusPayload, CreateRewardsPayload, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ErrorDisplayProps, ExpirationSectionProps, GetBranchesResponse, MainBranchSummaryProps, MilestoneTargetSectionProps, PointAnalyticsProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRule, RewardRulesSectionProps, Rewards, SidebarProps, signInPayload, singleBranchDetails, SocialMediaData, TanstackProviderProps, VerifyBankPayload };
 

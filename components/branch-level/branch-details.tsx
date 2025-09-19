@@ -7,11 +7,14 @@ import { Button } from "../ui/button";
 import ActiveBranchModal from "./active-branch-modal";
 import CloseBranchModal from "./close-branch-modal";
 
-export default function BranchDetails({ branchName, branchId, branchLogo }: { branchName: string, branchId: string, branchLogo: string }) {
+export default function BranchDetails({ branchName, branchId, branchLogo, branchStatus }: { branchName: string, branchId: string, branchLogo: string, branchStatus: string }) {
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
   const [isActiveModalOpen, setIsActiveModalOpen] = useState(false);
 
-  const isBranchClosed = true;
+
+  const isBranchClosed = branchStatus === "INACTIVE";
+
+
 
   const handleCloseBranch = () => {
     setIsCloseModalOpen(true);

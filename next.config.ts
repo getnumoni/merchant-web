@@ -19,6 +19,18 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '**',
       },
+      {
+        protocol: 'https',
+        hostname: 'numoniimages.s3.amazonaws.com',
+        port: '',
+        pathname: '**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cpip-dev-public.s3.eu-west-1.amazonaws.com',
+        port: '',
+        pathname: '**',
+      }
     ],
   }
 };

@@ -1,4 +1,5 @@
 
+import React from 'react';
 import { RewardRule } from './types';
 
 /**
@@ -63,9 +64,15 @@ export const isNavigationItemActive = (itemPath: string, currentPath: string, al
 /**
  * Converts a pathname to a readable page title
  * @param path - The pathname string (e.g., "/dashboard/branch-level")
- * @returns A formatted title (e.g., "Branch Level")
+ * @param searchParams - Optional search parameters object (e.g., { branchName: "My Branch" })
+ * @returns A formatted title (e.g., "Branch Level" or "My Branch")
  */
-export const getPageTitle = (path: string): string => {
+export const getPageTitle = (path: string, searchParams?: Record<string, string>): string => {
+  // Check if we have a branchName in search params for branch-level routes
+  if (searchParams?.branchName && path.includes('/branch-level/')) {
+    return searchParams.branchName;
+  }
+
   const pathSegments = path.split('/').filter(Boolean);
   const lastSegment = pathSegments[pathSegments.length - 1];
 
@@ -481,5 +488,71 @@ export const formatUrl = (url: string, platform: string): string => {
 
     default:
       return url;
+  }
+};
+
+/**
+ * Downloads a QR code as a PNG image
+ * @param printRef - Reference to the element containing the QR code SVG
+ * @param title - Title for the downloaded file
+ */
+export const downloadQRCodeAsImage = async (printRef: React.RefObject<HTMLDivElement | null>, title: string) => {
+  try {
+    // Get the SVG element from the print ref
+    const svgElement = printRef.current?.querySelector('svg');
+    if (!svgElement) {
+      console.error('QR code SVG not found');
+      return;
+    }
+
+    // Convert SVG to canvas
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Set canvas size
+    canvas.width = 400;
+    canvas.height = 400;
+
+    if (ctx) {
+      // Draw white background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Convert SVG to data URL
+      const svgData = new XMLSerializer().serializeToString(svgElement);
+      const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const svgUrl = URL.createObjectURL(svgBlob);
+
+      const img = document.createElement('img');
+      img.onload = () => {
+        // Calculate position to center the QR code
+        const size = Math.min(canvas.width, canvas.height) - 40; // 20px padding on each side
+        const x = (canvas.width - size) / 2;
+        const y = (canvas.height - size) / 2;
+
+        // Draw the QR code image
+        ctx.drawImage(img, x, y, size, size);
+
+        // Convert canvas to blob and download
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${title.replace(/\s+/g, '-').toLowerCase()}-qr-code.png`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            URL.revokeObjectURL(svgUrl);
+          }
+        }, 'image/png');
+      };
+
+      img.src = svgUrl;
+    }
+  } catch (error) {
+    console.error('Error downloading QR code as image:', error);
+    throw error;
   }
 };

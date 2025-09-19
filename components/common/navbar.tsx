@@ -5,7 +5,7 @@ import { getPageTitle } from '@/lib/helper';
 import { useBranchStore } from '@/stores/branch-store';
 import { Plus } from 'lucide-react';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import UserProfile from './user-profile';
 
 interface NavbarProps {
@@ -14,6 +14,7 @@ interface NavbarProps {
 
 export default function Navbar({ onMenuClick }: NavbarProps) {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const { openDialog } = useBranchStore();
 
   // Function to get action button based on current page
@@ -82,7 +83,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
             <div className="flex items-center space-x-2 sm:space-x-4 min-w-0 flex-1">
               {/* Page title */}
               <h1 className="ml-1 sm:ml-2 lg:ml-0 text-md sm:text-lg lg:text-2xl font-semibold text-gray-900 truncate">
-                {getPageTitle(pathname)}
+                {getPageTitle(pathname, Object.fromEntries(searchParams.entries()))}
               </h1>
               {/* Dynamic Action Button - Hidden on mobile, shown on tablet+ */}
               <div className="hidden sm:flex">
