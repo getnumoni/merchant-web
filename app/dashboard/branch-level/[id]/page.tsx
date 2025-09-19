@@ -13,10 +13,11 @@ export default function Page() {
 
 
   const singleBranch = data?.data?.data;
-
+  // console.log(singleBranch)
   const branchName = singleBranch?.name ?? "";
   const branchId = singleBranch?.id ?? "";
   const branchLogo = singleBranch?.logo ?? "";
+  const branchStatus = singleBranch?.status ?? "";
 
   //loading state when data is being fetched
 
@@ -31,7 +32,7 @@ export default function Page() {
 
   return (
     <div>
-      <BranchDetails branchName={branchName} branchId={branchId} branchLogo={branchLogo} />
+      <BranchDetails branchName={branchName} branchId={branchId} branchLogo={branchLogo} branchStatus={branchStatus} />
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <TransactionHistory />
         <AboutBranch singleBranch={singleBranch} />
