@@ -19,7 +19,7 @@ export const base64ToFile = (base64: string, filename: string): File => {
 };
 
 export const useBranchFormSubmission = () => {
-  const { formData } = useBranchStore();
+  const { formData, managerId } = useBranchStore();
   const { user } = useUserAuthStore();
   // console.log('user', user);
   const { handleCreateBranch, isPending, isSuccess, isError, error } = useCreateBranch();
@@ -45,7 +45,7 @@ export const useBranchFormSubmission = () => {
       phoneNumber: formatPhoneNumber(completeData.phone, 'compact-int'),
       emailAddress: completeData.email,
       address: completeData.address,
-      managerId: user?.id || '',
+      managerId: managerId || '',
       bankCode: completeData.bank,
       bankAccountNumber: completeData.accountNumber,
       bankAccountName: completeData.bankAccountName || completeData.managerName, // Use verified account name, fallback to manager name
