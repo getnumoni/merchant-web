@@ -30,6 +30,7 @@ export default function Step4BranchManager({ control, onManagerPhotoChange }: St
     }
   };
 
+
   return (
     <div className="space-y-4">
       <div className="text-center">

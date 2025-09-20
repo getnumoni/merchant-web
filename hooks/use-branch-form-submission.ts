@@ -2,7 +2,6 @@ import { formatPhoneNumber } from "@/lib/phone-utils";
 import { BranchFormData } from "@/lib/schemas/branch-schema";
 import { CreateBranchPayload } from "@/lib/types/branch-api";
 import { useBranchStore } from "@/stores/branch-store";
-import { useUserAuthStore } from "@/stores/user-auth-store";
 import { useCreateBranch } from "./mutation/useCreateBranch";
 
 // Helper function to convert base64 to File
@@ -19,8 +18,8 @@ export const base64ToFile = (base64: string, filename: string): File => {
 };
 
 export const useBranchFormSubmission = () => {
-  const { formData } = useBranchStore();
-  const { user } = useUserAuthStore();
+  const { formData, managerId } = useBranchStore();
+
   // console.log('user', user);
   const { handleCreateBranch, isPending, isSuccess, isError, error } = useCreateBranch();
 
@@ -45,7 +44,7 @@ export const useBranchFormSubmission = () => {
       phoneNumber: formatPhoneNumber(completeData.phone, 'compact-int'),
       emailAddress: completeData.email,
       address: completeData.address,
-      managerId: user?.id || '',
+      managerId: managerId || '',
       bankCode: completeData.bank,
       bankAccountNumber: completeData.accountNumber,
       bankAccountName: completeData.bankAccountName || completeData.managerName, // Use verified account name, fallback to manager name

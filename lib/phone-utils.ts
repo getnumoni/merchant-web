@@ -1,4 +1,4 @@
-type FormatType = 'compact' | 'compact-int' | 'compact-leading' | 'default' | 'int';
+type FormatType = 'compact' | 'compact-int' | 'compact-leading' | 'default' | 'int' | 'plus-234';
 
 function isValidMsisdn(string: string): boolean {
   // Basic validation - check if string contains only digits and is reasonable length
@@ -72,6 +72,21 @@ function formatInternational(string: string): string | null {
   return `+${cleaned}`;
 }
 
+function formatWithPlus234(string: string): string | null {
+  // Format as +234xxxxxxxxxx (explicit function for +234 formatting)
+  let cleaned = string;
+
+  if (cleaned.startsWith('0')) {
+    cleaned = `234${cleaned.substring(1)}`;
+  }
+
+  if (!cleaned.startsWith('234')) {
+    cleaned = `234${cleaned}`;
+  }
+
+  return `+${cleaned}`;
+}
+
 
 export function formatMsisdn(string: string, format: FormatType = 'default'): string | null {
   // Handle null/undefined input
@@ -92,6 +107,7 @@ export function formatMsisdn(string: string, format: FormatType = 'default'): st
     'compact-leading': formatCompactLeading,
     default: formatDefault,
     int: formatInternational,
+    'plus-234': formatWithPlus234,
   };
 
   const formatted = formatFunctions[format](sanitizedString);
@@ -103,5 +119,13 @@ export const formatPhoneNumber = (phone: string, format: FormatType = 'default')
   if (!phone) return '';
 
   const formatted = formatMsisdn(phone, format);
+  return formatted || phone; // Return original if formatting fails
+};
+
+// Convenience function specifically for +234 formatting
+export const formatPhoneWithPlus234 = (phone: string): string => {
+  if (!phone) return '';
+
+  const formatted = formatMsisdn(phone, 'plus-234');
   return formatted || phone; // Return original if formatting fails
 };

@@ -1,7 +1,10 @@
+import { formatPhoneWithPlus234 } from "@/lib/phone-utils";
 import { BranchFormData } from "@/lib/schemas/branch-schema";
 import { useBranchStore } from "@/stores/branch-store";
+import { useEffect } from "react";
 import { FieldErrors, UseFormSetValue, UseFormTrigger } from "react-hook-form";
 import { toast } from "sonner";
+import { useCreateBranchManager } from "./mutation/useCreateBranchManager";
 import { useBranchFormSubmission } from "./use-branch-form-submission";
 import { useBranchFormValidation } from "./use-branch-form-validation";
 
@@ -14,6 +17,14 @@ export const useBranchFormHandlers = (
   const { nextStep, prevStep, setLogo, setBusinessPhotos, setManagerPhoto } = useBranchStore();
   const { submitBranch, isPending, isSuccess } = useBranchFormSubmission();
   const { validateStep } = useBranchFormValidation(trigger);
+  const { handleCreateManager, isPending: isCreatingManager, isSuccess: isManagerCreated } = useCreateBranchManager();
+
+  // Handle manager creation success - proceed to next step
+  useEffect(() => {
+    if (isManagerCreated) {
+      nextStep();
+    }
+  }, [isManagerCreated, nextStep]);
 
   const handleLogoChange = (base64: string | null) => {
     setLogo(base64);
@@ -33,6 +44,24 @@ export const useBranchFormHandlers = (
   };
 
   const handleNext = async (currentStep: number) => {
+    // For step 4, create manager first before proceeding
+    if (currentStep === 4) {
+      const isValid = await validateStep(currentStep, formValues);
+      if (isValid) {
+        // Create manager with form data
+        const formattedPhone = formatPhoneWithPlus234(formValues.managerPhone);
+        const managerPayload = {
+          name: formValues.managerName || '',
+          email: formValues.managerEmail || '',
+          phone: formattedPhone || ''
+        };
+
+        handleCreateManager(managerPayload);
+        return; // Don't proceed to next step yet, wait for manager creation
+      }
+      return;
+    }
+
     // For step 5, also check account verification
     if (currentStep === 5 && !isAccountVerified) {
       toast.error("Please verify your bank account before proceeding");
@@ -69,7 +98,7 @@ export const useBranchFormHandlers = (
     handlePrev,
     onError,
     handleSubmit,
-    isPending,
+    isPending: isPending || isCreatingManager,
     isSuccess,
   };
 };

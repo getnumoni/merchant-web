@@ -16,7 +16,7 @@ export default function UserProfile() {
   const { user, isAuthenticated, clearUser } = useUserAuthStore();
   const { data: merchant } = useGetMerchant();
 
-  const merchantInfo = merchant?.data;
+  const merchantInfo = merchant?.data?.data;
 
   const router = useRouter();
 

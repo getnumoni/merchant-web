@@ -20,7 +20,7 @@ export default function Hero({
   const pathname = usePathname();
 
   const { data: merchant, isPending } = useGetMerchant();
-  const merchantInfo = merchant?.data;
+  const merchantInfo = merchant?.data?.data;
 
   // Determine which summary component to show based on route
   const getSummaryComponent = () => {

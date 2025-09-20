@@ -1,6 +1,6 @@
 "use client";
 
-import { getStatusColor, getStatusText } from "@/lib/helper";
+import { formatCurrency, getStatusColor, getStatusText } from "@/lib/helper";
 import { Branch } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,7 +10,7 @@ interface BranchSummaryCardProps {
 }
 
 export default function BranchSummaryCard({ data }: BranchSummaryCardProps) {
-  const { name, merchantId, logo, status } = data;
+  const { name, merchantId, logo, status, totalAmountRecieved, totalPayout, fees } = data;
 
   // console.log('data', data);
 
@@ -64,25 +64,38 @@ export default function BranchSummaryCard({ data }: BranchSummaryCardProps) {
 
         {/* Branch Details */}
         <div className="space-y-3">
-          {/* Branch ID */}
+
+
+          {/* Total Amount Received */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-1 h-6 bg-blue-500 rounded-full"></div>
-              <span className="text-sm font-medium text-gray-700">Branch ID</span>
+              <div className="w-1 h-6 bg-theme-dark-green rounded-full"></div>
+              <span className="text-sm font-medium text-gray-700">Allocated Budget</span>
             </div>
             <span className="text-sm font-semibold text-gray-900">
-              {data.branchId}
+              {formatCurrency(totalAmountRecieved || 0)}
             </span>
           </div>
 
-          {/* Status */}
+          {/* Total Payout */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-1 h-6 bg-green-500 rounded-full"></div>
-              <span className="text-sm font-medium text-gray-700">Status</span>
+              <div className="w-1 h-6 bg-red-500 rounded-full"></div>
+              <span className="text-sm font-medium text-gray-700">Amount Spent</span>
             </div>
             <span className="text-sm font-semibold text-gray-900">
-              {getStatusText(status)}
+              {formatCurrency(totalPayout || 0)}
+            </span>
+          </div>
+
+          {/* Fees */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-1 h-6 bg-theme-gray-600 rounded-full"></div>
+              <span className="text-sm font-medium text-gray-700">Fees</span>
+            </div>
+            <span className="text-sm font-semibold text-gray-900">
+              {formatCurrency(fees || 0)}
             </span>
           </div>
         </div>

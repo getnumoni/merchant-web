@@ -28,7 +28,7 @@ export const useGenerateBankToken = () => {
     onSuccess: (data) => {
       // Extract token data from response
       const tokenData = data;
-      console.log("Bank token response", tokenData);
+      // console.log("Bank token response", tokenData);
       if (tokenData && tokenData.accessToken) {
         // Save token to store
         setToken({
@@ -36,7 +36,7 @@ export const useGenerateBankToken = () => {
           expiresIn: tokenData.expiresIn,
           tokenType: tokenData.tokenType
         });
-        toast.success("Bank token generated successfully");
+        // toast.success("Bank token generated successfully");
       } else {
         toast.error("Invalid token response format");
       }
