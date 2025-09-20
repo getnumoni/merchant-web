@@ -78,6 +78,9 @@ type Branch = {
   name: string;
   logo: string;
   status: 'ACTIVE' | 'INACTIVE' | 'PENDING';
+  totalAmountRecieved?: number;
+  totalPayout?: number;
+  fees?: number;
 }
 
 type GetBranchesResponse = {
@@ -322,6 +325,11 @@ type singleBranchDetails = {
   x: string | null;
   region: string;
   status: string;
+  managerDetails: {
+    name: string;
+    email: string;
+    phone: string;
+  }
 }
 
 type BankPayload = {
@@ -346,7 +354,11 @@ type ChangeBranchStatusPayload = {
   status: string;
 }
 
+type BranchManagerPayload = {
+  name: string
+  email: string
+  phone: string
+}
 
-
-export type { ActiveBranchModalProps, AdminNavigationItem, AuthUser, AuthUserStore, AxiosError, BankPayload, BankToken, Branch, BranchSummaryData, BrandProfileProps, BrandSummaryProps, ChangeBranchStatusPayload, CreateRewardsPayload, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ErrorDisplayProps, ExpirationSectionProps, GetBranchesResponse, MainBranchSummaryProps, MilestoneTargetSectionProps, PointAnalyticsProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRule, RewardRulesSectionProps, Rewards, SidebarProps, signInPayload, singleBranchDetails, SocialMediaData, TanstackProviderProps, VerifyBankPayload };
+export type { ActiveBranchModalProps, AdminNavigationItem, AuthUser, AuthUserStore, AxiosError, BankPayload, BankToken, Branch, BranchManagerPayload, BranchSummaryData, BrandProfileProps, BrandSummaryProps, ChangeBranchStatusPayload, CreateRewardsPayload, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ErrorDisplayProps, ExpirationSectionProps, GetBranchesResponse, MainBranchSummaryProps, MilestoneTargetSectionProps, PointAnalyticsProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRule, RewardRulesSectionProps, Rewards, SidebarProps, signInPayload, singleBranchDetails, SocialMediaData, TanstackProviderProps, VerifyBankPayload };
 
