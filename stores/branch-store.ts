@@ -5,6 +5,7 @@ interface BranchStore {
   currentStep: number
   formData: Partial<BranchFormData>
   isOpen: boolean
+  managerId: string | null
 
   // Actions
   setCurrentStep: (step: number) => void
@@ -14,6 +15,7 @@ interface BranchStore {
   setLogo: (logo: string | null) => void
   setBusinessPhotos: (photos: string[]) => void
   setManagerPhoto: (photo: string | null) => void
+  setManagerId: (id: string | null) => void
   openDialog: () => void
   closeDialog: () => void
   resetForm: () => void
@@ -59,6 +61,7 @@ export const useBranchStore = create<BranchStore>((set, get) => ({
   currentStep: 1,
   formData: initialFormData,
   isOpen: false,
+  managerId: null,
 
   setCurrentStep: (step) => set({ currentStep: step }),
 
@@ -92,6 +95,8 @@ export const useBranchStore = create<BranchStore>((set, get) => ({
     formData: { ...state.formData, managerPhoto: photo || undefined }
   })),
 
+  setManagerId: (id) => set({ managerId: id }),
+
   openDialog: () => set({ isOpen: true }),
 
   closeDialog: () => set({ isOpen: false }),
@@ -99,7 +104,8 @@ export const useBranchStore = create<BranchStore>((set, get) => ({
   resetForm: () => set({
     currentStep: 1,
     formData: initialFormData,
-    isOpen: false
+    isOpen: false,
+    managerId: null
   }),
 
   submitForm: (data) => {
