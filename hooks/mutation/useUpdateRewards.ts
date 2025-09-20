@@ -8,8 +8,11 @@ export const useUpdateRewards = () => {
 
   const { mutate, isPending, isSuccess } = useMutation({
     mutationFn: (data: Rewards) => api.put(`/merchant/reward/`, data),
-    onSuccess: () => {
-      toast.success("Reward updated successfully");
+    onSuccess: ({ data }) => {
+      if (data) {
+        toast.success(data.message ?? "Reward updated successfully");
+        queryClient.invalidateQueries({ queryKey: ["reward"] });
+      }
     },
     onError: (error: { response: { data: { message: string } } }) => {
       console.log("Failed to update reward", error);

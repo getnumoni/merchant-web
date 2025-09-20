@@ -271,6 +271,29 @@ export const getDistributionType = (receiveMethod: string) => {
   }
 };
 
+// Reverse mapping functions for prepopulating forms
+export const getEarnMethodFromRewardType = (rewardType: string) => {
+  switch (rewardType) {
+    case "PERCENTAGE_BASED":
+      return "percentage";
+    case "FIXED_POINTS":
+      return "fixed";
+    default:
+      return "percentage";
+  }
+};
+
+export const getReceiveMethodFromDistributionType = (distributionType: string) => {
+  switch (distributionType) {
+    case "INSTANT":
+      return "instantly";
+    case "MILESTONE_BASED":
+      return "later";
+    default:
+      return "instantly";
+  }
+};
+
 /**
  * Formats reward type from API enum to user-friendly display text
  * @param rewardType - The reward type from API (e.g., "PERCENTAGE_BASED")
@@ -555,4 +578,23 @@ export const downloadQRCodeAsImage = async (printRef: React.RefObject<HTMLDivEle
     console.error('Error downloading QR code as image:', error);
     throw error;
   }
+};
+
+
+export const mapPointExpirationToForm = (pointExpirationDays: number): string => {
+  if (pointExpirationDays === 1) return "1-day";
+  if (pointExpirationDays === 3) return "3-days";
+  if (pointExpirationDays === 7) return "7-days";
+  if (pointExpirationDays === 14) return "14-days";
+  if (pointExpirationDays === 30) return "30-days";
+  return "never";
+};
+
+export const mapPointExpirationToApi = (pointExpiration: string): number => {
+  if (pointExpiration === "1-day") return 1;
+  if (pointExpiration === "3-days") return 3;
+  if (pointExpiration === "7-days") return 7;
+  if (pointExpiration === "14-days") return 14;
+  if (pointExpiration === "30-days") return 30;
+  return 0;
 };
