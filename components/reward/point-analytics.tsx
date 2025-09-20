@@ -2,7 +2,7 @@
 import { musicPlayIcon } from "@/constant/icons";
 import { tabs } from "@/data";
 import { usePlayPauseRewards } from "@/hooks/mutation/usePlayPauseRewards";
-import { PointAnalyticsProps } from "@/lib/types";
+import { PointAnalyticsProps, Rewards } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { GiftIcon } from "lucide-react";
 import Image from "next/image";
@@ -14,6 +14,7 @@ import AnalyticalTrend from "./analytical-trend";
 import PointsAllocated from "./points-allocated";
 import RewardModal from "./reward-modal";
 import RewardTable from "./reward-table";
+import UpdateRewardRuleModal from "./update-reward-rule-modal";
 
 export default function PointAnalytics({
   isPending,
@@ -25,6 +26,8 @@ export default function PointAnalytics({
   const [activeTab, setActiveTab] = useState("reward-table");
   const [modalOpen, setModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'pause' | 'resume'>('pause');
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [selectedRuleData, setSelectedRuleData] = useState<Rewards | null>(null);
 
   const rewardStatus = rewardTableData?.status === "ACTIVE";
   const rewardId = rewardTableData?.id || "";
@@ -50,6 +53,14 @@ export default function PointAnalytics({
 
   const handleConfirmAction = () => {
     handlePlayPauseRewards();
+  };
+
+  const handleEditTable = () => {
+    // Pass the current reward table data as rule data
+    if (rewardTableData) {
+      setSelectedRuleData(rewardTableData);
+      setUpdateModalOpen(true);
+    }
   };
 
   return (
@@ -80,7 +91,10 @@ export default function PointAnalytics({
 
         {/* Action Buttons - Mobile: Stack vertically, Desktop: Horizontal */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4">
-          <button className="bg-white border border-gray-300 text-gray-700 px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center space-x-2 text-sm">
+          <button
+            onClick={handleEditTable}
+            className="bg-white border border-gray-300 text-gray-700 px-3 sm:px-4 py-2 rounded-lg flex items-center justify-center space-x-2 text-sm hover:bg-gray-50 cursor-pointer"
+          >
             <Image src="/assets/icons/details-icon.svg" alt="Edit" width={16} height={16} />
             <span className="hidden sm:inline">Edit Table</span>
             <span className="sm:hidden">Edit</span>
@@ -164,6 +178,13 @@ export default function PointAnalytics({
         primaryButtonColor={modalType === 'pause' ? "#DC2626" : "#00B140"}
         secondaryButtonColor="#F3F4F6"
         isLoading={isRewardActionPending}
+      />
+
+      {/* Update Reward Rule Modal */}
+      <UpdateRewardRuleModal
+        open={updateModalOpen}
+        onOpenChange={setUpdateModalOpen}
+        ruleData={selectedRuleData}
       />
     </main>
   );
