@@ -9,16 +9,27 @@ interface BranchFormFooterProps {
   onSubmit?: (data?: BranchFormData) => void;
   isLastStep: boolean;
   isPending?: boolean;
+  isUpdate?: boolean;
 }
 
 export default function BranchFormFooter({
   currentStep,
   onPrev,
   onNext,
+  onSubmit,
   isLastStep,
-  isPending = false
+  isPending = false,
+  isUpdate = false
 }: BranchFormFooterProps) {
   const getStepTitle = () => {
+    if (isUpdate) {
+      switch (currentStep) {
+        case 1: return "Branch Info";
+        case 2: return "Social Media Links";
+        default: return "Update Branch";
+      }
+    }
+
     switch (currentStep) {
       case 1: return "Branch Info";
       case 2: return "Branch Location";
@@ -36,7 +47,7 @@ export default function BranchFormFooter({
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium">{getStepTitle()}</span>
           <div className="flex gap-1">
-            {[1, 2, 3, 4, 5].map((step) => (
+            {(isUpdate ? [1, 2] : [1, 2, 3, 4, 5]).map((step) => (
               <div
                 key={step}
                 className={`w-3 h-2 rounded-sm ${step <= currentStep ? 'bg-theme-dark-green' : 'bg-gray-200'
@@ -62,13 +73,23 @@ export default function BranchFormFooter({
 
           <Button
             disabled={isPending}
-            type={isLastStep ? 'submit' : 'button'}
-            onClick={isLastStep ? undefined : onNext}
+            type="button"
+            onClick={isLastStep ? (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              if (onSubmit) {
+                onSubmit();
+              }
+            } : (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onNext();
+            }}
             isLoading={isPending}
             loadingText="Saving..."
             className="bg-theme-dark-green hover:bg-theme-green flex items-center gap-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLastStep ? 'Save Branch' : 'Next'}
+            {isLastStep ? (isUpdate ? 'Update Branch' : 'Save Branch') : 'Next'}
           </Button>
         </div>
       </div>

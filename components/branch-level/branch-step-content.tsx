@@ -14,6 +14,7 @@ interface BranchStepContentProps {
   onBusinessPhotosChange: (base64Array: string[]) => void;
   onManagerPhotoChange: (base64: string | null) => void;
   onAccountVerificationChange?: (isValid: boolean) => void;
+  isUpdate?: boolean;
 }
 
 export default function BranchStepContent({
@@ -24,7 +25,28 @@ export default function BranchStepContent({
   onBusinessPhotosChange,
   onManagerPhotoChange,
   onAccountVerificationChange,
+  isUpdate = false,
 }: BranchStepContentProps) {
+  // For update flow, map steps differently
+  if (isUpdate) {
+    switch (currentStep) {
+      case 1:
+        return (
+          <Step1BranchInfo
+            control={control}
+            setValue={setValue}
+            onLogoChange={onLogoChange}
+            onBusinessPhotosChange={onBusinessPhotosChange}
+          />
+        );
+      case 2:
+        return <Step3SocialMedia control={control} />;
+      default:
+        return null;
+    }
+  }
+
+  // For add flow, use original step mapping
   switch (currentStep) {
     case 1:
       return (
