@@ -14,10 +14,14 @@ interface SocialMediaProfilesProps {
 export default function SocialMediaProfiles({ socialMedia }: SocialMediaProfilesProps) {
   // Create array of available social media platforms by mapping data with social media URLs
   const socialPlatforms = socialMediaPlatforms
-    .map(platform => ({
-      ...platform,
-      url: socialMedia[platform.key as keyof SocialMediaData] as string | null
-    }))
+    .map(platform => {
+      // Map platform keys to actual data keys
+      const dataKey = platform.key === 'whatsapp' ? 'whatsApp' : platform.key;
+      return {
+        ...platform,
+        url: socialMedia[dataKey as keyof SocialMediaData] as string | null
+      };
+    })
     .filter(platform => platform.url && platform.url.trim() !== '');
 
   // If no social media platforms are available, don't render the section
@@ -52,7 +56,7 @@ export default function SocialMediaProfiles({ socialMedia }: SocialMediaProfiles
               onClick={() => window.open(formatUrl(platform.url!, platform.key), '_blank')}
             >
               <span className={`${platform.color}`}>View</span>
-              <ArrowRightWhiteIcon className="w-3 h-3 sm:w-4 sm:h-4 ml-1" />
+              <ArrowRightWhiteIcon className="w-3 h-3 sm:w-4 sm:h-4 ml-1 text-theme-dark-green" />
             </Button>
           </div>
         ))}

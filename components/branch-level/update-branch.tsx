@@ -29,7 +29,7 @@ export default function UpdateBranch({ isOpen, onClose, branchData }: UpdateBran
   const [currentStep, setCurrentStep] = useState(1);
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
-  console.log('🔄 UpdateBranch render - isOpen:', isOpen, 'branchData:', branchData?.id, 'isSuccess:', isSuccess, 'hasSubmitted:', hasSubmitted);
+  // console.log('🔄 UpdateBranch render - isOpen:', isOpen, 'branchData:', branchData?.id, 'isSuccess:', isSuccess, 'hasSubmitted:', hasSubmitted);
 
   // Get default values from branch data
   const getDefaultValues = (): BranchFormData => {
@@ -79,14 +79,14 @@ export default function UpdateBranch({ isOpen, onClose, branchData }: UpdateBran
 
   // Handle form submission - only when user clicks Update Branch button
   const handleSubmit = async (data: BranchFormData) => {
-    console.log('🎯 Branch update form SUBMITTED by user clicking Update Branch button:', data);
-    console.log('🎯 Current step when submitting:', currentStep);
+    // console.log('🎯 Branch update form SUBMITTED by user clicking Update Branch button:', data);
+    // console.log('🎯 Current step when submitting:', currentStep);
     await submitBranchUpdate(data);
   };
 
   // Handle Update Branch button click
   const handleUpdateClick = async () => {
-    console.log('🎯 Update Branch button clicked by user');
+    // console.log('🎯 Update Branch button clicked by user');
     setHasSubmitted(true);
     const formData = form.getValues();
     await handleSubmit(formData);
@@ -112,7 +112,7 @@ export default function UpdateBranch({ isOpen, onClose, branchData }: UpdateBran
   const handleNext = (e?: React.MouseEvent) => {
     e?.preventDefault();
     e?.stopPropagation();
-    console.log('🔄 handleNext called - NAVIGATING ONLY, currentStep:', currentStep);
+    // console.log('🔄 handleNext called - NAVIGATING ONLY, currentStep:', currentStep);
     if (currentStep < 2) {
       console.log('🔄 Moving to step:', currentStep + 1);
       setCurrentStep(currentStep + 1);
@@ -144,7 +144,7 @@ export default function UpdateBranch({ isOpen, onClose, branchData }: UpdateBran
   // Close modal when branch update is successful (only when modal is open and we've submitted)
   useEffect(() => {
     if (isSuccess && isOpen && hasSubmitted) {
-      console.log('🎉 Branch update successful - closing modal');
+      // console.log('🎉 Branch update successful - closing modal');
       // Small delay to allow data refresh
       setTimeout(() => {
         onClose();

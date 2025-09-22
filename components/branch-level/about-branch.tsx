@@ -9,7 +9,6 @@ import SocialMediaProfiles from "./social-media-profiles";
 export default function AboutBranch({ singleBranch }: { singleBranch: singleBranchDetails }) {
   const { description, linkedin, instagram, managerProfilePhoto, snapchat, x, website, address, whatsApp, status } = singleBranch;
 
-
   return <main className="bg-white rounded-2xl p-3 sm:p-4 lg:p-6 my-4">
     <div className="flex flex-row sm:items-center justify-between gap-2 sm:gap-4">
       <h2 className="text-base sm:text-lg lg:text-xl xl:text-2xl font-bold text-gray-900">About Branch</h2>
