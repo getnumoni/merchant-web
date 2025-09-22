@@ -7,7 +7,7 @@ export const useUpdateRewards = () => {
   const queryClient = useQueryClient();
 
   const { mutate, isPending, isSuccess } = useMutation({
-    mutationFn: (data: Rewards) => api.put(`/merchant/reward/`, data),
+    mutationFn: (data: Rewards) => api.put(`/merchant/reward`, data),
     onSuccess: ({ data }) => {
       if (data) {
         toast.success(data.message ?? "Reward updated successfully");
