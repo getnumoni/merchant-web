@@ -2,7 +2,7 @@
 
 import { Upload, User, X } from "lucide-react"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 interface FormLogoUploadProps {
   label?: string
@@ -11,15 +11,21 @@ interface FormLogoUploadProps {
   accept?: string
   maxSize?: string
   supportedFormats?: string
+  currentValue?: string | null
 }
 
 export function FormLogoUpload({
-
   description = "Help Customers Find You With A Logo (Optional)",
   onImageChange,
   accept = "image/*",
+  currentValue,
 }: FormLogoUploadProps) {
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(currentValue || null)
+
+  // Update image preview when currentValue changes
+  useEffect(() => {
+    setImagePreview(currentValue || null)
+  }, [currentValue])
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
