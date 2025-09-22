@@ -2,15 +2,26 @@
 
 import { branchCloseIcon, editIcon, star, verifyIcon } from "@/constant/icons";
 import useChangeBranchStatus from "@/hooks/mutation/useChangeBranchStatus";
+import { BranchData } from "@/lib/types/branch-api";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import ActiveBranchModal from "./active-branch-modal";
 import CloseBranchModal from "./close-branch-modal";
+import UpdateBranch from "./update-branch";
 
-export default function BranchDetails({ branchName, branchId, branchLogo, branchStatus }: { branchName: string, branchId: string, branchLogo: string, branchStatus: string }) {
+
+
+export default function BranchDetails({ branchName, branchId, branchLogo, branchStatus, branchData }: {
+  branchName: string,
+  branchId: string,
+  branchLogo: string,
+  branchStatus: string,
+  branchData?: BranchData | null
+}) {
   const [isCloseModalOpen, setIsCloseModalOpen] = useState(false);
   const [isActiveModalOpen, setIsActiveModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
 
   const { handleChangeBranchStatus, isPending, isSuccess } = useChangeBranchStatus();
 
@@ -23,6 +34,14 @@ export default function BranchDetails({ branchName, branchId, branchLogo, branch
       setIsActiveModalOpen(false);
     }
   }, [isSuccess]);
+
+  const handleEditBranch = () => {
+    setIsUpdateModalOpen(true);
+  };
+
+  const handleCloseUpdateModal = () => {
+    setIsUpdateModalOpen(false);
+  };
 
 
 
@@ -106,7 +125,10 @@ export default function BranchDetails({ branchName, branchId, branchLogo, branch
                 <span className="sm:hidden">Close</span>
               </Button>
             )}
-            <Button className="bg-black border border-gray-200 text-white shadow-none hover:bg-black cursor-pointer px-3 sm:px-4 py-3 sm:py-5 text-xs sm:text-sm flex items-center justify-center gap-2">
+            <Button
+              onClick={handleEditBranch}
+              className="bg-black border border-gray-200 text-white shadow-none hover:bg-black cursor-pointer px-3 sm:px-4 py-3 sm:py-5 text-xs sm:text-sm flex items-center justify-center gap-2"
+            >
               <Image src={editIcon} alt="edit-icon" width={16} height={16} />
               <span className="hidden sm:inline">Edit Details</span>
               <span className="sm:hidden">Edit</span>
@@ -136,6 +158,12 @@ export default function BranchDetails({ branchName, branchId, branchLogo, branch
         onClose={handleCancelActivate}
         onConfirm={handleConfirmActivate}
         isLoading={isPending}
+      />
+
+      <UpdateBranch
+        isOpen={isUpdateModalOpen}
+        onClose={handleCloseUpdateModal}
+        branchData={branchData || null}
       />
     </div>
   );
