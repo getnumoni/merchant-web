@@ -4,7 +4,7 @@ import useGetAllRegions from "@/hooks/query/useGetAllRegions";
 import useGetLga from "@/hooks/query/useGetLga";
 import useGetStates from "@/hooks/query/useGetStates";
 import { BranchFormData } from "@/lib/schemas/branch-schema";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Control, UseFormSetValue, useWatch } from "react-hook-form";
 import { FormImageUpload } from "../../ui/form-image-upload";
 import { FormInputTopLabel } from "../../ui/form-input";
@@ -94,22 +94,71 @@ export default function Step1BranchInfo({ control, setValue, onLogoChange, onBus
     name: "openingTime"
   });
 
-  // Reset state and LGA when region changes
+  // Watch current values for form components
+  const currentLogo = useWatch({
+    control,
+    name: "logo"
+  });
+
+  const currentBusinessPhotos = useWatch({
+    control,
+    name: "businessPhotos"
+  });
+
+  // Track if this is the initial load and if we have initial values
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [hasInitialValues, setHasInitialValues] = useState(false);
+
+  // Debug: Watch state and LGA values
+  const currentState = useWatch({
+    control,
+    name: "branchState"
+  });
+
+  const currentLga = useWatch({
+    control,
+    name: "lga"
+  });
+
+  // Check if we have initial values set
   useEffect(() => {
-    if (selectedRegion) {
+    if (currentState && currentLga && isInitialLoad) {
+      setHasInitialValues(true);
+    }
+  }, [currentState, currentLga, isInitialLoad]);
+
+  // Debug logging
+  // useEffect(() => {
+  //   console.log('🔍 Step1 Form Values:', {
+  //     selectedRegion,
+  //     selectedState,
+  //     currentState,
+  //     currentLga,
+  //     isInitialLoad,
+  //     hasInitialValues,
+  //     allFormValues: control._formValues
+  //   });
+  // }, [selectedRegion, selectedState, currentState, currentLga, isInitialLoad, hasInitialValues, control._formValues]);
+
+  // Reset state and LGA when region changes (but not on initial load or if we have initial values)
+  useEffect(() => {
+    if (selectedRegion && !isInitialLoad && !hasInitialValues) {
       // Reset state and LGA when region changes
       setValue("branchState", "");
       setValue("lga", "");
     }
-  }, [selectedRegion, setValue]);
+    if (isInitialLoad) {
+      setIsInitialLoad(false);
+    }
+  }, [selectedRegion, setValue, isInitialLoad, hasInitialValues]);
 
-  // Reset LGA when state changes
+  // Reset LGA when state changes (but not on initial load or if we have initial values)
   useEffect(() => {
-    if (selectedState) {
+    if (selectedState && !isInitialLoad && !hasInitialValues) {
       // Reset LGA when state changes
       setValue("lga", "");
     }
-  }, [selectedState, setValue]);
+  }, [selectedState, setValue, isInitialLoad, hasInitialValues]);
 
   // Filter closing time options based on opening time
   const getClosingTimeOptions = () => {
@@ -133,6 +182,7 @@ export default function Step1BranchInfo({ control, setValue, onLogoChange, onBus
       {/* Logo Upload Section */}
       <FormLogoUpload
         onImageChange={onLogoChange}
+        currentValue={currentLogo}
       />
 
       {/* Form Fields */}
@@ -232,6 +282,7 @@ export default function Step1BranchInfo({ control, setValue, onLogoChange, onBus
           allowMultiple={true}
           maxImages={5}
           required
+          currentValues={currentBusinessPhotos}
         />
       </div>
     </div>

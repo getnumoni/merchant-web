@@ -2,7 +2,7 @@
 
 import { Upload, X } from "lucide-react"
 import Image from "next/image"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 interface FormImageUploadProps {
   label: string
@@ -16,6 +16,8 @@ interface FormImageUploadProps {
   supportedFormats?: string
   maxImages?: number
   allowMultiple?: boolean
+  currentValue?: string | null
+  currentValues?: string[]
 }
 
 export function FormImageUpload({
@@ -28,10 +30,21 @@ export function FormImageUpload({
   maxSize = "3mb",
   supportedFormats = "Jpeg and png files supported",
   maxImages = 5,
-  allowMultiple = false
+  allowMultiple = false,
+  currentValue,
+  currentValues
 }: FormImageUploadProps) {
-  const [imagePreview, setImagePreview] = useState<string | null>(null)
-  const [imagePreviews, setImagePreviews] = useState<string[]>([])
+  const [imagePreview, setImagePreview] = useState<string | null>(currentValue || null)
+  const [imagePreviews, setImagePreviews] = useState<string[]>(currentValues || [])
+
+  // Update image previews when current values change
+  useEffect(() => {
+    if (allowMultiple && currentValues) {
+      setImagePreviews(currentValues)
+    } else if (currentValue) {
+      setImagePreview(currentValue)
+    }
+  }, [currentValue, currentValues, allowMultiple])
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || [])
