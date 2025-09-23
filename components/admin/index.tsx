@@ -1,6 +1,9 @@
 'use client';
 
 import { Gift, Star, Store, Ticket, Users } from 'lucide-react';
+import ActiveUsersCard from './active-users-card';
+import MostSupportedCharity from './most-supported-charity';
+import TopPerformingMerchant from './top-performing-merchant';
 
 interface MetricCardProps {
   title: string;
@@ -109,6 +112,14 @@ export default function Admin() {
             iconBgColor={metric.iconBgColor}
           />
         ))}
+      </div>
+
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-6 my-4'>
+        <ActiveUsersCard />
+        <div className="flex flex-col gap-6">
+          <TopPerformingMerchant />
+          <MostSupportedCharity />
+        </div>
       </div>
     </div>
   );
