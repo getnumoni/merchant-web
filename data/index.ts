@@ -252,7 +252,7 @@ const adminNavigationItem: AdminNavigationItem[] = [
     icon: Users,
     children: [
       { name: 'All Merchants', path: '/admin/merchants', icon: Users },
-      { name: 'Add Merchant', path: '/admin/merchants/add', icon: Plus },
+      { name: 'Add Merchant', path: '/admin/merchants/add-merchant', icon: Plus },
       { name: 'Merchant Analytics', path: '/admin/merchants/analytics', icon: BarChart3 }
     ]
   },
