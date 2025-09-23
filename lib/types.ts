@@ -328,6 +328,9 @@ type singleBranchDetails = {
   whatsApp: string;
   managerId: string;
   phoneNumber: string;
+  totalAmountRecieved: number;
+  totalPayout: number;
+  fees: number;
   name: string;
   x: string | null;
   region: string;
