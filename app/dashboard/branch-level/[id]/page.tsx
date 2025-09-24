@@ -3,6 +3,7 @@
 import AboutBranch from "@/components/branch-level/about-branch";
 import BranchDetails from "@/components/branch-level/branch-details";
 import TransactionHistory from "@/components/branch-level/transaction-history";
+import LoadingSpinner from "@/components/ui/loading-spinner";
 import useGetBranchById from "@/hooks/query/useGetBranchById";
 import { useParams } from "next/navigation";
 
@@ -22,7 +23,7 @@ export default function Page() {
   //loading state when data is being fetched
 
   if (isPending) {
-    return <div>Loading...</div>;
+    return <LoadingSpinner message="Loading branch details..." />;
   }
 
   //error state when data is not fetched
