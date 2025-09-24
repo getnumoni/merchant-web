@@ -81,7 +81,7 @@ api.interceptors.response.use(
         }
       } catch (refreshError) {
         // Refresh failed, clear cookies and redirect to login
-        // console.error('❌ Token refresh failed:', refreshError);
+        console.error('❌ Token refresh failed:', refreshError);
         clearAuthCookies();
         if (typeof window !== "undefined") {
           window.location.href = "/auth/sign-in";
