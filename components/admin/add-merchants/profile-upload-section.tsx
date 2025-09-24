@@ -49,15 +49,6 @@ export default function ProfileUploadSection({ onImageChange, imageUrl }: Profil
     }
   };
 
-  const handleRemoveImage = () => {
-    setImagePreview(null);
-    onImageChange(null);
-    // Clear the file input
-    const fileInput = document.getElementById('profile-upload') as HTMLInputElement;
-    if (fileInput) {
-      fileInput.value = '';
-    }
-  };
 
   return (
     <div className="p-6 border-b border-gray-200">
