@@ -1,12 +1,15 @@
 'use client';
 
+import { sampleUserIcon } from "@/constant/images";
+import Image from "next/image";
+
 
 const merchants = [
   {
     id: 1,
     name: 'Chicken Republic',
     pointsIssued: '₦ 9.3K',
-    logo: '🍗',
+    logo: sampleUserIcon,
     trend: '+12%',
     trendType: 'positive' as const
   },
@@ -14,7 +17,7 @@ const merchants = [
     id: 2,
     name: "Domino's Pizza",
     pointsIssued: '₦ 8.2K',
-    logo: '🍕',
+    logo: sampleUserIcon,
     trend: '+8%',
     trendType: 'positive' as const
   },
@@ -22,7 +25,7 @@ const merchants = [
     id: 3,
     name: 'Debonairs Pizza',
     pointsIssued: '₦ 8.2K',
-    logo: '🍕',
+    logo: sampleUserIcon,
     trend: '+5%',
     trendType: 'positive' as const
   }
@@ -39,8 +42,8 @@ export default function TopPerformingMerchant() {
         {merchants.map((merchant, index) => (
           <div key={merchant.id} className="flex items-center justify-between py-1.5 px-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
             <div className="flex items-center space-x-2">
-              <div className="flex items-center justify-center w-6 h-6 rounded bg-white shadow-sm">
-                <span className="text-sm">{merchant.logo}</span>
+              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-white shadow-sm">
+                <Image src={merchant.logo} alt={merchant.name} className="text-sm rounded-full" width={30} height={30} />
               </div>
               <div>
                 <p className="font-medium text-gray-900 text-xs">{merchant.name}</p>
