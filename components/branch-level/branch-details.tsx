@@ -85,14 +85,20 @@ export default function BranchDetails({ branchName, branchId, branchLogo, branch
         <div className="bg-theme-gray rounded-2xl p-3 sm:p-4 flex flex-col lg:flex-row lg:justify-between gap-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
             {/* Merchant Logo */}
-            <div className="w-[50px] h-[50px] rounded-full overflow-hidden flex-shrink-0">
-              <Image
-                src={branchLogo}
-                alt={`${branchName} logo`}
-                width={50}
-                height={50}
-                className="w-full h-full object-cover"
-              />
+            <div className="w-[50px] h-[50px] rounded-full overflow-hidden flex-shrink-0 bg-gray-100 flex items-center justify-center">
+              {branchLogo && branchLogo.trim() !== '' ? (
+                <Image
+                  src={branchLogo}
+                  alt={`${branchName} logo`}
+                  width={50}
+                  height={50}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs font-medium">
+                  {branchName.charAt(0).toUpperCase()}
+                </div>
+              )}
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex flex-row sm:items-center gap-1 sm:gap-2">

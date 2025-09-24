@@ -22,14 +22,20 @@ export default function BranchSummaryCard({ data }: BranchSummaryCardProps) {
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center space-x-4">
           {/* Merchant Logo */}
-          <div className="w-[50px] h-[50px] rounded-full overflow-hidden flex-shrink-0">
-            <Image
-              src={logo}
-              alt={`${name} logo`}
-              width={50}
-              height={50}
-              className="w-full h-full object-cover"
-            />
+          <div className="w-[50px] h-[50px] rounded-full overflow-hidden flex-shrink-0 bg-gray-100 flex items-center justify-center">
+            {logo && logo.trim() !== '' ? (
+              <Image
+                src={logo}
+                alt={`${name} logo`}
+                width={50}
+                height={50}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-200 flex items-center justify-center text-gray-500 text-xs font-medium">
+                {name.charAt(0).toUpperCase()}
+              </div>
+            )}
           </div>
 
           {/* Merchant Details */}
