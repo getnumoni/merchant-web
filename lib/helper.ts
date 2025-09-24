@@ -598,3 +598,76 @@ export const mapPointExpirationToApi = (pointExpiration: string): number => {
   if (pointExpiration === "30-days") return 30;
   return 0;
 };
+
+/**
+ * Gets the current date in various formats
+ * @param format - The format to return the date in ('iso', 'formatted', 'timestamp', 'dd-mm-yyyy')
+ * @returns Current date in the specified format
+ * 
+ * @example
+ * getCurrentDate('iso') // Returns: '2024-01-15T10:30:00.000Z'
+ * getCurrentDate('formatted') // Returns: 'Jan 15, 2024'
+ * getCurrentDate('timestamp') // Returns: 1705312200000
+ * getCurrentDate('dd-mm-yyyy') // Returns: '15-01-2024'
+ */
+export const getCurrentDate = (format: 'iso' | 'formatted' | 'timestamp' | 'dd-mm-yyyy' = 'iso'): string | number => {
+  const now = new Date();
+
+  switch (format) {
+    case 'iso':
+      return now.toISOString();
+    case 'formatted':
+      return now.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    case 'dd-mm-yyyy':
+      return now.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      }).replace(/\//g, '-');
+    case 'timestamp':
+      return now.getTime();
+    default:
+      return now.toISOString();
+  }
+};
+
+/**
+ * Gets yesterday's date in various formats
+ * @param format - The format to return the date in ('iso', 'formatted', 'timestamp', 'dd-mm-yyyy')
+ * @returns Yesterday's date in the specified format
+ * 
+ * @example
+ * getYesterdayDate('iso') // Returns: '2024-01-14T10:30:00.000Z'
+ * getYesterdayDate('formatted') // Returns: 'Jan 14, 2024'
+ * getYesterdayDate('timestamp') // Returns: 1705225800000
+ * getYesterdayDate('dd-mm-yyyy') // Returns: '14-01-2024'
+ */
+export const getYesterdayDate = (format: 'iso' | 'formatted' | 'timestamp' | 'dd-mm-yyyy' = 'iso'): string | number => {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  switch (format) {
+    case 'iso':
+      return yesterday.toISOString();
+    case 'formatted':
+      return yesterday.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    case 'dd-mm-yyyy':
+      return yesterday.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      }).replace(/\//g, '-');
+    case 'timestamp':
+      return yesterday.getTime();
+    default:
+      return yesterday.toISOString();
+  }
+};
