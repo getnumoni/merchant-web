@@ -1,11 +1,25 @@
-import { avatarIcon, filterIcon } from "@/constant/icons";
-import { transactionData } from "@/data";
-import { formatCurrency } from "@/lib/helper";
-import { singleBranchDetails } from "@/lib/types";
+import { filterIcon } from "@/constant/icons";
+import useGetTransactionList from "@/hooks/query/useGetTransactionList";
+import { getCurrentDate, getYesterdayDate } from "@/lib/helper";
+import { singleBranchDetails, Transaction } from "@/lib/types";
 import Image from "next/image";
-import { Badge } from "../ui/badge";
+import { useState } from "react";
+import TransactionList from "./transaction-list";
+import TransactionPagination from "./transaction-pagination";
+import TransactionSummary from "./transaction-summary";
 
 export default function TransactionHistory({ singleBranch }: { singleBranch: singleBranchDetails }) {
+  const [currentPage, setCurrentPage] = useState(0);
+  const fromDate = getYesterdayDate("dd-mm-yyyy") as string;
+  const toDate = getCurrentDate("dd-mm-yyyy") as string;
+
+  const { data, isPending, isError } = useGetTransactionList({ fromDate, toDate, page: currentPage });
+  const transactionData: Transaction[] | undefined = data?.data?.pageData;
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
     <main className="bg-white rounded-2xl p-6 my-4">
       {/* Header */}
@@ -17,58 +31,29 @@ export default function TransactionHistory({ singleBranch }: { singleBranch: sin
       </div>
 
       {/* Today's Summary */}
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Today&apos;s Summary</h2>
-        <div className="bg-white rounded-2xl border border-gray-100 p-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-start">
-              <p className="text-sm text-gray-600 mb-2">Total Cash In</p>
-              <p className="text-2xl font-bold text-green-600">{formatCurrency(singleBranch?.totalAmountRecieved || 0)}</p>
-            </div>
-            <div className="text-start">
-              <p className="text-sm text-gray-600 mb-2">Total Cash Out</p>
-              <p className="text-2xl font-bold text-red-600">{formatCurrency(singleBranch?.totalPayout || 0)}</p>
-            </div>
-            <div className="text-start">
-              <p className="text-sm text-gray-600 mb-2">Fee&apos;s</p>
-              <p className="text-2xl font-bold text-gray-900">{formatCurrency(singleBranch?.fees || 0)}</p>
-            </div>
-          </div>
-        </div>
-      </div>
+      <TransactionSummary singleBranch={singleBranch} />
 
       {/* Today's Transactions */}
       <div>
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Today&apos;s Transactions</h2>
-        <div className="bg-white rounded-2xl  max-h-[750px] overflow-y-auto">
-          {transactionData.map((transaction, index) => (
-            <div
-              key={transaction.id}
-              className={`flex items-center justify-between p-4 border border-gray-100 rounded-2xl ${index !== transactionData.length - 1 ? 'mb-2' : ''}`}
-            >
-              {/* Left Side - Avatar and Details */}
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                  <Image src={avatarIcon} alt="avatar" width={20} height={20} />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">{transaction.name}</p>
-                  <p className="text-xs text-gray-500">{transaction.date} - {transaction.time}</p>
-                </div>
-              </div>
-
-              {/* Right Side - Amount and Status */}
-              <div className="flex items-center gap-3">
-                <div className="text-right">
-                  <p className="text-sm font-bold text-gray-900">+₦{transaction.amount}</p>
-                  <Badge className="text-xs text-blue-600 hover:text-blue-800 transition-colors bg-transparent border-gray-100 rounded-full">
-                    {transaction.status}
-                  </Badge>
-                </div>
-              </div>
-            </div>
-          ))}
+        <div className="bg-white rounded-2xl max-h-[750px] overflow-y-auto">
+          <TransactionList
+            transactionData={transactionData}
+            isPending={isPending}
+            isError={isError}
+          />
         </div>
+
+        {/* Pagination Controls */}
+        {data?.data && (
+          <TransactionPagination
+            currentPage={currentPage}
+            totalPages={data.data.totalPages}
+            totalRows={data.data.totalRows}
+            currentPageDataLength={transactionData?.length || 0}
+            onPageChange={handlePageChange}
+          />
+        )}
       </div>
     </main>
   );
