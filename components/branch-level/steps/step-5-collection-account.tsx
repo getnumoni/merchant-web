@@ -5,8 +5,8 @@ import useGetAllBanks from "@/hooks/query/useGetAllBanks";
 import { BranchFormData } from "@/lib/schemas/branch-schema";
 import { useEffect, useRef, useState } from "react";
 import { Control, UseFormSetValue, useWatch } from "react-hook-form";
+import { FormCombobox } from "../../ui/form-combobox";
 import { FormInputTopLabel } from "../../ui/form-input";
-import { FormSelectTopLabel } from "../../ui/form-select";
 
 interface Step5Props {
   control: Control<BranchFormData>;
@@ -102,13 +102,15 @@ export default function Step5CollectionAccount({ control, setValue, onAccountVer
   return (
     <div className="space-y-4">
       <div className="space-y-4">
-        <FormSelectTopLabel
+        <FormCombobox
           control={control}
           name="bank"
           disabled={isPending}
           label="Bank"
           options={bankOptions}
-          placeholder={isPending ? "Loading banks..." : "Choose From Options"}
+          placeholder={isPending ? "Loading banks..." : "Search and select a bank..."}
+          searchPlaceholder="Search banks..."
+          emptyMessage="No bank found."
           required
         />
 

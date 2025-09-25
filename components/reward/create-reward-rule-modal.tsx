@@ -46,7 +46,7 @@ export default function CreateRewardRuleModal({ open, onOpenChange }: CreateRewa
   const { handleCreateRewards, isPending, isSuccess } = useCreateRewards();
 
   // Check if all required fields are filled
-  const isFormValid = earnMethod && receiveMethod && startDate && rewardRules.length > 0 && milestoneTarget && rewardCap;
+  const isFormValid = earnMethod && receiveMethod && startDate && rewardRules.length > 0 && rewardCap && (receiveMethod === "instantly" || milestoneTarget);
 
   const handleSave = () => {
     // Map form values to API enum values
@@ -62,7 +62,7 @@ export default function CreateRewardRuleModal({ open, onOpenChange }: CreateRewa
       })),
       rewardCap: parseFloat(rewardCap) || 0,
       distributionType: getDistributionType(receiveMethod),
-      milestoneTarget: parseInt(milestoneTarget) || 0,
+      milestoneTarget: receiveMethod === "instantly" ? 1 : (parseInt(milestoneTarget) || 0),
       pointExpirationDays: parseInt(pointExpiration) || 0,
       status: "ACTIVE", // Using uppercase as per API example
       startDate: startDate || null,
@@ -76,6 +76,13 @@ export default function CreateRewardRuleModal({ open, onOpenChange }: CreateRewa
     // Call the mutation hook
     handleCreateRewards(payload);
   };
+
+  // Auto-set milestone target to 1 when receiveMethod is "instantly"
+  useEffect(() => {
+    if (receiveMethod === "instantly") {
+      setMilestoneTarget("1");
+    }
+  }, [receiveMethod]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -130,10 +137,12 @@ export default function CreateRewardRuleModal({ open, onOpenChange }: CreateRewa
             setReceiveMethod={setReceiveMethod}
           />
 
-          <MilestoneTargetSection
-            milestoneTarget={milestoneTarget}
-            setMilestoneTarget={setMilestoneTarget}
-          />
+          {receiveMethod === "later" && (
+            <MilestoneTargetSection
+              milestoneTarget={milestoneTarget}
+              setMilestoneTarget={setMilestoneTarget}
+            />
+          )}
 
           <ExpirationSection
             pointExpiration={pointExpiration}
