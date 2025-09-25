@@ -2,26 +2,91 @@
 
 'use client';
 
-import { businessCategories, businessTypes, countries, nigerianStates } from '@/lib/schemas/merchant-schema';
-import { DropdownState, FormComponentProps } from '@/lib/types/admin';
-import { ChevronDown } from 'lucide-react';
-import { useState } from 'react';
+import { FormInputTopLabel } from '@/components/ui/form-input';
+import { FormPhoneInput } from '@/components/ui/form-phone-input';
+import { FormSelectTopLabel } from '@/components/ui/form-select';
+import { FormTextareaTopLabel } from '@/components/ui/form-textarea';
+import useGetAllRegions from '@/hooks/query/useGetAllRegions';
+import useGetLga from '@/hooks/query/useGetLga';
+import useGetStates from '@/hooks/query/useGetStates';
+import { businessCategories, businessTypes, MerchantFormData } from '@/lib/schemas/merchant-schema';
+import { useEffect } from 'react';
+import { Control, UseFormSetValue, useWatch } from 'react-hook-form';
 
-export default function BusinessInformation({ formData, setFormData, errors }: FormComponentProps) {
-  const [openDropdowns, setOpenDropdowns] = useState<DropdownState>({});
+interface BusinessInformationProps {
+  control: Control<MerchantFormData>;
+  setValue: UseFormSetValue<MerchantFormData>;
+}
 
-  const toggleDropdown = (field: string) => {
-    setOpenDropdowns(prev => ({ ...prev, [field]: !prev[field] }));
-  };
+export default function BusinessInformation({ control, setValue }: BusinessInformationProps) {
+  // Get regions data
+  const { data: regionsData, isPending: regionsPending } = useGetAllRegions();
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+  // Watch the selected region and state
+  const selectedRegion = useWatch({
+    control,
+    name: "region"
+  });
 
-  const handleSelectOption = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    setOpenDropdowns(prev => ({ ...prev, [field]: false }));
-  };
+  const selectedState = useWatch({
+    control,
+    name: "state"
+  });
+
+  // Get states based on selected region
+  const { data: statesData, isPending: statesPending } = useGetStates({
+    region: selectedRegion || ""
+  });
+
+  // Get LGAs based on selected state
+  const { data: lgasData, isPending: lgasPending } = useGetLga({
+    state: selectedState || ""
+  });
+
+  // Map the regions from API response to the expected format
+  const regions = regionsData?.data?.data?.map((region: string) => ({
+    value: region,
+    label: region
+  })) || [];
+
+  // Map the states from API response to the expected format
+  const states = statesData?.data?.data?.map((state: string) => ({
+    value: state,
+    label: state
+  })) || [];
+
+  // Map the LGAs from API response to the expected format
+  const lgas = lgasData?.data?.data?.map((lga: string) => ({
+    value: lga,
+    label: lga
+  })) || [];
+
+  // Map business categories to the expected format
+  const businessCategoryOptions = businessCategories.map((category) => ({
+    value: category,
+    label: category
+  }));
+
+  // Map business types to the expected format
+  const businessTypeOptions = businessTypes.map((type) => ({
+    value: type,
+    label: type
+  }));
+
+  // Reset state and LGA when region changes
+  useEffect(() => {
+    if (selectedRegion) {
+      setValue("state", "");
+      setValue("lga", "");
+    }
+  }, [selectedRegion, setValue]);
+
+  // Reset LGA when state changes
+  useEffect(() => {
+    if (selectedState) {
+      setValue("lga", "");
+    }
+  }, [selectedState, setValue]);
 
   return (
     <div className="m-6 border border-gray-100 rounded-xl p-6">
@@ -29,285 +94,135 @@ export default function BusinessInformation({ formData, setFormData, errors }: F
 
       {/* Top Section - 3 Columns */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        {/* Business Name */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Business Name</label>
-          <input
-            type="text"
-            value={formData.businessName || ''}
-            onChange={(e) => handleInputChange('businessName', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.businessName ? 'border-red-500' : 'border-gray-300'
-              }`}
-            placeholder="Shai Hulud"
-          />
-          {errors.businessName && <p className="text-red-500 text-xs mt-1">{errors.businessName}</p>}
-        </div>
+        <FormInputTopLabel
+          control={control}
+          name="businessName"
+          label="Business Name"
+          placeholder="Shai Hulud"
+          required
+        />
 
-        {/* Email Address */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
-          <input
-            type="email"
-            value={formData.emailAddress || ''}
-            onChange={(e) => handleInputChange('emailAddress', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.emailAddress ? 'border-red-500' : 'border-gray-300'
-              }`}
-            placeholder="shaihulud@gmail.com"
-          />
-          {errors.emailAddress && <p className="text-red-500 text-xs mt-1">{errors.emailAddress}</p>}
-        </div>
+        <FormInputTopLabel
+          control={control}
+          name="emailAddress"
+          label="Email Address"
+          type="email"
+          placeholder="shaihulud@gmail.com"
+          required
+        />
 
-        {/* Phone Number */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
-          <div className="flex">
-            <div className="relative">
-              <select className="px-3 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-green-500">
-                <option value="+234">🇳🇬 +234</option>
-                <option value="+1">🇺🇸 +1</option>
-                <option value="+44">🇬🇧 +44</option>
-              </select>
-            </div>
-            <input
-              type="tel"
-              value={formData.phoneNumber || ''}
-              onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
-              className={`flex-1 px-3 py-2 border border-l-0 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.phoneNumber ? 'border-red-500' : 'border-gray-300'
-                }`}
-              placeholder="701 234 5678"
-            />
-          </div>
-          {errors.phoneNumber && <p className="text-red-500 text-xs mt-1">{errors.phoneNumber}</p>}
-        </div>
+        <FormPhoneInput
+          control={control}
+          name="phoneNumber"
+          label="Phone Number"
+          placeholder="7012345678"
+          required
+        />
       </div>
 
       {/* Middle Section - 3 Columns */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        {/* Business Category */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Business Category</label>
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => toggleDropdown('businessCategory')}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 flex items-center justify-between ${errors.businessCategory ? 'border-red-500' : 'border-gray-300'
-                }`}
-            >
-              <span className={formData.businessCategory ? 'text-gray-900' : 'text-gray-500'}>
-                {formData.businessCategory || 'Choose a category'}
-              </span>
-              <ChevronDown className="w-4 h-4 text-gray-400" />
-            </button>
-            {openDropdowns.businessCategory && (
-              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                {businessCategories.map((category) => (
-                  <button
-                    key={category}
-                    type="button"
-                    onClick={() => handleSelectOption('businessCategory', category)}
-                    className="w-full px-3 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-                  >
-                    {category}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-          {errors.businessCategory && <p className="text-red-500 text-xs mt-1">{errors.businessCategory}</p>}
-        </div>
+        <FormSelectTopLabel
+          control={control}
+          name="businessCategory"
+          label="Business Category"
+          options={businessCategoryOptions}
+          placeholder="Choose a category"
+          required
+        />
 
-        {/* RC Number */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">RC Number</label>
-          <input
-            type="text"
-            value={formData.rcNumber || ''}
-            onChange={(e) => handleInputChange('rcNumber', e.target.value.toUpperCase())}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.rcNumber ? 'border-red-500' : 'border-gray-300'
-              }`}
-            placeholder="RC3456KSV"
-          />
-          {errors.rcNumber && <p className="text-red-500 text-xs mt-1">{errors.rcNumber}</p>}
-        </div>
+        <FormInputTopLabel
+          control={control}
+          name="rcNumber"
+          label="RC Number"
+          placeholder="RC3456KSV"
+          required
+        />
 
-        {/* Business Type */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Business Type</label>
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => toggleDropdown('businessType')}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 flex items-center justify-between ${errors.businessType ? 'border-red-500' : 'border-gray-300'
-                }`}
-            >
-              <span className={formData.businessType ? 'text-gray-900' : 'text-gray-500'}>
-                {formData.businessType || 'Choose a category'}
-              </span>
-              <ChevronDown className="w-4 h-4 text-gray-400" />
-            </button>
-            {openDropdowns.businessType && (
-              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                {businessTypes.map((type) => (
-                  <button
-                    key={type}
-                    type="button"
-                    onClick={() => handleSelectOption('businessType', type)}
-                    className="w-full px-3 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-                  >
-                    {type}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-          {errors.businessType && <p className="text-red-500 text-xs mt-1">{errors.businessType}</p>}
-        </div>
+        <FormSelectTopLabel
+          control={control}
+          name="businessType"
+          label="Business Type"
+          options={businessTypeOptions}
+          placeholder="Choose a type"
+          required
+        />
       </div>
 
-      {/* Address Section - 3 Columns */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        {/* Headquarter Address */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Headquarter Address</label>
-          <input
-            type="text"
-            value={formData.headquarterAddress || ''}
-            onChange={(e) => handleInputChange('headquarterAddress', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.headquarterAddress ? 'border-red-500' : 'border-gray-300'
-              }`}
-            placeholder="Shai Hulud"
+      {/* Address Section - 3 Columns: Region, State, LGA */}
+      {/* Headquarter Address */}
+      <div className="mb-6">
+        <FormInputTopLabel
+          control={control}
+          name="headquarterAddress"
+          label="Headquarter Address"
+          placeholder="Enter your headquarter address"
+          required
+        />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <FormSelectTopLabel
+            control={control}
+            name="region"
+            label="Region"
+            options={regions}
+            placeholder={regionsPending ? "Loading regions..." : "Select a region"}
+            disabled={regionsPending}
+            required
           />
-          {errors.headquarterAddress && <p className="text-red-500 text-xs mt-1">{errors.headquarterAddress}</p>}
-        </div>
 
-        {/* Country */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Country</label>
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => toggleDropdown('country')}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 flex items-center justify-between ${errors.country ? 'border-red-500' : 'border-gray-300'
-                }`}
-            >
-              <span className={formData.country ? 'text-gray-900' : 'text-gray-500'}>
-                {formData.country || 'Choose a country'}
-              </span>
-              <ChevronDown className="w-4 h-4 text-gray-400" />
-            </button>
-            {openDropdowns.country && (
-              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                {countries.map((country) => (
-                  <button
-                    key={country}
-                    type="button"
-                    onClick={() => handleSelectOption('country', country)}
-                    className="w-full px-3 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-                  >
-                    {country}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-          {errors.country && <p className="text-red-500 text-xs mt-1">{errors.country}</p>}
-        </div>
-
-        {/* State */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">State</label>
-          <div className="relative">
-            <button
-              type="button"
-              onClick={() => toggleDropdown('state')}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 flex items-center justify-between ${errors.state ? 'border-red-500' : 'border-gray-300'
-                }`}
-            >
-              <span className={formData.state ? 'text-gray-900' : 'text-gray-500'}>
-                {formData.state || 'Select a state'}
-              </span>
-              <ChevronDown className="w-4 h-4 text-gray-400" />
-            </button>
-            {openDropdowns.state && (
-              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-                {nigerianStates.map((state) => (
-                  <button
-                    key={state}
-                    type="button"
-                    onClick={() => handleSelectOption('state', state)}
-                    className="w-full px-3 py-2 text-left hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-                  >
-                    {state}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-          {errors.state && <p className="text-red-500 text-xs mt-1">{errors.state}</p>}
-        </div>
-      </div>
-
-      {/* City Section - 1 Column */}
-      <div className="grid grid-cols-1 gap-6 mb-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">City</label>
-          <input
-            type="text"
-            value={formData.city || ''}
-            onChange={(e) => handleInputChange('city', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.city ? 'border-red-500' : 'border-gray-300'
-              }`}
-            placeholder="Ketu"
+          <FormSelectTopLabel
+            control={control}
+            name="state"
+            label="State"
+            options={states}
+            placeholder={!selectedRegion ? "Select Region First" : statesPending ? "Loading states..." : "Select a state"}
+            disabled={!selectedRegion || statesPending}
+            required
           />
-          {errors.city && <p className="text-red-500 text-xs mt-1">{errors.city}</p>}
+
+          <FormSelectTopLabel
+            control={control}
+            name="lga"
+            label="LGA"
+            options={lgas}
+            placeholder={!selectedState ? "Select State First" : lgasPending ? "Loading LGAs..." : "Select an LGA"}
+            disabled={!selectedState || lgasPending}
+            required
+          />
         </div>
+
       </div>
 
       {/* Bottom Section - 2 Columns */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Business Description */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Business Description</label>
-          <textarea
-            value={formData.businessDescription || ''}
-            onChange={(e) => handleInputChange('businessDescription', e.target.value)}
-            rows={4}
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.businessDescription ? 'border-red-500' : 'border-gray-300'
-              }`}
-            placeholder="Tell us about your business"
-          />
-          {errors.businessDescription && <p className="text-red-500 text-xs mt-1">{errors.businessDescription}</p>}
-        </div>
+        <FormTextareaTopLabel
+          control={control}
+          name="businessDescription"
+          label="Business Description"
+          placeholder="Tell us about your business"
+          rows={6}
+          required
+        />
 
         {/* Password Fields */}
         <div className="space-y-4">
-          {/* Password */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
-            <input
-              type="password"
-              value={formData.password || ''}
-              onChange={(e) => handleInputChange('password', e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.password ? 'border-red-500' : 'border-gray-300'
-                }`}
-              placeholder="XXXXXXXXXXXX"
-            />
-            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
-          </div>
+          <FormInputTopLabel
+            control={control}
+            name="password"
+            label="Password"
+            type="password"
+            placeholder="Enter your password"
+            required
+          />
 
-          {/* Confirm Password */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
-            <input
-              type="password"
-              value={formData.confirmPassword || ''}
-              onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
-                }`}
-              placeholder="XXXXXXXXXXXX"
-            />
-            {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
-          </div>
+          <FormInputTopLabel
+            control={control}
+            name="confirmPassword"
+            label="Confirm Password"
+            type="password"
+            placeholder="Confirm your password"
+            required
+          />
         </div>
       </div>
     </div>
