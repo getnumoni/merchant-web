@@ -57,6 +57,9 @@ export function FormCombobox<
   emptyMessage = "No option found.",
 }: FormComboboxProps<TFieldValues, TName>) {
   const [open, setOpen] = React.useState(false)
+  const [searchValue, setSearchValue] = React.useState("")
+  const [debouncedSearchValue, setDebouncedSearchValue] = React.useState("")
+  const [isSearching, setIsSearching] = React.useState(false)
 
   const {
     field,
@@ -68,6 +71,40 @@ export function FormCombobox<
   })
 
   const selectedOption = options.find((option) => option.value === field.value)
+
+  // Debounce search value to improve performance
+  React.useEffect(() => {
+    if (searchValue !== debouncedSearchValue) {
+      setIsSearching(true);
+    }
+
+    const timer = setTimeout(() => {
+      setDebouncedSearchValue(searchValue);
+      setIsSearching(false);
+    }, 150); // 150ms delay
+
+    return () => clearTimeout(timer);
+  }, [searchValue, debouncedSearchValue]);
+
+  // Filter options based on debounced search value
+  const filteredOptions = React.useMemo(() => {
+    if (!debouncedSearchValue.trim()) return options;
+
+    const searchLower = debouncedSearchValue.toLowerCase().trim();
+    return options.filter((option) =>
+      option.label.toLowerCase().includes(searchLower) ||
+      option.value.toLowerCase().includes(searchLower)
+    );
+  }, [options, debouncedSearchValue]);
+
+  // Clear search when popover closes
+  React.useEffect(() => {
+    if (!open) {
+      setSearchValue("");
+      setDebouncedSearchValue("");
+      setIsSearching(false);
+    }
+  }, [open]);
 
   return (
     <div className={cn("space-y-2", className)}>
@@ -95,33 +132,52 @@ export function FormCombobox<
         </PopoverTrigger>
 
         <PopoverContent className="w-full p-0" align="start">
-          <Command>
+          <Command shouldFilter={false}>
             <CommandInput
               placeholder={searchPlaceholder}
               className="h-9"
+              value={searchValue}
+              onValueChange={setSearchValue}
             />
-            <CommandList>
-              <CommandEmpty>{emptyMessage}</CommandEmpty>
-              <CommandGroup>
-                {options.map((option, index) => (
-                  <CommandItem
-                    key={`${option.value}-${index}`}
-                    value={option.value}
-                    onSelect={(currentValue) => {
-                      field.onChange(currentValue === field.value ? "" : currentValue)
-                      setOpen(false)
-                    }}
-                  >
-                    {option.label}
-                    <Check
-                      className={cn(
-                        "ml-auto h-4 w-4",
-                        field.value === option.value ? "opacity-100" : "opacity-0"
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+            <CommandList className="max-h-[200px] overflow-y-auto">
+              {isSearching ? (
+                <div className="px-2 py-4 text-center text-sm text-gray-500">
+                  <div className="inline-flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-gray-300 border-t-theme-dark-green rounded-full animate-spin"></div>
+                    Searching...
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <CommandEmpty>{emptyMessage}</CommandEmpty>
+                  <CommandGroup>
+                    {filteredOptions.slice(0, 50).map((option, index) => (
+                      <CommandItem
+                        key={`${option.value}-${index}`}
+                        value={option.value}
+                        onSelect={(currentValue) => {
+                          field.onChange(currentValue === field.value ? "" : currentValue)
+                          setOpen(false)
+                          setSearchValue("") // Clear search when selecting
+                        }}
+                      >
+                        {option.label}
+                        <Check
+                          className={cn(
+                            "ml-auto h-4 w-4",
+                            field.value === option.value ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                      </CommandItem>
+                    ))}
+                    {filteredOptions.length > 50 && (
+                      <div className="px-2 py-1 text-xs text-gray-500 text-center">
+                        Showing first 50 results. Refine your search for more specific results.
+                      </div>
+                    )}
+                  </CommandGroup>
+                </>
+              )}
             </CommandList>
           </Command>
         </PopoverContent>
