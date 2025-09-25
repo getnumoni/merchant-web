@@ -73,7 +73,7 @@ export default function AdminSidebar({ isOpen, onClose }: SidebarProps) {
           </button>
 
           {isExpanded && (
-            <div className="ml-6 mt-2 space-y-1">
+            <div className="ml-2 mt-2 space-y-1">
               {item.children!.map((child) => {
                 const isChildActive = child.path === pathname;
                 const ChildIconComponent = child.icon;

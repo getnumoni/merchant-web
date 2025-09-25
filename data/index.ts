@@ -1,7 +1,7 @@
 import { BranchIcon, DashboardIcon, RewardIcon } from "@/components/common/icon-svg";
 import { avatarIcon, branchIcon, calenderIcon, dealIcon, emailIcon, giftIcon, graphDirectionIcon, grayPointIcon, instagramIcon, musicPauseIcon, phoneNotificationIcon, twitterIcon, whatsappIcon } from "@/constant/icons";
 import { sampleUserIcon } from "@/constant/images";
-import { BRANCH_LEVEL_URL, DASHBOARD_URL, REWARD_TABLE_URL } from "@/constant/routes";
+import { ADMIN_CUSTOMERS_ADD_URL, ADMIN_CUSTOMERS_TRANSACTION_URL, ADMIN_CUSTOMERS_URL, ADMIN_MERCHANTS_ADD_URL, ADMIN_MERCHANTS_TRANSACTION_URL, ADMIN_MERCHANTS_URL, ADMIN_NOTIFICATIONS_URL, ADMIN_URL, BRANCH_LEVEL_URL, DASHBOARD_URL, REWARD_TABLE_URL } from "@/constant/routes";
 import { AdminNavigationItem } from "@/lib/types";
 import { BarChart3, Bell, Building, FileBarChart, FileText, Heart, LayoutDashboard, Plus, Shield, User, Users } from "lucide-react";
 
@@ -238,12 +238,12 @@ const customerData = [
 const adminNavigationItem: AdminNavigationItem[] = [
   {
     name: 'Overview',
-    path: '/admin',
+    path: ADMIN_URL,
     icon: LayoutDashboard
   },
   {
     name: 'Notifications',
-    path: '/admin/notifications',
+    path: ADMIN_NOTIFICATIONS_URL,
     icon: Bell,
     badge: '12'
   },
@@ -251,18 +251,18 @@ const adminNavigationItem: AdminNavigationItem[] = [
     name: 'Merchants',
     icon: Users,
     children: [
-      { name: 'All Merchants', path: '/admin/merchants', icon: Users },
-      { name: 'Add Merchant', path: '/admin/merchants/add-merchant', icon: Plus },
-      { name: 'Merchant Analytics', path: '/admin/merchants/analytics', icon: BarChart3 }
+      { name: 'All Merchants', path: ADMIN_MERCHANTS_URL, icon: Users },
+      { name: 'Add Merchant', path: ADMIN_MERCHANTS_ADD_URL, icon: Plus },
+      { name: 'Merchant Transactions', path: ADMIN_MERCHANTS_TRANSACTION_URL, icon: BarChart3 }
     ]
   },
   {
     name: 'Customers',
     icon: User,
     children: [
-      { name: 'Add new customers', path: '/admin/customers/add', icon: Plus },
-      { name: 'All customers', path: '/admin/customers', icon: User },
-      { name: 'Customers transactions', path: '/admin/customers/transactions', icon: FileText }
+      { name: 'Add new customers', path: ADMIN_CUSTOMERS_ADD_URL, icon: Plus },
+      { name: 'All customers', path: ADMIN_CUSTOMERS_URL, icon: User },
+      { name: 'Customers transactions', path: ADMIN_CUSTOMERS_TRANSACTION_URL, icon: FileText }
     ]
   },
   {

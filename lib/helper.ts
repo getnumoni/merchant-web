@@ -68,9 +68,19 @@ export const isNavigationItemActive = (itemPath: string, currentPath: string, al
  * @returns A formatted title (e.g., "Branch Level" or "My Branch")
  */
 export const getPageTitle = (path: string, searchParams?: Record<string, string>): string => {
+  // Debug logging
+  console.log('getPageTitle - path:', path);
+  console.log('getPageTitle - searchParams:', searchParams);
+  console.log('getPageTitle - searchParams type:', typeof searchParams);
+  console.log('getPageTitle - searchParams keys:', searchParams ? Object.keys(searchParams) : 'undefined');
+
   // Check if we have a branchName in search params for branch-level routes
   if (searchParams?.branchName && path.includes('/branch-level/')) {
+    console.log('Returning branchName:', searchParams.branchName);
     return searchParams.branchName;
+  }
+  if (searchParams?.merchantName && path.includes('/merchants/')) {
+    return searchParams.merchantName;
   }
 
   const pathSegments = path.split('/').filter(Boolean);
