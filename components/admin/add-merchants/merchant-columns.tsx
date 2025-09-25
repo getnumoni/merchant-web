@@ -3,6 +3,7 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { ColumnDef } from "@tanstack/react-table";
 import { MoreVertical } from "lucide-react";
+import Link from "next/link";
 
 // Merchant type definition
 export type Merchant = {
@@ -66,7 +67,11 @@ export const merchantColumns: ColumnDef<Merchant>[] = [
             {merchant.logo}
           </div>
           <div>
-            <div className="font-medium text-gray-900">{merchant.name}</div>
+            <Link href={`/admin/merchants/${merchant.id}/?merchantName=${encodeURIComponent(merchant.name)}`}>
+              <div className="font-medium text-gray-900 hover:text-theme-dark-green cursor-pointer transition-colors">
+                {merchant.name}
+              </div>
+            </Link>
             <div className="text-xs text-gray-500">ID: {merchant.id}</div>
           </div>
         </div>
