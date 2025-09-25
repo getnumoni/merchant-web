@@ -31,9 +31,9 @@ export default function UserProfile() {
   }
 
   // Extract username from email (everything before @)
-  // const displayName = user.username.includes('@')
-  //   ? user.username.split('@')[0]
-  //   : user.username;
+  const displayName = user.username.includes('@')
+    ? user.username.split('@')[0]
+    : user.username;
 
   return (
     <Menubar className="bg-transparent border-none shadow-none">
@@ -58,8 +58,9 @@ export default function UserProfile() {
             )}
           </div>
           <div className="hidden sm:block text-left">
-            <div className="text-sm font-medium text-gray-900">{merchantInfo?.brandName}</div>
+            <div className="text-sm font-medium text-gray-900">{displayName}</div>
             <div className="text-xs text-gray-500">{user.usertype}</div>
+            {/* <div className="text-xs font-medium text-gray-900">{merchantInfo?.brandName}</div> */}
           </div>
           <div className="hidden sm:block w-px h-6 bg-gray-300 mx-2"></div>
           <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
