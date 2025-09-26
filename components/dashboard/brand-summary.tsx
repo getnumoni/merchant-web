@@ -9,6 +9,8 @@ export default function BrandSummary({
   availableBrandPoints = "#16,217.90",
   totalCustomers = "54,9181"
 }: BrandSummaryProps) {
+
+
   return (
     <div className="shadow-none border-none p-4">
       <h3 className="text-sm font-semibold text-gray-900 mb-1">{title}</h3>
