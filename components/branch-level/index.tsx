@@ -2,6 +2,7 @@
 
 import Hero from "@/components/common/hero";
 import useGetAllBranches from "@/hooks/query/useGetAllBranches";
+import LoadingSpinner from "../ui/loading-spinner";
 import BranchDashboard from "./branch-dashboard";
 import EmptyBranch from "./empty-branch";
 
@@ -20,11 +21,7 @@ export default function BranchLevel() {
     return (
       <main>
         <Hero />
-        <div className="bg-white rounded-2xl p-4 my-4">
-          <div className="text-center py-8">
-            <p className="text-gray-500">Loading branches...</p>
-          </div>
-        </div>
+        <LoadingSpinner message="Loading branches..." />
       </main>
     );
   }
