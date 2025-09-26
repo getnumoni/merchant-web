@@ -1,6 +1,9 @@
 import { branchIcon, peopleIcon, rewardIcon } from "@/constant/icons";
+import useGetRewardAnalysis from "@/hooks/query/useGetRewardAnalysis";
 import { BrandSummaryProps } from "@/lib/types";
 import Image from "next/image";
+import ErrorDisplay from "../common/error-display";
+import MainBranchSummaryLoading from "./main-branch-summary-loading";
 
 export default function BrandSummary({
   title = "Brand Summary",
@@ -10,7 +13,19 @@ export default function BrandSummary({
   totalCustomers = "54,9181"
 }: BrandSummaryProps) {
 
+  const { data, isPending, isError, error, refetch } = useGetRewardAnalysis();
 
+
+  const rewardAnalysisData = data?.data?.data;
+
+
+  if (isPending) {
+    return <MainBranchSummaryLoading title={title} />;
+  }
+
+  if (isError) {
+    return <ErrorDisplay error={error?.message} isError={isError} onRetry={refetch} />
+  }
   return (
     <div className="shadow-none border-none p-4">
       <h3 className="text-sm font-semibold text-gray-900 mb-1">{title}</h3>
@@ -24,7 +39,7 @@ export default function BrandSummary({
             <Image src={branchIcon} alt="branch-icon" width={16} height={16} />
             <p className="text-xs text-gray-600">Onboarded Branches</p>
           </div>
-          <p className="text-sm font-semibold text-gray-900">{onboardedBranches}</p>
+          <p className="text-sm font-semibold text-gray-900">{rewardAnalysisData?.totalBranches}</p>
         </div>
         <hr className="border-gray-50" />
         {/* Available Brand points */}
@@ -33,7 +48,7 @@ export default function BrandSummary({
             <Image src={rewardIcon} alt="reward-icon" width={16} height={16} />
             <p className="text-xs text-gray-600">Available Brand Points</p>
           </div>
-          <p className="text-sm font-semibold text-gray-900">{availableBrandPoints}</p>
+          <p className="text-sm font-semibold text-gray-900">{rewardAnalysisData?.availablePoints}</p>
         </div>
         <hr className="border-gray-50" />
         {/* Total customers */}
@@ -42,7 +57,7 @@ export default function BrandSummary({
             <Image src={peopleIcon} alt="people-icon" width={16} height={16} />
             <p className="text-xs text-gray-600">Total Customers</p>
           </div>
-          <p className="text-sm font-semibold text-gray-900">{totalCustomers}</p>
+          <p className="text-sm font-semibold text-gray-900">{rewardAnalysisData?.totalLifetimeCustomers}</p>
         </div>
       </div>
     </div>
