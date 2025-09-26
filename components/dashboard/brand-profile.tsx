@@ -11,6 +11,8 @@ export default function BrandProfile({
   merchantId = "",
   logoUrl = "",
   isLoading,
+  isError,
+  error,
   onAccountSettings
 }: BrandProfileProps) {
 
@@ -34,6 +36,21 @@ export default function BrandProfile({
 
           {/* Button skeleton */}
           <Skeleton className="h-10 w-full rounded-md" />
+        </div>
+      </section>
+    );
+  }
+
+  if (isError) {
+    return (
+      <section className="shadow-none border-none rounded-2xl p-4 bg-[#FAFAFA]">
+        <div className="flex flex-col items-center text-center">
+          <div className="text-red-500 text-sm mb-2">
+            Failed to load brand profile
+          </div>
+          <div className="text-xs text-gray-500">
+            {error?.message || "Something went wrong"}
+          </div>
         </div>
       </section>
     );

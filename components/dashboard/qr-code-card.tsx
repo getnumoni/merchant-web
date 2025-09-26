@@ -13,7 +13,9 @@ export default function QRCodeCard({
   description = "Print your store's QR code and display it for customers. They can scan to make quick transfers.",
   onDownload,
   onShare,
-  isLoading
+  isLoading,
+  isError,
+  error
 }: QRCodeCardProps) {
   const printRef = useRef<HTMLDivElement>(null);
 
@@ -30,7 +32,21 @@ export default function QRCodeCard({
       <section className="shadow-none border-none rounded-2xl p-4 bg-[#FAFAFA]">
         <div className="flex flex-col items-center text-center">
           <Skeleton className="rounded-full w-30 h-30" />
+        </div>
+      </section>
+    );
+  }
 
+  if (isError) {
+    return (
+      <section className="border border-gray-100 shadow-none rounded-xl sm:rounded-2xl p-3 sm:p-4">
+        <div className="flex flex-col items-center text-center">
+          <div className="text-red-500 text-sm mb-2">
+            Failed to load QR code
+          </div>
+          <div className="text-xs text-gray-500">
+            {error?.message || "Something went wrong"}
+          </div>
         </div>
       </section>
     );
