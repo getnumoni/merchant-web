@@ -91,24 +91,6 @@ export default function MerchantTransactions() {
     setSearchTerm('');
   };
 
-  // Get unique types and statuses for filter options
-  const uniqueTypes = useMemo(() => {
-    const types = [...new Set(transactionsData.map(transaction => transaction.type))];
-    return types;
-  }, []);
-
-  const uniqueStatuses = useMemo(() => {
-    const statuses = [...new Set(transactionsData.map(transaction => transaction.status))];
-    return statuses;
-  }, []);
-
-  const dateOptions = [
-    { value: 'today', label: 'Today' },
-    { value: 'week', label: 'This Week' },
-    { value: 'month', label: 'This Month' },
-    { value: 'quarter', label: 'This Quarter' },
-    { value: 'year', label: 'This Year' }
-  ];
 
   return (
     <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">

@@ -354,11 +354,71 @@ const socialMediaPlatforms = [
   }
 ];
 
+// Mock data - in a real app, this would come from an API
+const mockMerchantData = {
+  businessName: "NyxLuxe Lingeries",
+  userId: "035448",
+  level: "Level 2",
+  personalInfo: {
+    businessName: "NyxLuxe Lingeries",
+    category: "Fashion",
+    email: "NyxLuxe@gmail.com",
+    address: "20b, Atumwa street, Ikeja, Lagos",
+    phone: "+234 7012345678",
+    bankName: "Zenith Bank",
+    accountName: "NyxLuxe Lingeries",
+    accountNumber: "0246352345",
+  },
+  accountInfo: {
+    registrationDate: "20 June 2022",
+    lastLogin: "January 5 2024, 10:30pm",
+    accountType: "Merchants",
+    accountStatus: "Verified" as const,
+    identityType: "NIN",
+    identityNumber: "123456789012",
+    businessNumber: "BN123456CA",
+    maxPointsIssued: "300k",
+  },
+  description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+  charityCount: 20,
+  reportsCompleted: 1,
+  totalReports: 3,
+  reviews: [
+    {
+      id: "1",
+      customerName: "Shai Hulud",
+      rating: 4.2,
+      reviewText: "Great service and quality products. Highly recommend!",
+      date: "21 Jun 2022 - 10:30am",
+    },
+    {
+      id: "2",
+      customerName: "Shai Hulud",
+      rating: 4.5,
+      reviewText: "Excellent customer service and fast delivery.",
+      date: "20 Jun 2022 - 2:15pm",
+    },
+    {
+      id: "3",
+      customerName: "Shai Hulud",
+      rating: 4.0,
+      reviewText: "Good quality products, will definitely order again.",
+      date: "19 Jun 2022 - 9:45am",
+    },
+    {
+      id: "4",
+      customerName: "Shai Hulud",
+      rating: 4.8,
+      reviewText: "Outstanding experience! The team was very helpful.",
+      date: "18 Jun 2022 - 4:20pm",
+    },
+  ],
+};
+
 export {
   adminNavigationItem, benefitsData,
   branches,
-  customerData,
-  months,
+  customerData, mockMerchantData, months,
   navigationItems,
   regions,
   rewardTableData,
