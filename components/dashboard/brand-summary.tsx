@@ -19,8 +19,6 @@ export default function BrandSummary({
   const rewardAnalysisData = data?.data?.data;
 
 
-  console.log(rewardAnalysisData);
-
   if (isPending) {
     return <MainBranchSummaryLoading title={title} />;
   }
