@@ -1,7 +1,7 @@
 'use client'
 
 import { Skeleton } from "@/components/ui/skeleton";
-import { calenderIcon, giftIcon, grayPointIcon, redMusicPauseIcon, warningIcon } from "@/constant/icons";
+import { calenderIcon, giftIcon, grayPointIcon } from "@/constant/icons";
 import {
   createRewardsSummaryData,
   getRewardsRules,
@@ -11,12 +11,10 @@ import {
 } from "@/lib/helper";
 import { RewardRule, Rewards } from "@/lib/types";
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import RewardNotification from "./reward-notification";
 
 export default function RewardTable({ rewards, isPending }: { rewards: Rewards | null, isPending: boolean }) {
-  const [countdown, setCountdown] = useState(30);
-  const [showNotifications, setShowNotifications] = useState(false);
+  // const [countdown, setCountdown] = useState(30);
+  // const [showNotifications, setShowNotifications] = useState(false);
 
   // Debug logging
   // console.log("RewardTable - rewards:", rewards);
@@ -39,18 +37,18 @@ export default function RewardTable({ rewards, isPending }: { rewards: Rewards |
   const showEmptyState = shouldShowEmptyState(isPending, rules.length);
 
   //set countdown and time out. //if countdown is 0, pause notifications
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCountdown(prev => {
-        if (prev <= 0) {
-          setShowNotifications(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCountdown(prev => {
+  //       if (prev <= 0) {
+  //         setShowNotifications(true);
+  //         return 0;
+  //       }
+  //       return prev - 1;
+  //     });
+  //   }, 1000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   return (
     <main>
@@ -162,7 +160,7 @@ export default function RewardTable({ rewards, isPending }: { rewards: Rewards |
       </div>
 
       {/* Show countdown warning while counting down */}
-      {countdown > 0 && (
+      {/* {countdown > 0 && (
         <RewardNotification
           text={`Reward System Will Be Paused When Allocated Amount Has Been Exhausted. (${countdown}s remaining)`}
           icon={warningIcon}
@@ -171,10 +169,10 @@ export default function RewardTable({ rewards, isPending }: { rewards: Rewards |
           duration={0.6}
           className="my-5"
         />
-      )}
+      )} */}
 
       {/* Show pause notification when countdown reaches 0 */}
-      {showNotifications && (
+      {/* {showNotifications && (
         <RewardNotification
           text="Your Reward Cap Has Been Reached. Rewards Are Paused Automatically. Edit The Cap To Resume."
           icon={redMusicPauseIcon}
@@ -183,7 +181,7 @@ export default function RewardTable({ rewards, isPending }: { rewards: Rewards |
           duration={0.6}
           className="my-5"
         />
-      )}
+      )} */}
     </main>
   );
 }

@@ -38,6 +38,8 @@ type QRCodeCardProps = {
   onDownload?: () => void;
   onShare?: () => void;
   isLoading?: boolean;
+  isError?: boolean;
+  error?: Error | null;
 }
 
 type BrandProfileProps = {
@@ -46,6 +48,8 @@ type BrandProfileProps = {
   logoUrl?: string;
   onAccountSettings?: () => void;
   isLoading?: boolean;
+  isError?: boolean;
+  error?: Error | null;
 }
 
 type SummaryItem = {
@@ -129,18 +133,38 @@ type RewardModalProps = {
 }
 
 type Customer = {
-  id: number;
-  name: string;
-  spent: string;
-  earned: string;
-  branch: string;
-  loyaltyRank: number | null;
-  merchantIcon: string;
-  profileIcon: string;
+  totalTransactions: number;
+  totalSpent: number;
+  mostShoppedBranch: string;
+  customerId: string;
+  customerName: string;
+  rank?: number;
+}
+
+type CustomerAnalyticsData = {
+  totalTransactions: number;
+  totalSpent: number;
+  mostShoppedBranch: string;
+  customerId: string;
+  customerUserId: string;
+  customerName: string;
+}
+
+type CustomerAnalyticsResponse = {
+  topLoyalCustomers: CustomerAnalyticsData[];
+  totalCustomers: number;
+}
+
+type BranchAnalyticsData = {
+  branchId: string;
+  branchName: string;
+  logo: string;
+  totalPointsIssued: number;
 }
 
 type CustomerCardProps = {
   customer: Customer;
+  rank?: number;
 }
 
 type CustomerSectionProps = {
@@ -414,5 +438,5 @@ type AccountInformationProps = {
   maxPointsIssued: string;
 }
 
-export type { AccountInformationProps, ActiveBranchModalProps, AdminNavigationItem, AuthUser, AuthUserStore, AxiosError, BankPayload, BankToken, Branch, BranchManagerPayload, BranchSummaryData, BrandProfileProps, BrandSummaryProps, ChangeBranchStatusPayload, CreateRewardsPayload, Customer, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ErrorDisplayProps, ExpirationSectionProps, GetBranchesResponse, InfoItem, MainBranchSummaryProps, MilestoneTargetSectionProps, PointAnalyticsProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRule, RewardRulesSectionProps, Rewards, SidebarProps, signInPayload, singleBranchDetails, SocialMediaData, TanstackProviderProps, Transaction, UpdateBranchManagerPayload, UpdateRewardRuleModalProps, VerifyBankPayload };
+export type { AccountInformationProps, ActiveBranchModalProps, AdminNavigationItem, AuthUser, AuthUserStore, AxiosError, BankPayload, BankToken, Branch, BranchAnalyticsData, BranchManagerPayload, BranchSummaryData, BrandProfileProps, BrandSummaryProps, ChangeBranchStatusPayload, CreateRewardsPayload, Customer, CustomerAnalyticsData, CustomerAnalyticsResponse, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ErrorDisplayProps, ExpirationSectionProps, GetBranchesResponse, InfoItem, MainBranchSummaryProps, MilestoneTargetSectionProps, PointAnalyticsProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRule, RewardRulesSectionProps, Rewards, SidebarProps, signInPayload, singleBranchDetails, SocialMediaData, TanstackProviderProps, Transaction, UpdateBranchManagerPayload, UpdateRewardRuleModalProps, VerifyBankPayload };
 

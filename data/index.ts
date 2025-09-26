@@ -154,12 +154,12 @@ const regions = [
 ];
 
 const timelineOptions = [
-  "Last Hour",
   "Today",
   "Yesterday",
   "This Week",
   "Last Week",
   "This Month",
+  "Last Month",
   "Custom Range"
 ];
 

@@ -2,32 +2,102 @@
 
 import {
   branches,
-  customerData,
-  months,
   regions,
-  timelineOptions,
-  years
+  timelineOptions
 } from "@/data";
-import { useState } from "react";
+import useGetCustomerAnalytics from "@/hooks/query/useGetCustomerAnalytics";
+import { getTimelineDates } from "@/lib/helper";
+import { CustomerAnalyticsData, CustomerAnalyticsResponse } from "@/lib/types";
+import { useEffect, useState } from "react";
+import ErrorDisplay from "../common/error-display";
+import LoadingSpinner from "../ui/loading-spinner";
+import CustomDateRangeModal from "./custom-date-range-modal";
 import CustomerSection from "./customer-section";
-import DatePickerModal from "./date-picker-modal";
+import EmptyPointAllocation from "./empty-point-allocation";
 import FilterSection from "./filter-section";
 
 export default function PointAllocationDashboard() {
   const [selectedBranch, setSelectedBranch] = useState("All Branch");
   const [selectedRegion, setSelectedRegion] = useState("All Region");
-  const [selectedTimeline, setSelectedTimeline] = useState("Timeline");
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedTimeline, setSelectedTimeline] = useState("Today");
+  const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
+  const [customStartDate, setCustomStartDate] = useState<string>("");
+  const [customEndDate, setCustomEndDate] = useState<string>("");
 
-  const loyalCustomers = customerData.filter(customer => customer.loyaltyRank);
-  const otherCustomers = customerData.filter(customer => !customer.loyaltyRank);
+  // Get dates based on selected timeline
+  const { startDate, endDate } = getTimelineDates(
+    selectedTimeline,
+    customStartDate || undefined,
+    customEndDate || undefined
+  );
+
+  const { data, isPending, error, isError, refetch } = useGetCustomerAnalytics({
+    startDate,
+    endDate
+  });
+
+  const consumerData: CustomerAnalyticsResponse | undefined = data?.data;
+
+  console.log(consumerData);
+  // Transform API data to match component expectations
+  const loyalCustomers = consumerData?.topLoyalCustomers?.map((customer: CustomerAnalyticsData, index: number) => ({
+    totalTransactions: customer.totalTransactions,
+    totalSpent: customer.totalSpent,
+    mostShoppedBranch: customer.mostShoppedBranch,
+    customerId: customer.customerId,
+    customerName: customer.customerName,
+    rank: index + 1, // Add ranking based on array position
+  })) || [];
+
+  // API only provides topLoyalCustomers, no other customers data
 
   const handleCustomRangeClick = () => {
-    setShowDatePicker(true);
+    setShowCustomDatePicker(true);
   };
 
-  const handleDateSelect = (month: string, year: string) => {
-    setSelectedTimeline(`${month} ${year}`);
+
+  const handleCustomDateSelect = (startDate: string, endDate: string) => {
+    setCustomStartDate(startDate);
+    setCustomEndDate(endDate);
+    setSelectedTimeline("Custom Range");
+    setShowCustomDatePicker(false);
+  };
+
+  // Refetch data when timeline changes
+  useEffect(() => {
+    refetch();
+  }, [selectedTimeline, customStartDate, customEndDate, refetch]);
+
+  // Render customer content based on different states
+  const renderCustomerContent = () => {
+    // 1. Show loading spinner while data is being fetched
+    if (isPending) {
+      return <LoadingSpinner message="Loading customer data..." />;
+    }
+
+    // 2. Show error message if there's an error
+    if (isError) {
+      return (
+        <ErrorDisplay
+          error={error?.message || "Error loading customer data. Please try again."}
+          isError={isError}
+          onRetry={refetch}
+        />
+      );
+    }
+
+    // 3. Show empty state if no customers found
+    if (loyalCustomers.length === 0) {
+      return <EmptyPointAllocation />;
+    }
+
+    // 4. Show customer data if everything is successful
+    return (
+      <CustomerSection
+        title="Your Most Loyal Customers"
+        customers={loyalCustomers}
+      />
+    );
   };
 
   return (
@@ -39,9 +109,12 @@ export default function PointAllocationDashboard() {
         {/* Title and Last Update */}
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-            <h1 className="text-sm sm:text-base font-semibold text-black/50 whitespace-nowrap">
-              Points are currently held by customers
-            </h1>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <h1 className="text-sm sm:text-base font-semibold text-black/50 whitespace-nowrap">
+                Points are currently held by customers
+              </h1>
+
+            </div>
             {/* Filter Section */}
             <FilterSection
               branches={branches}
@@ -57,9 +130,11 @@ export default function PointAllocationDashboard() {
             />
           </div>
 
-          <p className="text-xs sm:text-sm text-black/50">
-            (Last Update: 2 seconds ago)
-          </p>
+          {consumerData?.totalCustomers && (
+            <span className="text-xs sm:text-md text-gray-500">
+              ({consumerData.totalCustomers} Total Customers)
+            </span>
+          )}
         </div>
 
 
@@ -67,23 +142,16 @@ export default function PointAllocationDashboard() {
 
       {/* Customer Data Section */}
       <div className="space-y-4 sm:space-y-6 bg-theme-gray rounded-xl p-3 sm:p-4">
-        <CustomerSection
-          title="Your Most Loyal Customers"
-          customers={loyalCustomers}
-        />
-        <CustomerSection
-          title="Other Customers"
-          customers={otherCustomers}
-        />
+        {renderCustomerContent()}
       </div>
 
-      {/* Date Picker Modal */}
-      <DatePickerModal
-        open={showDatePicker}
-        onOpenChange={setShowDatePicker}
-        onDateSelect={handleDateSelect}
-        months={months}
-        years={years}
+      {/* Custom Date Range Modal */}
+      <CustomDateRangeModal
+        open={showCustomDatePicker}
+        onOpenChange={setShowCustomDatePicker}
+        onDateSelect={handleCustomDateSelect}
+        initialStartDate={customStartDate}
+        initialEndDate={customEndDate}
       />
     </main>
   );

@@ -1,12 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { rightArrowIcon } from "@/constant/icons";
 import { REWARD_TABLE_URL } from "@/constant/routes";
+import useGetBranchAnalysis from "@/hooks/query/useGetBranchAnalysis";
 import Image from "next/image";
 import Link from "next/link";
 import PointDistributionChart from "../branch-level/point-distribution-chart";
 import TopPerformingBranch from "../branch-level/top-performing-branch";
 
 export default function PointsDistribution() {
+  const { data, isPending, isError, error } = useGetBranchAnalysis();
+
+
+  const branchAnalysisData = data?.data?.data;
+
   return (
     <main className="bg-white rounded-2xl p-4 my-4">
       <div className="flex items-center gap-3 ">
@@ -22,8 +28,8 @@ export default function PointsDistribution() {
       <hr className="border-gray-50 my-3" />
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-2">
-        <PointDistributionChart />
-        <TopPerformingBranch />
+        <PointDistributionChart isPending={isPending} isError={isError} error={error} data={branchAnalysisData} />
+        <TopPerformingBranch isPending={isPending} isError={isError} error={error} data={branchAnalysisData} />
       </div>
     </main>
   )

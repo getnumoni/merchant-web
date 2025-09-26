@@ -19,7 +19,7 @@ export default function Hero({
 }: DashboardProps) {
   const pathname = usePathname();
 
-  const { data: merchant, isPending } = useGetMerchant();
+  const { data: merchant, isPending, isError, error } = useGetMerchant();
   const merchantInfo = merchant?.data?.data;
 
   // Determine which summary component to show based on route
@@ -38,6 +38,8 @@ export default function Hero({
         logoUrl={merchantInfo?.businessImagePath}
         onAccountSettings={onAccountSettings}
         isLoading={isPending}
+        isError={isError}
+        error={error}
       />
 
       <QRCodeCard
@@ -47,6 +49,8 @@ export default function Hero({
         onDownload={onDownload}
         onShare={onShare}
         isLoading={isPending}
+        isError={isError}
+        error={error}
       />
 
       {getSummaryComponent()}

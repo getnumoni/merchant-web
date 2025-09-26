@@ -1,78 +1,103 @@
 "use client"
 
-import { pointDistributionData } from "@/data/chart-data";
-import { formatValue, getBarColor, getRingColor } from "@/lib/helper";
-import Image from "next/image";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import { formatValue, getChartBarColor, getRingColor } from "@/lib/helper";
+import { BranchAnalyticsData } from "@/lib/types";
+import { Bar, BarChart, CartesianGrid, Cell, LabelList, XAxis, YAxis } from "recharts";
+import ErrorDisplay from "../common/error-display";
+import PointDistributionChartSkeleton from "./point-distribution-chart-skeleton";
 
 interface PointDistributionChartProps {
-  data?: typeof pointDistributionData;
+  data?: BranchAnalyticsData[];
+  isPending: boolean;
+  isError: boolean;
+  error: Error | null;
 }
 
 export default function PointDistributionChart({
-  data = pointDistributionData,
+  data,
+  isPending,
+  isError,
+  error,
 }: PointDistributionChartProps) {
-  const maxValue = Math.max(...data.map(item => Math.abs(item.value)));
-  const maxHeight = 350; // Maximum height for bars in pixels (adjusted to match TopPerformingBranch)
+  if (isPending) {
+    return <PointDistributionChartSkeleton />;
+  }
+
+  if (isError) {
+    return <ErrorDisplay error={error?.message || "An error occurred"} />;
+  }
+
+  // Transform data for Recharts
+  const chartData = data?.map((item, index) => ({
+    name: item.branchName,
+    value: item.totalPointsIssued,
+    logo: item.logo,
+    color: getChartBarColor(index.toString()),
+    ringColor: getRingColor(index.toString()),
+  })) || [];
+
+  const chartConfig = {
+    value: {
+      label: "Points Issued",
+      color: "hsl(var(--chart-1))",
+    },
+  } satisfies ChartConfig;
 
   return (
-    <div className="bg-white rounded-2xl p-6 ">
-      {/* Custom Chart Container */}
-      <div className="relative" style={{ height: '510px' }}>
-        {/* Y-axis labels */}
-        <div className="absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-500 pr-2">
-          <span>20,000</span>
-          <span>15,000</span>
-          <span>10,000</span>
-          <span>5,000</span>
-          <span>0</span>
-        </div>
-
-        {/* Chart Area */}
-        <div className="ml-8 relative overflow-x-auto h-full">
-          {/* Grid lines */}
-          <div className="absolute inset-0 min-w-full">
-            {[0, 5000, 10000, 15000, 20000].map((value, index) => (
-              <div
-                key={index}
-                className="absolute w-full border-t border-gray-100"
-                style={{ bottom: `${(value / 20000) * 100}%` }}
+    <div className="bg-white rounded-2xl p-6">
+      <div className="overflow-x-auto">
+        <ChartContainer config={chartConfig} className="h-[400px] min-w-[600px]">
+          <BarChart
+            data={chartData}
+            margin={{
+              top: 20,
+              right: 30,
+              left: 20,
+              bottom: 5,
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="name"
+              tickLine={false}
+              axisLine={false}
+              tick={{ fontSize: 12 }}
+              interval={0}
+              angle={-45}
+              textAnchor="end"
+              height={80}
+            />
+            <YAxis
+              domain={[0, 5]}
+              tickCount={6}
+              tick={{ fontSize: 12 }}
+            />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
+            />
+            <Bar
+              dataKey="value"
+              radius={[4, 4, 0, 0]}
+            >
+              {chartData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
+              <LabelList
+                position="top"
+                offset={8}
+                className="fill-foreground text-sm font-semibold"
+                formatter={(value: number) => formatValue(value)}
               />
-            ))}
-          </div>
-
-          {/* Bars with Icons */}
-          <div className="flex items-end justify-start gap-4 h-full px-2 min-w-max">
-            {data.map((item) => {
-              const height = (Math.abs(item.value) / maxValue) * maxHeight;
-              return (
-                <div key={item.id} className="flex flex-col items-center">
-                  {/* Profile Icon with colored ring */}
-                  <div className={`relative mb-2 ${getRingColor(item.iconRingColor)} ring-2 rounded-full p-1`}>
-                    <Image
-                      src="/assets/icons/profile-icon.svg"
-                      alt={item.label}
-                      width={24}
-                      height={24}
-                      className="rounded-full"
-                    />
-                  </div>
-
-                  {/* Value */}
-                  <div className="text-xs font-medium text-gray-900 mb-2">
-                    {formatValue(item.value)}
-                  </div>
-
-                  {/* Bar */}
-                  <div
-                    className={`w-8 ${getBarColor(item.barColor)} rounded-t-full`}
-                    style={{ height: `${height}px` }}
-                  />
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
+            </Bar>
+          </BarChart>
+        </ChartContainer>
       </div>
     </div>
   );

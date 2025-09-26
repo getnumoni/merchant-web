@@ -119,12 +119,42 @@ export const getColorClass = (color: string) => {
  * @returns A Tailwind CSS background color class
  */
 export const getBarColor = (barColor: string): string => {
-  switch (barColor) {
-    case 'orange': return 'bg-orange-400';
-    case 'red': return 'bg-red-400';
-    case 'green': return 'bg-green-400';
-    default: return 'bg-gray-400';
-  }
+  const colors = [
+    'bg-yellow-500',
+    'bg-red-500',
+    'bg-white border-2 border-gray-200',
+    'bg-blue-500',
+    'bg-orange-500',
+    'bg-pink-500',
+    'bg-green-500',
+    'bg-purple-500',
+    'bg-indigo-500',
+    'bg-cyan-500'
+  ];
+  const index = parseInt(barColor) || 0;
+  return colors[index % colors.length];
+};
+
+/**
+ * Gets the appropriate hex color value for chart bars
+ * @param barColor - The bar color string (e.g., "0", "1", "2")
+ * @returns A hex color value for charts
+ */
+export const getChartBarColor = (barColor: string): string => {
+  const colors = [
+    '#eab308', // yellow-500
+    '#ef4444', // red-500
+    '#ffffff', // white
+    '#3b82f6', // blue-500
+    '#f97316', // orange-500
+    '#ec4899', // pink-500
+    '#22c55e', // green-500
+    '#a855f7', // purple-500
+    '#6366f1', // indigo-500
+    '#06b6d4'  // cyan-500
+  ];
+  const index = parseInt(barColor) || 0;
+  return colors[index % colors.length];
 };
 
 /**
@@ -133,14 +163,22 @@ export const getBarColor = (barColor: string): string => {
  * @returns A Tailwind CSS ring color class
  */
 export const getRingColor = (ringColor: string): string => {
-  switch (ringColor) {
-    case 'red': return 'ring-red-500';
-    case 'green': return 'ring-green-500';
-    case 'black': return 'ring-black';
-    case 'blue': return 'ring-blue-500';
-    case 'orange': return 'ring-orange-500';
-    default: return 'ring-gray-500';
-  }
+  const colors = [
+    'ring-red-500',
+    'ring-green-500',
+    'ring-black',
+    'ring-blue-500',
+    'ring-orange-500',
+    'ring-purple-500',
+    'ring-pink-500',
+    'ring-indigo-500',
+    'ring-yellow-500',
+    'ring-teal-500',
+    'ring-cyan-500',
+    'ring-gray-500'
+  ];
+  const index = parseInt(ringColor) || 0;
+  return colors[index % colors.length];
 };
 
 /**
@@ -679,5 +717,136 @@ export const getYesterdayDate = (format: 'iso' | 'formatted' | 'timestamp' | 'dd
       return yesterday.getTime();
     default:
       return yesterday.toISOString();
+  }
+};
+
+/**
+ * Gets the start and end dates for different timeline options
+ * @param timeline - The timeline option ('Today', 'Yesterday', 'This Week', 'Last Week', 'This Month', 'Last Month', 'Custom Range')
+ * @param customStartDate - Custom start date for 'Custom Range' (optional)
+ * @param customEndDate - Custom end date for 'Custom Range' (optional)
+ * @returns Object with startDate and endDate in YYYY-MM-DD format
+ * 
+ * @example
+ * getTimelineDates('Today') // Returns: { startDate: '2024-01-15', endDate: '2024-01-15' }
+ * getTimelineDates('Yesterday') // Returns: { startDate: '2024-01-14', endDate: '2024-01-14' }
+ * getTimelineDates('This Week') // Returns: { startDate: '2024-01-15', endDate: '2024-01-21' }
+ * getTimelineDates('Custom Range', '2024-01-01', '2024-01-31') // Returns: { startDate: '2024-01-01', endDate: '2024-01-31' }
+ */
+export const getTimelineDates = (
+  timeline: string,
+  customStartDate?: string,
+  customEndDate?: string
+): { startDate: string; endDate: string } => {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+  // Helper function to format date as YYYY-MM-DD (local timezone)
+  const formatDate = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  // Helper function to get start of week (Monday)
+  const getStartOfWeek = (date: Date): Date => {
+    const day = date.getDay();
+    const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
+    return new Date(date.setDate(diff));
+  };
+
+  // Helper function to get end of week (Sunday)
+  const getEndOfWeek = (date: Date): Date => {
+    const startOfWeek = getStartOfWeek(new Date(date));
+    const endOfWeek = new Date(startOfWeek);
+    endOfWeek.setDate(startOfWeek.getDate() + 6);
+    return endOfWeek;
+  };
+
+  // Helper function to get start of month
+  const getStartOfMonth = (date: Date): Date => {
+    return new Date(date.getFullYear(), date.getMonth(), 1);
+  };
+
+  // Helper function to get end of month
+  const getEndOfMonth = (date: Date): Date => {
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  };
+
+  switch (timeline) {
+    case 'Today':
+      return {
+        startDate: formatDate(today),
+        endDate: formatDate(today)
+      };
+
+    case 'Yesterday': {
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      return {
+        startDate: formatDate(yesterday),
+        endDate: formatDate(yesterday)
+      };
+    }
+
+    case 'This Week': {
+      const startOfWeek = getStartOfWeek(new Date(today));
+      const endOfWeek = getEndOfWeek(new Date(today));
+      return {
+        startDate: formatDate(startOfWeek),
+        endDate: formatDate(endOfWeek)
+      };
+    }
+
+    case 'Last Week': {
+      const lastWeekStart = new Date(today);
+      lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+      const startOfLastWeek = getStartOfWeek(lastWeekStart);
+      const endOfLastWeek = getEndOfWeek(lastWeekStart);
+      return {
+        startDate: formatDate(startOfLastWeek),
+        endDate: formatDate(endOfLastWeek)
+      };
+    }
+
+    case 'This Month': {
+      const startOfMonth = getStartOfMonth(today);
+      const endOfMonth = getEndOfMonth(today);
+      return {
+        startDate: formatDate(startOfMonth),
+        endDate: formatDate(endOfMonth)
+      };
+    }
+
+    case 'Last Month': {
+      const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      const startOfLastMonth = getStartOfMonth(lastMonth);
+      const endOfLastMonth = getEndOfMonth(lastMonth);
+      return {
+        startDate: formatDate(startOfLastMonth),
+        endDate: formatDate(endOfLastMonth)
+      };
+    }
+
+    case 'Custom Range':
+      if (customStartDate && customEndDate) {
+        return {
+          startDate: customStartDate,
+          endDate: customEndDate
+        };
+      }
+      // Fallback to today if no custom dates provided
+      return {
+        startDate: formatDate(today),
+        endDate: formatDate(today)
+      };
+
+    default:
+      // Default to today
+      return {
+        startDate: formatDate(today),
+        endDate: formatDate(today)
+      };
   }
 };

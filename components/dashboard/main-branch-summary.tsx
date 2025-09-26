@@ -1,29 +1,58 @@
-import { getColorClass } from "@/lib/helper";
+import useGetBranchSummary from "@/hooks/query/useGetBranchSummary";
+import { formatCurrency, getColorClass, getCurrentDate, getYesterdayDate } from "@/lib/helper";
 import { MainBranchSummaryProps } from "@/lib/types";
+import MainBranchSummaryLoading from "./main-branch-summary-loading";
 
 
 
 export default function MainBranchSummary({
-  title = "Main Branch Summary",
-  items = [
+  title = "Main Branch Summary"
+}: MainBranchSummaryProps) {
+
+  const fromDate = getYesterdayDate("dd-mm-yyyy") as string;
+  const toDate = getCurrentDate("dd-mm-yyyy") as string;
+  const { data, isPending, isError, error } = useGetBranchSummary({ fromDate, toDate });
+
+  const branchSummaryData = data?.data;
+
+  // Create items array from hook data
+  const items = branchSummaryData ? [
     {
       label: "Total Amount Collected",
-      value: "₦40,000.50",
-      color: "green"
+      value: formatCurrency(branchSummaryData.totalEarned || 0),
+      color: "green" as const
     },
     {
       label: "Amount In Bank",
-      value: "₦38,900.50",
-      color: "red"
+      value: formatCurrency(branchSummaryData.totalPayout || 0),
+      color: "red" as const
     },
     {
       label: "Fee's",
-      value: "₦1,100.00",
-      color: "gray"
+      value: formatCurrency(branchSummaryData.totalFees || 0),
+      color: "gray" as const
     }
-  ]
-}: MainBranchSummaryProps) {
+  ] : [];
 
+  if (isPending) {
+    return <MainBranchSummaryLoading title={title} />;
+  }
+
+  if (isError) {
+    return (
+      <div className="shadow-none border-none p-4">
+        <h3 className="text-sm font-semibold text-gray-900 mb-4">{title}</h3>
+        <div className="space-y-3 border border-gray-100 rounded-2xl p-4">
+          <div className="text-center text-red-500 text-sm">
+            Failed to load branch summary
+          </div>
+          <div className="text-center text-xs text-gray-500">
+            {error?.message || "Something went wrong"}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="shadow-none border-none p-4">
