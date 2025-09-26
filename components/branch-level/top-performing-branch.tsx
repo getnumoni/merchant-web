@@ -1,21 +1,36 @@
 import { sampleUserIcon } from "@/constant/images";
-import { rewardsByBranchData } from "@/data/chart-data";
-import { formatValue, getIndicatorColor } from "@/lib/helper";
+import { formatValue, getBarColor } from "@/lib/helper";
+import { BranchAnalyticsData } from "@/lib/types";
 import Image from "next/image";
+import ErrorDisplay from "../common/error-display";
+import TopPerformingBranchSkeleton from "./top-performing-branch-skeleton";
 
 interface TopPerformingBranchProps {
   title?: string;
   subtitle?: string;
-  data?: typeof rewardsByBranchData;
+  data?: BranchAnalyticsData[];
   maxHeight?: string;
+  isPending: boolean;
+  isError: boolean;
+  error: Error | null;
 }
 
 export default function TopPerformingBranch({
   title = "Rewards By Branch",
   subtitle = "Overview of points rewarded by top-performing branches.",
-  data = rewardsByBranchData,
-  maxHeight = "400px"
+  data,
+  maxHeight = "400px",
+  isPending,
+  isError,
+  error,
 }: TopPerformingBranchProps) {
+  if (isPending) {
+    return <TopPerformingBranchSkeleton title={title} subtitle={subtitle} maxHeight={maxHeight} />;
+  }
+
+  if (isError) {
+    return <ErrorDisplay error={error?.message || "An error occurred"} />;
+  }
 
   return (
     <div className="bg-[#F3F4F6] rounded-2xl p-6 shadow-none ">
@@ -29,20 +44,22 @@ export default function TopPerformingBranch({
         className="space-y-3 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100"
         style={{ maxHeight }}
       >
-        {data.map((item) => (
-          <div key={item.id} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors">
+        {data?.map((item: BranchAnalyticsData, index: number) => (
+          <div key={item.branchId} className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors">
             {/* Colored indicator */}
-            <div className={`w-1 h-8 ${getIndicatorColor(item.indicatorColor)} rounded-full flex-shrink-0`} />
+            <div className={`w-1 h-8 ${getBarColor(index.toString())} rounded-full flex-shrink-0`} />
 
             {/* Branch icon */}
             <div className="flex-shrink-0">
-              <Image
-                src={sampleUserIcon}
-                alt={item.branchName}
-                width={32}
-                height={32}
-                className="rounded-full"
-              />
+              <div className="w-8 h-8 rounded-full overflow-hidden">
+                <Image
+                  src={item.logo || sampleUserIcon}
+                  alt={item.branchName}
+                  width={32}
+                  height={32}
+                  className="w-full h-full object-cover"
+                />
+              </div>
             </div>
 
             {/* Branch name */}
@@ -54,9 +71,8 @@ export default function TopPerformingBranch({
 
             {/* Value */}
             <div className="flex-shrink-0">
-              <p className={`text-sm font-semibold ${item.value >= 0 ? 'text-green-600' : 'text-red-600'
-                }`}>
-                {formatValue(item.value)}
+              <p className="text-sm font-semibold text-green-600">
+                {formatValue(item.totalPointsIssued)}
               </p>
             </div>
           </div>
