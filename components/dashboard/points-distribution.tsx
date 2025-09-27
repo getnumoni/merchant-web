@@ -6,12 +6,14 @@ import Image from "next/image";
 import Link from "next/link";
 import PointDistributionChart from "../branch-level/point-distribution-chart";
 import TopPerformingBranch from "../branch-level/top-performing-branch";
+import EmptyState from "../common/empty-state";
 
 export default function PointsDistribution() {
   const { data, isPending, isError, error } = useGetBranchAnalysis();
 
 
   const branchAnalysisData = data?.data?.data;
+  const isEmpty = branchAnalysisData?.length === 0;
 
   return (
     <main className="bg-white rounded-2xl p-4 my-4">
@@ -27,10 +29,12 @@ export default function PointsDistribution() {
       </div>
       <hr className="border-gray-50 my-3" />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-2">
-        <PointDistributionChart isPending={isPending} isError={isError} error={error} data={branchAnalysisData} />
-        <TopPerformingBranch isPending={isPending} isError={isError} error={error} data={branchAnalysisData} />
-      </div>
+      {isEmpty ? <EmptyState title="No data yet" description="No customer has interacted with your brand yet. No points have been earned, claimed, or rewarded." /> :
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 py-2">
+          <PointDistributionChart isPending={isPending} isError={isError} error={error} data={branchAnalysisData} />
+          <TopPerformingBranch isPending={isPending} isError={isError} error={error} data={branchAnalysisData} />
+        </div>
+      }
     </main>
   )
 }
