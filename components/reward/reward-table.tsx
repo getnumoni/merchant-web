@@ -62,7 +62,9 @@ export default function RewardTable({ rewards, isPending }: { rewards: Rewards |
                   <tr>
                     <th className="px-4 py-3 text-left text-sm font-semibold text-theme-dark-green border-b border-theme-gray">Min</th>
                     <th className="px-4 py-3 text-left text-sm font-semibold text-theme-dark-green border-b border-theme-gray">Max</th>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-theme-dark-green border-b border-theme-gray">Reward%</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-theme-dark-green border-b border-theme-gray">
+                      {rewards?.rewardType === "FIXED_POINTS" ? "Reward" : "Reward%"}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -90,7 +92,9 @@ export default function RewardTable({ rewards, isPending }: { rewards: Rewards |
                     >
                       <td className="px-4 py-3 text-sm text-gray-900">{rule.minSpend}</td>
                       <td className="px-4 py-3 text-sm text-gray-900">{rule.maxSpend}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900">{rule.rewardValue}%</td>
+                      <td className="px-4 py-3 text-sm text-gray-900">
+                        {rule.rewardValue}{rewards?.rewardType === "FIXED_POINTS" ? "" : "%"}
+                      </td>
                     </tr>
                   ))}
 

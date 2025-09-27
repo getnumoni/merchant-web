@@ -84,7 +84,7 @@ export default function RewardRulesSection({
           <div className="grid grid-cols-4 text-sm border-b border-gray-200">
             <div className="font-medium text-theme-dark-green px-4 py-3 text-left">Min</div>
             <div className="font-medium text-theme-dark-green px-4 py-3 text-center">Max</div>
-            <div className="font-medium text-theme-dark-green px-4 py-3 text-right">Reward%</div>
+            <div className="font-medium text-theme-dark-green px-4 py-3 text-right">Reward {earnMethod === "percentage" ? "%" : ""}</div>
             <div className="font-medium text-theme-dark-green px-4 py-3 text-center">Actions</div>
           </div>
           {rewardRules.map((rule, index) => (

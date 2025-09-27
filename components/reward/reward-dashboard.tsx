@@ -40,7 +40,7 @@ export default function RewardDashboard() {
         />
 
         <TotalPointsRewardedCard
-          totalRewardCap={analyticsData?.totalRewardCap}
+          totalRewardCap={analyticsData?.totalRewardDistributed}
           isLoading={isPendingRewardAnalysis}
           isError={isErrorRewardAnalysis}
           errorMessage={errorRewardAnalysis?.message}

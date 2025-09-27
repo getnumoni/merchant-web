@@ -8,11 +8,13 @@ export default function AnalyticalTrend() {
 
 
   const branchAnalysisData = data?.data?.data;
-  const isEmpty = false;
+  const isEmpty = branchAnalysisData.length === 0;
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-        <PointDistributionChart isPending={isPending} isError={isError} error={error} data={branchAnalysisData} />
+        {isEmpty ? <EmptyState title="No data yet" description="No customer has interacted with your point hence no data is available." /> :
+          <PointDistributionChart isPending={isPending} isError={isError} error={error} data={branchAnalysisData} />
+        }
 
         <div className="bg-theme-gray-600 rounded-xl p-3">
           <h2 className="text-base sm:text-lg font-semibold text-black">Reward By Branch</h2>

@@ -8,7 +8,7 @@ export default function ReceiveMethodSection({ receiveMethod, setReceiveMethod }
   return (
     <div className="space-y-3">
       <label className="text-sm font-semibold text-gray-900">
-        Choose How Customers Receive Their Points <span className="text-red-500">*</span>
+        Choose How Customers Are Rewarded <span className="text-red-500">*</span>
       </label>
       <RadioGroup value={receiveMethod} onValueChange={setReceiveMethod} className="mt-2 flex flex-row gap-4">
         <div
