@@ -1,7 +1,9 @@
+import { calculatePayloadSize, compressImage, formatFileSize } from "@/lib/helper";
 import { formatPhoneNumber } from "@/lib/phone-utils";
 import { BranchFormData } from "@/lib/schemas/branch-schema";
 import { CreateBranchPayload } from "@/lib/types/branch-api";
 import { useBranchStore } from "@/stores/branch-store";
+import { toast } from "sonner";
 import { useCreateBranch } from "./mutation/useCreateBranch";
 
 // Helper function to convert base64 to File
@@ -23,7 +25,7 @@ export const useBranchFormSubmission = () => {
   // console.log('user', user);
   const { handleCreateBranch, isPending, isSuccess, isError, error } = useCreateBranch();
 
-  const createFormDataPayload = (data: BranchFormData): CreateBranchPayload => {
+  const createFormDataPayload = async (data: BranchFormData): Promise<CreateBranchPayload> => {
     // Use the actual form data, only fall back to store for images
     const completeData = {
       ...data,
@@ -38,8 +40,8 @@ export const useBranchFormSubmission = () => {
       state: completeData.branchState,
       region: completeData.branchRegion,
       lga: completeData.lga,
-      openingTime: completeData.openingTime || '08:00',
-      closingTime: completeData.closingTime || '17:00',
+      openingTime: completeData.openingTime || '',
+      closingTime: completeData.closingTime || '',
       description: completeData.description,
       phoneNumber: formatPhoneNumber(completeData.phone, 'compact-int'),
       emailAddress: completeData.email,
@@ -65,19 +67,25 @@ export const useBranchFormSubmission = () => {
       apiPayload.whatsApp = formatPhoneNumber(completeData.whatsapp, 'compact-int');
     }
 
-    // Add files
+    // Add and compress files
     if (completeData.logo) {
-      apiPayload.logo = base64ToFile(completeData.logo, 'logo.jpg');
+      const logoFile = base64ToFile(completeData.logo, 'logo.jpg');
+      apiPayload.logo = await compressImage(logoFile, 800, 0.8); // Compress logo more aggressively
     }
 
     if (completeData.businessPhotos && completeData.businessPhotos.length > 0) {
-      apiPayload.images = completeData.businessPhotos.map((photo, index) =>
-        base64ToFile(photo, `business-photo-${index}.jpg`)
+      const compressedPhotos = await Promise.all(
+        completeData.businessPhotos.map(async (photo, index) => {
+          const photoFile = base64ToFile(photo, `business-photo-${index}.jpg`);
+          return await compressImage(photoFile, 1200, 0.7); // Compress business photos
+        })
       );
+      apiPayload.images = compressedPhotos;
     }
 
     if (completeData.managerPhoto) {
-      apiPayload.managerProfilePhoto = base64ToFile(completeData.managerPhoto, 'manager-photo.jpg');
+      const managerFile = base64ToFile(completeData.managerPhoto, 'manager-photo.jpg');
+      apiPayload.managerProfilePhoto = await compressImage(managerFile, 800, 0.8); // Compress manager photo
     }
 
     return apiPayload;
@@ -87,10 +95,26 @@ export const useBranchFormSubmission = () => {
     console.log('🎉 FORM SUBMISSION SUCCESSFUL! 🎉');
     console.log('Form submission triggered with data:', data);
 
-    const apiPayload = createFormDataPayload(data);
+    try {
+      const apiPayload = await createFormDataPayload(data);
 
-    // Use the mutation hook to submit the data
-    handleCreateBranch(apiPayload);
+      // Validate total payload size (10MB limit for server)
+      const totalSize = calculatePayloadSize(apiPayload);
+      const maxPayloadSize = 10 * 1024 * 1024; // 10MB
+
+      if (totalSize > maxPayloadSize) {
+        toast.error(`Total file size is ${formatFileSize(totalSize)}. Maximum allowed total size is 10MB. Please reduce image sizes or remove some images.`);
+        return;
+      }
+
+      console.log('📊 Payload size:', formatFileSize(totalSize));
+
+      // Use the mutation hook to submit the data
+      handleCreateBranch(apiPayload);
+    } catch (error) {
+      console.error('Error processing images:', error);
+      toast.error('Failed to process images. Please try again.');
+    }
   };
 
   return {

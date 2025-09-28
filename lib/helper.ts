@@ -850,3 +850,108 @@ export const getTimelineDates = (
       };
   }
 };
+
+// File size validation utilities
+export const parseFileSize = (sizeString: string): number => {
+  const units: { [key: string]: number } = {
+    'b': 1,
+    'kb': 1024,
+    'mb': 1024 * 1024,
+    'gb': 1024 * 1024 * 1024,
+  };
+
+  const match = sizeString.toLowerCase().match(/^(\d+(?:\.\d+)?)\s*(b|kb|mb|gb)$/);
+  if (!match) return 0;
+
+  const size = parseFloat(match[1]);
+  const unit = match[2];
+  return size * units[unit];
+};
+
+export const formatFileSize = (bytes: number): string => {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
+
+export const validateFileSize = (file: File, maxSizeString: string): { isValid: boolean; error?: string } => {
+  const maxSizeBytes = parseFileSize(maxSizeString);
+  if (file.size > maxSizeBytes) {
+    return {
+      isValid: false,
+      error: `File size is ${formatFileSize(file.size)}. Maximum allowed size is ${maxSizeString.toUpperCase()}.`
+    };
+  }
+  return { isValid: true };
+};
+
+// Image compression utility
+export const compressImage = (file: File, maxWidth: number = 1920, quality: number = 0.8): Promise<File> => {
+  return new Promise((resolve, reject) => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+
+    img.onload = () => {
+      // Calculate new dimensions
+      let { width, height } = img;
+
+      if (width > maxWidth) {
+        height = (height * maxWidth) / width;
+        width = maxWidth;
+      }
+
+      // Set canvas dimensions
+      canvas.width = width;
+      canvas.height = height;
+
+      // Draw and compress
+      ctx?.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            const compressedFile = new File([blob], file.name, {
+              type: 'image/jpeg',
+              lastModified: Date.now(),
+            });
+            resolve(compressedFile);
+          } else {
+            reject(new Error('Compression failed'));
+          }
+        },
+        'image/jpeg',
+        quality
+      );
+    };
+
+    img.onerror = () => reject(new Error('Image load failed'));
+    img.src = URL.createObjectURL(file);
+  });
+};
+
+// Calculate total payload size for validation
+export const calculatePayloadSize = (data: { logo?: File; images?: File[]; managerProfilePhoto?: File }): number => {
+  let totalSize = 0;
+
+  // Calculate size of all files
+  if (data.logo && data.logo instanceof File) {
+    totalSize += data.logo.size;
+  }
+
+  if (data.images && Array.isArray(data.images)) {
+    data.images.forEach((file: File) => {
+      if (file instanceof File) {
+        totalSize += file.size;
+      }
+    });
+  }
+
+  if (data.managerProfilePhoto && data.managerProfilePhoto instanceof File) {
+    totalSize += data.managerProfilePhoto.size;
+  }
+
+  return totalSize;
+};
