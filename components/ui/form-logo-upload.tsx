@@ -1,8 +1,10 @@
 "use client"
 
+import { validateFileSize } from "@/lib/helper"
 import { Upload, User, X } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 interface FormLogoUploadProps {
   label?: string
@@ -18,6 +20,7 @@ export function FormLogoUpload({
   description = "Help Customers Find You With A Logo (Optional)",
   onImageChange,
   accept = "image/*",
+  maxSize = "750kb",
   currentValue,
 }: FormLogoUploadProps) {
   const [imagePreview, setImagePreview] = useState<string | null>(currentValue || null)
@@ -30,6 +33,13 @@ export function FormLogoUpload({
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
+      // Validate file size
+      const validation = validateFileSize(file, maxSize)
+      if (!validation.isValid) {
+        toast.error(validation.error || `File size exceeds maximum allowed size of ${maxSize.toUpperCase()}`)
+        return
+      }
+
       const reader = new FileReader()
       reader.onload = (e) => {
         const base64 = e.target?.result as string
@@ -88,6 +98,7 @@ export function FormLogoUpload({
         </span>
       </button>
       <p className="text-sm text-black/60 font-semibold">{description}</p>
+      <p className="text-xs text-gray-500 mt-1">Max file size {maxSize}</p>
     </div>
   )
 }

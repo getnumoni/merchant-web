@@ -1,8 +1,10 @@
 "use client"
 
+import { validateFileSize } from "@/lib/helper"
 import { Upload, X } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 interface FormImageUploadProps {
   label: string
@@ -27,7 +29,7 @@ export function FormImageUpload({
   onImageChange,
   onImagesChange,
   accept = "image/*",
-  maxSize = "3mb",
+  maxSize = "2mb",
   supportedFormats = "Jpeg and png files supported",
   maxImages = 5,
   allowMultiple = false,
@@ -50,11 +52,23 @@ export function FormImageUpload({
     const files = Array.from(e.target.files || [])
 
     if (allowMultiple && onImagesChange) {
-      // Handle multiple images
+      // Handle multiple images with size validation
       const newImages: string[] = []
       let processedCount = 0
+      const validFiles: File[] = []
 
-      files.forEach((file) => {
+      // First, validate all files
+      for (const file of files) {
+        const validation = validateFileSize(file, maxSize)
+        if (!validation.isValid) {
+          toast.error(validation.error || `File size exceeds maximum allowed size of ${maxSize.toUpperCase()}`)
+          continue
+        }
+        validFiles.push(file)
+      }
+
+      // Process only valid files
+      validFiles.forEach((file) => {
         if (imagePreviews.length + newImages.length >= maxImages) return
 
         const reader = new FileReader()
@@ -63,7 +77,7 @@ export function FormImageUpload({
           newImages.push(base64)
           processedCount++
 
-          if (processedCount === files.length) {
+          if (processedCount === validFiles.length) {
             const updatedImages = [...imagePreviews, ...newImages]
             setImagePreviews(updatedImages)
             onImagesChange(updatedImages)
@@ -72,9 +86,15 @@ export function FormImageUpload({
         reader.readAsDataURL(file)
       })
     } else {
-      // Handle single image (backward compatibility)
+      // Handle single image (backward compatibility) with size validation
       const file = files[0]
       if (file) {
+        const validation = validateFileSize(file, maxSize)
+        if (!validation.isValid) {
+          toast.error(validation.error || `File size exceeds maximum allowed size of ${maxSize.toUpperCase()}`)
+          return
+        }
+
         const reader = new FileReader()
         reader.onload = (event) => {
           const base64 = event.target?.result as string

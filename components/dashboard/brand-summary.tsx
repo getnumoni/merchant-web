@@ -8,9 +8,6 @@ import MainBranchSummaryLoading from "./main-branch-summary-loading";
 export default function BrandSummary({
   title = "Brand Summary",
   subtitle = "Get quick insight on your brand and operations.",
-  onboardedBranches = 0,
-  availableBrandPoints = "#16,217.90",
-  totalCustomers = "54,9181"
 }: BrandSummaryProps) {
 
   const { data, isPending, isError, error, refetch } = useGetRewardAnalysis();
