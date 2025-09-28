@@ -13,9 +13,7 @@ interface FormImageUploadProps {
   placeholder?: string
   onImageChange: (base64: string | null) => void
   onImagesChange?: (base64Array: string[]) => void
-  accept?: string
   maxSize?: string
-  supportedFormats?: string
   maxImages?: number
   allowMultiple?: boolean
   currentValue?: string | null
@@ -28,9 +26,7 @@ export function FormImageUpload({
   required = false,
   onImageChange,
   onImagesChange,
-  accept = "image/*",
   maxSize = "2mb",
-  supportedFormats = "Jpeg and png files supported",
   maxImages = 5,
   allowMultiple = false,
   currentValue,

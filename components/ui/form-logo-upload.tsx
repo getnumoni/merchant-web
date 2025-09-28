@@ -10,16 +10,13 @@ interface FormLogoUploadProps {
   label?: string
   description?: string
   onImageChange: (base64: string | null) => void
-  accept?: string
   maxSize?: string
-  supportedFormats?: string
   currentValue?: string | null
 }
 
 export function FormLogoUpload({
   description = "Help Customers Find You With A Logo (Optional)",
   onImageChange,
-  accept = "image/*",
   maxSize = "750kb",
   currentValue,
 }: FormLogoUploadProps) {
