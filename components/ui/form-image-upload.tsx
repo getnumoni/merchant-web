@@ -1,6 +1,6 @@
 "use client"
 
-import { validateFileSize } from "@/lib/helper"
+import { validateFileSize, validateFileType } from "@/lib/helper"
 import { Upload, X } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
@@ -13,9 +13,7 @@ interface FormImageUploadProps {
   placeholder?: string
   onImageChange: (base64: string | null) => void
   onImagesChange?: (base64Array: string[]) => void
-  accept?: string
   maxSize?: string
-  supportedFormats?: string
   maxImages?: number
   allowMultiple?: boolean
   currentValue?: string | null
@@ -28,9 +26,7 @@ export function FormImageUpload({
   required = false,
   onImageChange,
   onImagesChange,
-  accept = "image/*",
   maxSize = "2mb",
-  supportedFormats = "Jpeg and png files supported",
   maxImages = 5,
   allowMultiple = false,
   currentValue,
@@ -59,9 +55,17 @@ export function FormImageUpload({
 
       // First, validate all files
       for (const file of files) {
-        const validation = validateFileSize(file, maxSize)
-        if (!validation.isValid) {
-          toast.error(validation.error || `File size exceeds maximum allowed size of ${maxSize.toUpperCase()}`)
+        // Validate file type first
+        const typeValidation = validateFileType(file)
+        if (!typeValidation.isValid) {
+          toast.error(typeValidation.error || "File type not supported. Please upload PNG, JPG, or JPEG files only.")
+          continue
+        }
+
+        // Then validate file size
+        const sizeValidation = validateFileSize(file, maxSize)
+        if (!sizeValidation.isValid) {
+          toast.error(sizeValidation.error || `File size exceeds maximum allowed size of ${maxSize.toUpperCase()}`)
           continue
         }
         validFiles.push(file)
@@ -86,12 +90,20 @@ export function FormImageUpload({
         reader.readAsDataURL(file)
       })
     } else {
-      // Handle single image (backward compatibility) with size validation
+      // Handle single image (backward compatibility) with validation
       const file = files[0]
       if (file) {
-        const validation = validateFileSize(file, maxSize)
-        if (!validation.isValid) {
-          toast.error(validation.error || `File size exceeds maximum allowed size of ${maxSize.toUpperCase()}`)
+        // Validate file type first
+        const typeValidation = validateFileType(file)
+        if (!typeValidation.isValid) {
+          toast.error(typeValidation.error || "File type not supported. Please upload PNG, JPG, or JPEG files only.")
+          return
+        }
+
+        // Then validate file size
+        const sizeValidation = validateFileSize(file, maxSize)
+        if (!sizeValidation.isValid) {
+          toast.error(sizeValidation.error || `File size exceeds maximum allowed size of ${maxSize.toUpperCase()}`)
           return
         }
 
@@ -178,7 +190,7 @@ export function FormImageUpload({
                     }
                   </button>
                   <p className="text-xs text-gray-500">
-                    {supportedFormats}. Max file size {maxSize}.
+                    PNG, JPG, JPEG files only. Max file size {maxSize}.
                     {required && imagePreviews.length === 0 && <span className="text-red-500"> At least 1 photo required.</span>}
                   </p>
                 </div>
@@ -218,7 +230,7 @@ export function FormImageUpload({
                   >
                     Tap to <span className="text-green-600 font-medium">upload</span> from device
                   </button>
-                  <p className="text-xs text-gray-500">{supportedFormats}. Max file size {maxSize}</p>
+                  <p className="text-xs text-gray-500">PNG, JPG, JPEG files only. Max file size {maxSize}</p>
                 </div>
               </div>
             )}
@@ -228,7 +240,7 @@ export function FormImageUpload({
         <input
           type="file"
           id={inputId}
-          accept={accept}
+          accept=".png,.jpg,.jpeg,image/png,image/jpeg,image/jpg"
           onChange={handleImageChange}
           multiple={allowMultiple}
           className="hidden"

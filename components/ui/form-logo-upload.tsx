@@ -1,6 +1,6 @@
 "use client"
 
-import { validateFileSize } from "@/lib/helper"
+import { validateFileSize, validateFileType } from "@/lib/helper"
 import { Upload, User, X } from "lucide-react"
 import Image from "next/image"
 import { useEffect, useState } from "react"
@@ -10,16 +10,13 @@ interface FormLogoUploadProps {
   label?: string
   description?: string
   onImageChange: (base64: string | null) => void
-  accept?: string
   maxSize?: string
-  supportedFormats?: string
   currentValue?: string | null
 }
 
 export function FormLogoUpload({
   description = "Help Customers Find You With A Logo (Optional)",
   onImageChange,
-  accept = "image/*",
   maxSize = "750kb",
   currentValue,
 }: FormLogoUploadProps) {
@@ -33,10 +30,17 @@ export function FormLogoUpload({
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      // Validate file size
-      const validation = validateFileSize(file, maxSize)
-      if (!validation.isValid) {
-        toast.error(validation.error || `File size exceeds maximum allowed size of ${maxSize.toUpperCase()}`)
+      // Validate file type first
+      const typeValidation = validateFileType(file)
+      if (!typeValidation.isValid) {
+        toast.error(typeValidation.error || "File type not supported. Please upload PNG, JPG, or JPEG files only.")
+        return
+      }
+
+      // Then validate file size
+      const sizeValidation = validateFileSize(file, maxSize)
+      if (!sizeValidation.isValid) {
+        toast.error(sizeValidation.error || `File size exceeds maximum allowed size of ${maxSize.toUpperCase()}`)
         return
       }
 
@@ -83,7 +87,7 @@ export function FormLogoUpload({
       <input
         type="file"
         id="logo-upload"
-        accept={accept}
+        accept=".png,.jpg,.jpeg,image/png,image/jpeg,image/jpg"
         onChange={handleImageChange}
         className="hidden"
       />
@@ -98,7 +102,7 @@ export function FormLogoUpload({
         </span>
       </button>
       <p className="text-sm text-black/60 font-semibold">{description}</p>
-      <p className="text-xs text-gray-500 mt-1">Max file size {maxSize}</p>
+      <p className="text-xs text-gray-500 mt-1">PNG, JPG, JPEG files only. Max file size {maxSize}</p>
     </div>
   )
 }
