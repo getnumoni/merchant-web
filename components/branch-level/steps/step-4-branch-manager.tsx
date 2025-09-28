@@ -1,10 +1,12 @@
 "use client"
 
+import { validateFileSize } from "@/lib/helper";
 import { BranchFormData } from "@/lib/schemas/branch-schema";
 import { Upload, User } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import { Control } from "react-hook-form";
+import { toast } from "sonner";
 import { Button } from "../../ui/button";
 import { FormInputTopLabel } from "../../ui/form-input";
 import { FormPhoneInput } from "../../ui/form-phone-input";
@@ -20,6 +22,13 @@ export default function Step4BranchManager({ control, onManagerPhotoChange }: St
   const handleManagerPhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      // Validate file size (750KB limit for manager photo)
+      const validation = validateFileSize(file, "750kb");
+      if (!validation.isValid) {
+        toast.error(validation.error || "File size exceeds maximum allowed size of 750KB");
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = (e) => {
         const base64 = e.target?.result as string;
@@ -58,6 +67,7 @@ export default function Step4BranchManager({ control, onManagerPhotoChange }: St
           Tap To Add Manager&apos;s Photo
         </Button>
         <p className="text-sm text-gray-500">Help Customers Easily Identify Branch Manager (Optional)</p>
+        <p className="text-xs text-gray-400 mt-1">Max file size 750KB</p>
       </div>
 
       <div className="space-y-4">
