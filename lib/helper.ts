@@ -887,6 +887,18 @@ export const validateFileSize = (file: File, maxSizeString: string): { isValid: 
   return { isValid: true };
 };
 
+// File type validation utility
+export const validateFileType = (file: File, allowedTypes: string[] = ['image/png', 'image/jpeg', 'image/jpg']): { isValid: boolean; error?: string } => {
+  if (!allowedTypes.includes(file.type)) {
+    const allowedExtensions = allowedTypes.map(type => type.split('/')[1].toUpperCase()).join(', ');
+    return {
+      isValid: false,
+      error: `File type not supported. Please upload ${allowedExtensions} files only.`
+    };
+  }
+  return { isValid: true };
+};
+
 // Image compression utility
 export const compressImage = (file: File, maxWidth: number = 1920, quality: number = 0.8): Promise<File> => {
   return new Promise((resolve, reject) => {
