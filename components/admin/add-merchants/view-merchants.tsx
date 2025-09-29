@@ -1,9 +1,10 @@
 'use client';
 
+import SearchInput from '@/components/common/search-input';
 import { DataTable } from '@/components/ui/data-table';
 import { ADMIN_MERCHANTS_ADD_URL } from '@/constant/routes';
 import { merchantsData } from '@/data/merchants-data';
-import { ChevronDown, ChevronLeft, ChevronRight, Download, Filter, Info, Plus, RefreshCw, Search, Trash2, X } from 'lucide-react';
+import { ChevronDown, ChevronLeft, ChevronRight, Download, Filter, Info, Plus, RefreshCw, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
 import { merchantColumns } from './merchant-columns';
@@ -56,24 +57,11 @@ export default function ViewMerchants() {
       <div className="p-6  border-gray-200">
         <div className="flex items-center justify-between mb-4">
           {/* Search Input */}
-          <div className="relative flex-1 max-w-md">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search by name, email, or category..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            />
-            {searchTerm && (
-              <button
-                onClick={() => setSearchTerm('')}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 hover:text-gray-600"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </div>
+          <SearchInput
+            placeholder="Search by name, email, or category..."
+            value={searchTerm}
+            onChange={setSearchTerm}
+          />
 
           {/* Filter Buttons */}
           <div className="flex items-center gap-3">

@@ -4,9 +4,9 @@ import { numoniLogoDark } from '@/constant/icons';
 import { adminNavigationItem } from '@/data';
 import { AdminNavigationItem, SidebarProps } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
   ChevronDown,
-  ChevronUp,
   HelpCircle
 } from 'lucide-react';
 import Image from 'next/image';
@@ -21,11 +21,14 @@ export default function AdminSidebar({ isOpen, onClose }: SidebarProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>(['Customers']);
 
   const toggleExpanded = (itemName: string) => {
-    setExpandedItems(prev =>
-      prev.includes(itemName)
-        ? prev.filter(name => name !== itemName)
-        : [...prev, itemName]
-    );
+    setExpandedItems(prev => {
+      // If clicking on an already expanded item, close it
+      if (prev.includes(itemName)) {
+        return prev.filter(name => name !== itemName);
+      }
+      // If clicking on a new item, close all others and open this one
+      return [itemName];
+    });
   };
 
   const isItemActive = (item: AdminNavigationItem): boolean => {
@@ -46,7 +49,12 @@ export default function AdminSidebar({ isOpen, onClose }: SidebarProps) {
 
     if (hasChildren) {
       return (
-        <div key={item.name}>
+        <motion.div
+          key={item.name}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+        >
           <button
             onClick={() => toggleExpanded(item.name)}
             className={cn(
@@ -65,69 +73,97 @@ export default function AdminSidebar({ isOpen, onClose }: SidebarProps) {
               </span>
               {item.name}
             </div>
-            {isExpanded ? (
-              <ChevronUp size={16} className="text-gray-500" />
-            ) : (
+            <motion.div
+              animate={{ rotate: isExpanded ? 180 : 0 }}
+              transition={{ duration: 0.2, ease: 'easeInOut' }}
+            >
               <ChevronDown size={16} className="text-gray-500" />
-            )}
+            </motion.div>
           </button>
 
-          {isExpanded && (
-            <div className="ml-2 mt-2 space-y-1">
-              {item.children!.map((child) => {
-                const isChildActive = child.path === pathname;
-                const ChildIconComponent = child.icon;
+          <AnimatePresence>
+            {isExpanded && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{
+                  duration: 0.3,
+                  ease: 'easeInOut',
+                  opacity: { duration: 0.2 }
+                }}
+                className="ml-2 mt-2 space-y-1 overflow-hidden"
+              >
+                {item.children!.map((child, index) => {
+                  const isChildActive = child.path === pathname;
+                  const ChildIconComponent = child.icon;
 
-                return (
-                  <Link
-                    key={child.name}
-                    href={child.path!}
-                    className={cn(
-                      "flex items-center px-3 py-3 text-sm rounded-lg transition-colors relative",
-                      isChildActive
-                        ? "bg-green-50 text-green-700 font-medium border-l-2 border-green-600"
-                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                    )}
-                  >
-                    <span className="mr-3 text-gray-400">
-                      <ChildIconComponent size={16} />
-                    </span>
-                    {child.name}
-                  </Link>
-                );
-              })}
-            </div>
-          )}
-        </div>
+                  return (
+                    <motion.div
+                      key={child.name}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{
+                        delay: index * 0.1,
+                        duration: 0.2
+                      }}
+                    >
+                      <Link
+                        href={child.path!}
+                        className={cn(
+                          "flex items-center px-3 py-3 text-sm rounded-lg transition-colors relative",
+                          isChildActive
+                            ? "bg-green-50 text-green-700 font-medium border-l-2 border-green-600"
+                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                        )}
+                      >
+                        <span className="mr-3 text-gray-400">
+                          <ChildIconComponent size={16} />
+                        </span>
+                        {child.name}
+                      </Link>
+                    </motion.div>
+                  );
+                })}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
       );
     }
 
     return (
-      <Link
+      <motion.div
         key={item.name}
-        href={item.path!}
-        className={cn(
-          "flex items-center justify-between px-3 py-4 text-sm font-medium rounded-lg transition-colors",
-          isActive
-            ? "bg-green-50 text-green-700 border-l-4 border-green-600"
-            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-        )}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.2 }}
       >
-        <div className="flex items-center">
-          <span className={cn(
-            "mr-3",
-            isActive ? "text-green-600" : "text-gray-600"
-          )}>
-            <IconComponent size={20} />
-          </span>
-          {item.name}
-        </div>
-        {item.badge && (
-          <span className="bg-green-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
-            {item.badge}
-          </span>
-        )}
-      </Link>
+        <Link
+          href={item.path!}
+          className={cn(
+            "flex items-center justify-between px-3 py-4 text-sm font-medium rounded-lg transition-colors",
+            isActive
+              ? "bg-green-50 text-green-700 border-l-4 border-green-600"
+              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+          )}
+        >
+          <div className="flex items-center">
+            <span className={cn(
+              "mr-3",
+              isActive ? "text-green-600" : "text-gray-600"
+            )}>
+              <IconComponent size={20} />
+            </span>
+            {item.name}
+          </div>
+          {item.badge && (
+            <span className="bg-green-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
+              {item.badge}
+            </span>
+          )}
+        </Link>
+      </motion.div>
     );
   };
 
@@ -147,7 +183,7 @@ export default function AdminSidebar({ isOpen, onClose }: SidebarProps) {
           "fixed top-0 left-0 h-full w-80 bg-white text-gray-900 z-50 border border-r-1",
           "transform transition-transform duration-300 ease-in-out",
           "lg:translate-x-0 lg:w-64",
-          isOpen ? "translate-x-0" : "-translate-x-full"
+          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         )}
       >
         <div className="flex flex-col h-full">
