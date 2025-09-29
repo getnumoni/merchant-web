@@ -31,7 +31,7 @@ export const useSignIn = () => {
         toast.success("Signed in successfully");
 
         // Navigate to dashboard
-        router.push("/dashboard");
+        router.push("/admin");
       }
     },
     onError: (error: { response: { data: { message: string } } }) => {
