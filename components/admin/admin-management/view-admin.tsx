@@ -2,40 +2,40 @@
 
 import SearchInput from '@/components/common/search-input';
 import { DataTable } from '@/components/ui/data-table';
-import { ADMIN_CUSTOMERS_ADD_URL } from '@/constant/routes';
-import { customersData } from '@/data/customers-data';
+import { adminData } from '@/data/admin-data';
 import { ChevronDown, ChevronLeft, ChevronRight, Download, Filter, Info, Plus, RefreshCw, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { useMemo, useState } from 'react';
-import { customerColumns } from './customer-columns';
+import { adminColumns } from './admin-columns';
 
-export default function Customers() {
+export default function ViewAdmin() {
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [filterBy, setFilterBy] = useState('');
-  const [dateFilter, setDateFilter] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
+  const [roleFilter, setRoleFilter] = useState('');
+  const [teamFilter, setTeamFilter] = useState('');
   const [showFilters, setShowFilters] = useState(false);
 
-  const itemsPerPage = 20;
+  const itemsPerPage = 12;
 
-  // Filter customers based on search term
-  const filteredCustomers = useMemo(() => {
-    if (!searchTerm.trim()) return customersData;
+  // Filter admins based on search term
+  const filteredAdmins = useMemo(() => {
+    if (!searchTerm.trim()) return adminData;
 
     const searchLower = searchTerm.toLowerCase().trim();
-    return customersData.filter(customer =>
-      customer.name.toLowerCase().includes(searchLower) ||
-      customer.email.toLowerCase().includes(searchLower) ||
-      customer.customerId.toLowerCase().includes(searchLower) ||
-      customer.address.toLowerCase().includes(searchLower)
+    return adminData.filter(admin =>
+      admin.name.toLowerCase().includes(searchLower) ||
+      admin.email.toLowerCase().includes(searchLower) ||
+      admin.adminId.toLowerCase().includes(searchLower) ||
+      admin.role.toLowerCase().includes(searchLower) ||
+      admin.team.toLowerCase().includes(searchLower)
     );
   }, [searchTerm]);
 
-  const totalPages = Math.ceil(filteredCustomers.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredAdmins.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentCustomers = filteredCustomers.slice(startIndex, endIndex);
+  const currentAdmins = filteredAdmins.slice(startIndex, endIndex);
 
   const handlePreviousPage = () => {
     setCurrentPage(prev => Math.max(prev - 1, 1));
@@ -47,8 +47,8 @@ export default function Customers() {
 
   const handleResetFilter = () => {
     setFilterBy('');
-    setDateFilter('');
-    setStatusFilter('');
+    setRoleFilter('');
+    setTeamFilter('');
     setSearchTerm('');
   };
 
@@ -60,7 +60,7 @@ export default function Customers() {
           {/* Search Input */}
           <div className="w-full lg:max-w-md">
             <SearchInput
-              placeholder="Search Customers Name"
+              placeholder="Search Admin Name"
               value={searchTerm}
               onChange={setSearchTerm}
             />
@@ -77,14 +77,14 @@ export default function Customers() {
             </button>
 
             <button className="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-              <span className="hidden sm:inline">Date</span>
-              <span className="sm:hidden">Date</span>
+              <span className="hidden sm:inline">Role</span>
+              <span className="sm:hidden">Role</span>
               <ChevronDown className="h-4 w-4" />
             </button>
 
             <button className="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-              <span className="hidden sm:inline">Status</span>
-              <span className="sm:hidden">Status</span>
+              <span className="hidden sm:inline">Team</span>
+              <span className="sm:hidden">Team</span>
               <ChevronDown className="h-4 w-4" />
             </button>
 
@@ -102,7 +102,7 @@ export default function Customers() {
 
       {/* Data Table */}
       <div className="p-0">
-        {currentCustomers.length === 0 ? (
+        {currentAdmins.length === 0 ? (
           // Empty State
           <div className="flex flex-col items-center justify-center py-16 px-8">
             {/* Illustration */}
@@ -123,32 +123,32 @@ export default function Customers() {
             </div>
 
             {/* Text Content */}
-            <h3 className="text-2xl font-bold text-gray-900 mb-3">No Customers Found</h3>
+            <h3 className="text-2xl font-bold text-gray-900 mb-3">No Admins Found</h3>
             <p className="text-gray-600 text-center max-w-md mb-8 leading-relaxed">
-              No customers match your current search or filter criteria. Try adjusting your search terms or filters.
+              No admins match your current search or filter criteria. Try adjusting your search terms or filters.
             </p>
 
-            {/* Add Customers Button */}
-            <Link href={ADMIN_CUSTOMERS_ADD_URL}>
+            {/* Add Admin Button */}
+            <Link href="/admin/admin-management/add-admin">
               <button className="flex items-center gap-2 bg-theme-dark-green hover:bg-theme-dark-green/90 text-white px-6 py-3 rounded-lg font-medium transition-colors cursor-pointer">
                 <Plus className="h-5 w-5" />
-                Add Customers
+                Add Admin
               </button>
             </Link>
           </div>
         ) : (
           // Data Table
-          <DataTable columns={customerColumns} data={currentCustomers} />
+          <DataTable columns={adminColumns} data={currentAdmins} />
         )}
       </div>
 
       {/* Pagination and Row Actions */}
-      {currentCustomers.length > 0 && (
+      {currentAdmins.length > 0 && (
         <div className="p-4 border-t border-gray-200 bg-gray-50">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             {/* Row Count */}
             <div className="text-sm text-gray-600 order-2 sm:order-1">
-              Showing {startIndex + 1}-{Math.min(endIndex, filteredCustomers.length)} of {filteredCustomers.length}
+              Showing {startIndex + 1}-{Math.min(endIndex, filteredAdmins.length)} of {filteredAdmins.length}
             </div>
 
             {/* Row Action Icons */}

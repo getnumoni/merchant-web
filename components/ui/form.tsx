@@ -78,8 +78,13 @@ const FormItem = React.forwardRef<
 >(({ className, ...props }, ref) => {
   const id = React.useId()
 
+  // Create a more stable ID by removing colons and using a consistent format
+  const stableId = React.useMemo(() => {
+    return `form-${id.replace(/:/g, '')}`
+  }, [id])
+
   return (
-    <FormItemContext.Provider value={{ id }}>
+    <FormItemContext.Provider value={{ id: stableId }}>
       <div ref={ref} className={cn("space-y-2", className)} {...props} />
     </FormItemContext.Provider>
   )
@@ -119,6 +124,7 @@ const FormControl = React.forwardRef<
           : `${formDescriptionId} ${formMessageId}`
       }
       aria-invalid={!!error}
+      suppressHydrationWarning
       {...props}
     />
   )
@@ -136,6 +142,7 @@ const FormDescription = React.forwardRef<
       ref={ref}
       id={formDescriptionId}
       className={cn("text-sm text-muted-foreground", className)}
+      suppressHydrationWarning
       {...props}
     />
   )
@@ -158,6 +165,7 @@ const FormMessage = React.forwardRef<
       ref={ref}
       id={formMessageId}
       className={cn("text-sm font-medium text-destructive", className)}
+      suppressHydrationWarning
       {...props}
     >
       {body}

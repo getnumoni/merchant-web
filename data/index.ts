@@ -1,7 +1,7 @@
 import { BranchIcon, DashboardIcon, RewardIcon } from "@/components/common/icon-svg";
 import { avatarIcon, branchIcon, calenderIcon, dealIcon, emailIcon, giftIcon, graphDirectionIcon, grayPointIcon, instagramIcon, musicPauseIcon, phoneNotificationIcon, twitterIcon, whatsappIcon } from "@/constant/icons";
 import { sampleUserIcon } from "@/constant/images";
-import { ADMIN_CUSTOMERS_ADD_URL, ADMIN_CUSTOMERS_TRANSACTION_URL, ADMIN_CUSTOMERS_URL, ADMIN_MERCHANTS_ADD_URL, ADMIN_MERCHANTS_TRANSACTION_URL, ADMIN_MERCHANTS_URL, ADMIN_NOTIFICATIONS_URL, ADMIN_URL, BRANCH_LEVEL_URL, DASHBOARD_URL, REWARD_TABLE_URL } from "@/constant/routes";
+import { ADMIN_ACTIVITY_LOGS_URL, ADMIN_CHARITY_ADD_URL, ADMIN_CHARITY_URL, ADMIN_CUSTOMERS_ADD_URL, ADMIN_CUSTOMERS_TRANSACTION_URL, ADMIN_CUSTOMERS_URL, ADMIN_MANAGEMENT_ADD_URL, ADMIN_MANAGEMENT_URL, ADMIN_MERCHANTS_ADD_URL, ADMIN_MERCHANTS_TRANSACTION_URL, ADMIN_MERCHANTS_URL, ADMIN_NOTIFICATIONS_URL, ADMIN_URL, BRANCH_LEVEL_URL, DASHBOARD_URL, REWARD_TABLE_URL } from "@/constant/routes";
 import { AdminNavigationItem } from "@/lib/types";
 import { BarChart3, Bell, Building, FileBarChart, FileText, Heart, LayoutDashboard, Plus, Shield, User, Users } from "lucide-react";
 
@@ -269,15 +269,17 @@ const adminNavigationItem: AdminNavigationItem[] = [
     name: 'Charities',
     icon: Heart,
     children: [
-      { name: 'All Charities', path: '/admin/charities', icon: Heart },
-      { name: 'Add Charity', path: '/admin/charities/add', icon: Plus },
-      { name: 'Charity Reports', path: '/admin/charities/reports', icon: FileBarChart }
+      { name: 'All Charities', path: ADMIN_CHARITY_URL, icon: Heart },
+      { name: 'Add New Charities', path: ADMIN_CHARITY_ADD_URL, icon: Plus },
     ]
   },
   {
     name: 'Admin Management',
-    path: '/admin/management',
-    icon: Building
+    icon: Building,
+    children: [
+      { name: 'All Admins', path: ADMIN_MANAGEMENT_URL, icon: Building },
+      { name: 'Add New Admin', path: ADMIN_MANAGEMENT_ADD_URL, icon: Plus },
+    ]
   },
   {
     name: 'Roles & Permission',
@@ -286,12 +288,9 @@ const adminNavigationItem: AdminNavigationItem[] = [
   },
   {
     name: 'Activity Logs',
+    path: ADMIN_ACTIVITY_LOGS_URL,
     icon: FileText,
-    children: [
-      { name: 'All Logs', path: '/admin/logs', icon: FileText },
-      { name: 'User Activities', path: '/admin/logs/users', icon: User },
-      { name: 'System Logs', path: '/admin/logs/system', icon: Building }
-    ]
+
   },
   {
     name: 'Sales Report',
