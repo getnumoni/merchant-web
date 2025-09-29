@@ -4,7 +4,6 @@ import { numoniLogoDark } from '@/constant/icons';
 import { adminNavigationItem } from '@/data';
 import { AdminNavigationItem, SidebarProps } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { AnimatePresence, motion } from 'framer-motion';
 import {
   ChevronDown,
   HelpCircle
@@ -49,12 +48,7 @@ export default function AdminSidebar({ isOpen, onClose }: SidebarProps) {
 
     if (hasChildren) {
       return (
-        <motion.div
-          key={item.name}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
-        >
+        <div key={item.name}>
           <button
             onClick={() => toggleExpanded(item.name)}
             className={cn(
@@ -73,97 +67,70 @@ export default function AdminSidebar({ isOpen, onClose }: SidebarProps) {
               </span>
               {item.name}
             </div>
-            <motion.div
-              animate={{ rotate: isExpanded ? 180 : 0 }}
-              transition={{ duration: 0.2, ease: 'easeInOut' }}
-            >
+            <div className={cn(
+              "transition-transform duration-200",
+              isExpanded ? "rotate-180" : "rotate-0"
+            )}>
               <ChevronDown size={16} className="text-gray-500" />
-            </motion.div>
+            </div>
           </button>
 
-          <AnimatePresence>
-            {isExpanded && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{
-                  duration: 0.3,
-                  ease: 'easeInOut',
-                  opacity: { duration: 0.2 }
-                }}
-                className="ml-2 mt-2 space-y-1 overflow-hidden"
-              >
-                {item.children!.map((child, index) => {
-                  const isChildActive = child.path === pathname;
-                  const ChildIconComponent = child.icon;
+          {isExpanded && (
+            <div className="ml-2 mt-2 space-y-1">
+              {item.children!.map((child) => {
+                const isChildActive = child.path === pathname;
+                const ChildIconComponent = child.icon;
 
-                  return (
-                    <motion.div
-                      key={child.name}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{
-                        delay: index * 0.1,
-                        duration: 0.2
-                      }}
-                    >
-                      <Link
-                        href={child.path!}
-                        className={cn(
-                          "flex items-center px-3 py-3 text-sm rounded-lg transition-colors relative",
-                          isChildActive
-                            ? "bg-green-50 text-green-700 font-medium border-l-2 border-green-600"
-                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-                        )}
-                      >
-                        <span className="mr-3 text-gray-400">
-                          <ChildIconComponent size={16} />
-                        </span>
-                        {child.name}
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+                return (
+                  <Link
+                    key={child.name}
+                    href={child.path!}
+                    className={cn(
+                      "flex items-center px-3 py-3 text-sm rounded-lg transition-colors relative",
+                      isChildActive
+                        ? "bg-green-50 text-green-700 font-medium border-l-2 border-green-600"
+                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    )}
+                  >
+                    <span className="mr-3 text-gray-400">
+                      <ChildIconComponent size={16} />
+                    </span>
+                    {child.name}
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+        </div>
       );
     }
 
     return (
-      <motion.div
+      <Link
         key={item.name}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2 }}
+        href={item.path!}
+        className={cn(
+          "flex items-center justify-between px-3 py-4 text-sm font-medium rounded-lg transition-colors",
+          isActive
+            ? "bg-green-50 text-green-700 border-l-4 border-green-600"
+            : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+        )}
       >
-        <Link
-          href={item.path!}
-          className={cn(
-            "flex items-center justify-between px-3 py-4 text-sm font-medium rounded-lg transition-colors",
-            isActive
-              ? "bg-green-50 text-green-700 border-l-4 border-green-600"
-              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
-          )}
-        >
-          <div className="flex items-center">
-            <span className={cn(
-              "mr-3",
-              isActive ? "text-green-600" : "text-gray-600"
-            )}>
-              <IconComponent size={20} />
-            </span>
-            {item.name}
-          </div>
-          {item.badge && (
-            <span className="bg-green-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
-              {item.badge}
-            </span>
-          )}
-        </Link>
-      </motion.div>
+        <div className="flex items-center">
+          <span className={cn(
+            "mr-3",
+            isActive ? "text-green-600" : "text-gray-600"
+          )}>
+            <IconComponent size={20} />
+          </span>
+          {item.name}
+        </div>
+        {item.badge && (
+          <span className="bg-green-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
+            {item.badge}
+          </span>
+        )}
+      </Link>
     );
   };
 
