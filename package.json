@@ -16,7 +16,8 @@
       "lint": "eslint",
       "lint:fix": "eslint --fix",
       "prepare": "husky",
-      "type-check": "tsc"
+      "type-check": "tsc",
+      "commitlint": "commitlint --edit"
    },
    "dependencies": {
       "@googlemaps/js-api-loader": "^1.16.10",
