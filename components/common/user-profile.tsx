@@ -8,12 +8,16 @@ import {
   MenubarTrigger,
 } from '@/components/ui/menubar';
 import useGetMerchant from '@/hooks/query/useGetMerchant';
+import { useBankStore } from '@/stores/bank-store';
+import { usePayOnUsStore } from '@/stores/pay-on-us-store';
 import { useUserAuthStore } from '@/stores/user-auth-store';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
 export default function UserProfile() {
   const { user, isAuthenticated, clearUser } = useUserAuthStore();
+  const { clearToken } = usePayOnUsStore();
+  const { clearToken: clearBankToken } = useBankStore();
   const { data: merchant } = useGetMerchant();
 
   const merchantInfo = merchant?.data?.data;
@@ -22,6 +26,8 @@ export default function UserProfile() {
 
   const handleSignOut = () => {
     clearUser();
+    clearToken();
+    clearBankToken();
     router.push('/auth/sign-in');
   };
 

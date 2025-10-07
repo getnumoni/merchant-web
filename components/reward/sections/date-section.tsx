@@ -31,7 +31,7 @@ export default function DateSection({ startDate, setStartDate, endDate, setEndDa
   };
 
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
       {/* Start Issuing Reward From */}
       <div className="space-y-2">
         <label className="text-sm font-semibold text-gray-900">
