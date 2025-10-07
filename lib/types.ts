@@ -383,6 +383,12 @@ type VerifyBankPayload = {
   accountNumber: string;
 }
 
+type VerifyPayOnUsBankPayload = {
+  institutionCode: string;
+  accountNumber: string;
+  businessId: string;
+}
+
 type ChangeBranchStatusPayload = {
   branchId: string;
   status: string;
@@ -438,5 +444,5 @@ type AccountInformationProps = {
   maxPointsIssued: string;
 }
 
-export type { AccountInformationProps, ActiveBranchModalProps, AdminNavigationItem, AuthUser, AuthUserStore, AxiosError, BankPayload, BankToken, Branch, BranchAnalyticsData, BranchManagerPayload, BranchSummaryData, BrandProfileProps, BrandSummaryProps, ChangeBranchStatusPayload, CreateRewardsPayload, Customer, CustomerAnalyticsData, CustomerAnalyticsResponse, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ErrorDisplayProps, ExpirationSectionProps, GetBranchesResponse, InfoItem, MainBranchSummaryProps, MilestoneTargetSectionProps, PointAnalyticsProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRule, RewardRulesSectionProps, Rewards, SidebarProps, signInPayload, singleBranchDetails, SocialMediaData, TanstackProviderProps, Transaction, UpdateBranchManagerPayload, UpdateRewardRuleModalProps, VerifyBankPayload };
+export type { AccountInformationProps, ActiveBranchModalProps, AdminNavigationItem, AuthUser, AuthUserStore, AxiosError, BankPayload, BankToken, Branch, BranchAnalyticsData, BranchManagerPayload, BranchSummaryData, BrandProfileProps, BrandSummaryProps, ChangeBranchStatusPayload, CreateRewardsPayload, Customer, CustomerAnalyticsData, CustomerAnalyticsResponse, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ErrorDisplayProps, ExpirationSectionProps, GetBranchesResponse, InfoItem, MainBranchSummaryProps, MilestoneTargetSectionProps, PointAnalyticsProps, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRule, RewardRulesSectionProps, Rewards, SidebarProps, signInPayload, singleBranchDetails, SocialMediaData, TanstackProviderProps, Transaction, UpdateBranchManagerPayload, UpdateRewardRuleModalProps, VerifyBankPayload, VerifyPayOnUsBankPayload };
 
