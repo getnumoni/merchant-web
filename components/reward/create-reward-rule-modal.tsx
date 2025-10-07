@@ -92,14 +92,14 @@ export default function CreateRewardRuleModal({ open, onOpenChange }: CreateRewa
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-3xl max-h-[90vh] flex flex-col">
+      <DialogContent className="w-[95vw] sm:w-full sm:max-w-3xl max-h-[90vh] flex flex-col mx-2 sm:mx-0">
         {/* Header - Static */}
         <DialogHeader className="flex-shrink-0 pb-4">
-          <div className="flex items-center gap-3">
-            <Image src={giftIcon} alt="Gift" width={45} height={45} />
-            <div>
-              <DialogTitle className="text-xl font-semibold">Set Reward Rules</DialogTitle>
-              <DialogDescription className="text-xs text-gray-600">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <Image src={giftIcon} alt="Gift" width={35} height={35} className="sm:w-[45px] sm:h-[45px]" />
+            <div className="flex-1 min-w-0">
+              <DialogTitle className="text-lg sm:text-xl font-semibold">Set Reward Rules</DialogTitle>
+              <DialogDescription className="text-xs text-gray-600 leading-relaxed">
                 Define your reward table parameters and rules. Once saved, they will apply across all branches.
               </DialogDescription>
             </div>
@@ -107,7 +107,7 @@ export default function CreateRewardRuleModal({ open, onOpenChange }: CreateRewa
         </DialogHeader>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto space-y-6 pr-2">
+        <div className="flex-1 overflow-y-auto space-y-4 sm:space-y-6 pr-1 sm:pr-2">
           <EarnMethodSection
             earnMethod={earnMethod}
             setEarnMethod={setEarnMethod}
@@ -159,12 +159,14 @@ export default function CreateRewardRuleModal({ open, onOpenChange }: CreateRewa
 
         {/* Footer - Static */}
         <DialogFooter className="flex-shrink-0 pt-4 border-t">
-          <div className="flex items-center justify-between w-full">
-            <p className="text-sm text-gray-500 font-semibold">You Can Change This Configurations On Setting Page</p>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between w-full gap-3 sm:gap-0">
+            <p className="text-xs sm:text-sm text-gray-500 font-semibold leading-relaxed">
+              You Can Change This Configurations On Setting Page
+            </p>
             <Button
               onClick={handleSave}
               disabled={!isFormValid || isPending}
-              className={`px-4 py-2 text-sm ${isFormValid && !isPending
+              className={`w-full sm:w-auto px-4 py-2 text-sm ${isFormValid && !isPending
                 ? "bg-green-600 hover:bg-green-700 text-white"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
                 }`}

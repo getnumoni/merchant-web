@@ -10,9 +10,9 @@ export default function ReceiveMethodSection({ receiveMethod, setReceiveMethod }
       <label className="text-sm font-semibold text-gray-900">
         Choose How Customers Are Rewarded <span className="text-red-500">*</span>
       </label>
-      <RadioGroup value={receiveMethod} onValueChange={setReceiveMethod} className="mt-2 flex flex-row gap-4">
+      <RadioGroup value={receiveMethod} onValueChange={setReceiveMethod} className="mt-2 flex flex-col sm:flex-row gap-3 sm:gap-4">
         <div
-          className={`flex-1 flex items-start space-x-3 border rounded-lg p-4 cursor-pointer transition-all duration-200 min-h-[80px] ${receiveMethod === "instantly"
+          className={`flex-1 flex items-start space-x-2 sm:space-x-3 border rounded-lg p-3 sm:p-4 cursor-pointer transition-all duration-200 min-h-[70px] sm:min-h-[80px] ${receiveMethod === "instantly"
             ? "border-green-500"
             : "border-gray-300 hover:border-gray-400"
             }`}
@@ -37,7 +37,7 @@ export default function ReceiveMethodSection({ receiveMethod, setReceiveMethod }
           </div>
         </div>
         <div
-          className={`flex-1 flex items-start space-x-3 border rounded-lg p-4 cursor-pointer transition-all duration-200 min-h-[80px] ${receiveMethod === "later"
+          className={`flex-1 flex items-start space-x-2 sm:space-x-3 border rounded-lg p-3 sm:p-4 cursor-pointer transition-all duration-200 min-h-[70px] sm:min-h-[80px] ${receiveMethod === "later"
             ? "border-green-500"
             : "border-gray-300 hover:border-gray-400"
             }`}

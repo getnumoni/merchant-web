@@ -39,6 +39,7 @@ export const branchFormSchema = z.object({
 
   // Step 5: Collection Account
   bank: z.string().min(1, 'Bank is required'), // Bank code
+  payOnUsBank: z.string().optional(), // Pay-on-us bank code
   accountNumber: z.string().min(10, 'Account number must be at least 10 digits'),
   bankAccountName: z.string().optional(), // Verified account name from bank API
   minPayment: z.string().min(1, 'Minimum payment amount is required'),
@@ -81,6 +82,7 @@ export const step4Schema = branchFormSchema.pick({
 
 export const step5Schema = branchFormSchema.pick({
   bank: true,
+  payOnUsBank: true,
   accountNumber: true,
   bankAccountName: true,
   minPayment: true,

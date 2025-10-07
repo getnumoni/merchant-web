@@ -13,9 +13,9 @@ export default function EarnMethodSection({ earnMethod, setEarnMethod }: EarnMet
       <label className="text-sm font-semibold text-gray-900">
         How Will Customers Earn Points? <span className="text-red-500">*</span>
       </label>
-      <RadioGroup value={earnMethod} onValueChange={setEarnMethod} className="mt-2 flex flex-row gap-4">
+      <RadioGroup value={earnMethod} onValueChange={setEarnMethod} className="mt-2 flex flex-col sm:flex-row gap-3 sm:gap-4">
         <div
-          className={`flex-1 flex items-start space-x-3 border rounded-lg p-4 cursor-pointer transition-all duration-200 min-h-[80px] ${earnMethod === "percentage"
+          className={`flex-1 flex items-start space-x-2 sm:space-x-3 border rounded-lg p-3 sm:p-4 cursor-pointer transition-all duration-200 min-h-[70px] sm:min-h-[80px] ${earnMethod === "percentage"
             ? "border-green-500"
             : "border-gray-300 hover:border-gray-400"
             }`}
@@ -40,7 +40,7 @@ export default function EarnMethodSection({ earnMethod, setEarnMethod }: EarnMet
           </div>
         </div>
         <div
-          className={`flex-1 flex items-start space-x-3 border rounded-lg p-4 cursor-pointer transition-all duration-200 min-h-[80px] ${earnMethod === "fixed"
+          className={`flex-1 flex items-start space-x-2 sm:space-x-3 border rounded-lg p-3 sm:p-4 cursor-pointer transition-all duration-200 min-h-[70px] sm:min-h-[80px] ${earnMethod === "fixed"
             ? "border-green-500"
             : "border-gray-300 hover:border-gray-400"
             }`}

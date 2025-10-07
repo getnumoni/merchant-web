@@ -5,6 +5,7 @@ import { navigationItems } from '@/data';
 import { isNavigationItemActive } from '@/lib/helper';
 import { SidebarProps } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { X } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -34,9 +35,17 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         )}
       >
         <div className="flex flex-col h-full">
-          {/* Logo */}
-          <div className="flex items-center justify-center h-16 px-4 border-b border-gray-200">
+          {/* Logo and Close Button */}
+          <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
             <Image src={numoniLogoDark} alt="nuMoni" width={120} height={40} />
+            {/* Close button - only visible on mobile */}
+            <button
+              onClick={onClose}
+              className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              aria-label="Close sidebar"
+            >
+              <X size={20} className="text-gray-600" />
+            </button>
           </div>
 
           {/* Navigation */}

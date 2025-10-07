@@ -1,6 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST() {
+export async function POST(request: NextRequest) {
+
+  // Ensure only POST method is allowed
+  if (request.method !== 'POST') {
+    return NextResponse.json({ error: "Method not allowed" }, { status: 405 });
+  }
   try {
     // Get bank credentials from environment variables
     const secret = process.env.BANK_SECRET_KEY;
@@ -9,7 +14,7 @@ export async function POST() {
 
     if (!secret || !clientId || !bankUrl) {
       return NextResponse.json(
-        { error: "Bank credentials not configured" },
+        { error: " credentials not configured" },
         { status: 500 }
       );
     }

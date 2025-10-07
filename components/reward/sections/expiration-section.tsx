@@ -12,7 +12,7 @@ export default function ExpirationSection({ pointExpiration, setPointExpiration 
       </label>
       <Select value={pointExpiration} onValueChange={setPointExpiration}>
         <SelectTrigger className="w-full py-6 mt-2">
-          <SelectValue placeholder="This Means Each Point Claimed By A User Will Expire If They Do Not Spend It" />
+          <SelectValue placeholder="This Means Each Point Claimed By A User Will Expire If They Do Not Spend It" className="placeholder:text-sm" />
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="1-day">1 Day</SelectItem>

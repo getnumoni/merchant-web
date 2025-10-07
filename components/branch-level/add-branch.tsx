@@ -1,6 +1,6 @@
 "use client"
 
-import { useGenerateBankToken } from "@/hooks/mutation/useGenerateBankToken";
+import { useGeneratePayOnUsToken } from "@/hooks/mutation/useGeneratePayOnUsToken";
 import { useBranchFormHandlers } from "@/hooks/use-branch-form-handlers";
 import { BranchFormData, branchFormSchema } from "@/lib/schemas/branch-schema";
 import { getStepDescription } from "@/lib/step-utils";
@@ -16,8 +16,10 @@ import BranchStepContent from "./branch-step-content";
 
 export default function AddBranch() {
   const { currentStep, formData, isOpen, closeDialog } = useBranchStore();
-  const { handleGenerateBankToken } = useGenerateBankToken();
-  const hasGeneratedToken = useRef(false);
+  // const { handleGenerateBankToken } = useGenerateBankToken();
+  const { handleGeneratePayOnUsToken } = useGeneratePayOnUsToken();
+  // const hasGeneratedToken = useRef(false);
+  const hasGeneratedPayOnUsToken = useRef(false);
   const [isAccountVerified, setIsAccountVerified] = useState<boolean>(false);
 
   const form = useForm<BranchFormData>({
@@ -72,17 +74,20 @@ export default function AddBranch() {
 
   // Generate bank token when modal opens (only once per modal session)
   useEffect(() => {
-    if (isOpen && !hasGeneratedToken.current) {
+    if (isOpen && !hasGeneratedPayOnUsToken.current) {
       // No need to pass credentials - they're handled server-side
-      handleGenerateBankToken();
-      hasGeneratedToken.current = true;
+      // handleGenerateBankToken();
+      handleGeneratePayOnUsToken();
+      // hasGeneratedToken.current = true;
+      hasGeneratedPayOnUsToken.current = true;
     }
-  }, [isOpen, handleGenerateBankToken]);
+  }, [isOpen, handleGeneratePayOnUsToken]);
 
   // Reset token generation flag when modal closes
   useEffect(() => {
     if (!isOpen) {
-      hasGeneratedToken.current = false;
+      // hasGeneratedToken.current = false;
+      hasGeneratedPayOnUsToken.current = false;
     }
   }, [isOpen]);
 

@@ -33,9 +33,10 @@ export default function PointDistributionChart({
     return <ErrorDisplay error={error?.message || "An error occurred"} />;
   }
 
-  // Transform data for Recharts
+  // Transform data for Recharts and handle duplicates
   const chartData = data?.map((item, index) => ({
-    name: item.branchName,
+    name: `${item.branchName} ${index + 1}`, // Add index to make names unique
+    originalName: item.branchName,
     value: item.totalPointsIssued,
     logo: item.logo,
     color: getChartBarColor(index.toString()),
@@ -49,10 +50,17 @@ export default function PointDistributionChart({
     },
   } satisfies ChartConfig;
 
+  // Calculate dynamic width based on data length
+  const dynamicWidth = Math.max(600, chartData.length * 50); // 80 per bar, minimum 600px
+
   return (
     <div className="bg-white rounded-2xl p-6">
       <div className="overflow-x-auto">
-        <ChartContainer config={chartConfig} className="h-[400px] min-w-[600px]">
+        <ChartContainer
+          config={chartConfig}
+          className="h-[400px]"
+          style={{ minWidth: `${dynamicWidth}px` }}
+        >
           <BarChart
             data={chartData}
             margin={{
@@ -67,11 +75,12 @@ export default function PointDistributionChart({
               dataKey="name"
               tickLine={false}
               axisLine={false}
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 10 }}
               interval={0}
               angle={-45}
               textAnchor="end"
-              height={80}
+              height={100}
+              width={80}
             />
             <YAxis
               domain={[0, 5]}
@@ -80,7 +89,13 @@ export default function PointDistributionChart({
             />
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent hideLabel />}
+              content={<ChartTooltipContent
+                hideLabel
+                formatter={(value, name, props) => [
+                  formatValue(value as number),
+                  props.payload?.originalName || name
+                ]}
+              />}
             />
             <Bar
               dataKey="value"

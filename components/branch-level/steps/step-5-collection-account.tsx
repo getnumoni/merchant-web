@@ -1,7 +1,7 @@
 "use client"
 
-import { useVerifyBank } from "@/hooks/mutation/useVerifyBank";
-import useGetAllBanks from "@/hooks/query/useGetAllBanks";
+import { useVerifyPayOnUsBank } from "@/hooks/mutation/useVerifyPayOnUsBank";
+import useGeneratePayOnUsBankList from "@/hooks/query/useGeneratePayOnUsBankList";
 import { BranchFormData } from "@/lib/schemas/branch-schema";
 import { useEffect, useRef, useState } from "react";
 import { Control, UseFormSetValue, useWatch } from "react-hook-form";
@@ -15,19 +15,39 @@ interface Step5Props {
 }
 
 export default function Step5CollectionAccount({ control, setValue, onAccountVerificationChange }: Step5Props) {
-  const { data, isPending } = useGetAllBanks();
-  const { handleVerifyBank, isPending: isVerifying, isSuccess: isVerified, accountName } = useVerifyBank();
+
+  const { handleVerifyPayOnUsBank, isPending: isVerifyingPayOnUsBank, isSuccess: isVerifiedPayOnUsBank, accountName: accountNamePayOnUs } = useVerifyPayOnUsBank();
+
+
+  const { data: payOnUsBankList, isPending: isPayOnUsBankListPending } = useGeneratePayOnUsBankList();
+
+  // console.log("payOnUsBankList", payOnUsBankList);
 
   // State for account verification
   const [isAccountValid, setIsAccountValid] = useState<boolean>(false);
-  const hasVerified = useRef<string>(""); // Track what we've already verified
-  const verificationTimeout = useRef<NodeJS.Timeout | null>(null);
+  const hasVerifiedPayOnUs = useRef<string>(""); // Track what we've already verified
+  const verificationTimeoutPayOnUs = useRef<NodeJS.Timeout | null>(null);
 
   // Transform API data to options format (using code as value, name as label)
-  const bankOptions = data?.data?.map((bank: { name: string; code: string }) => ({
-    value: bank.code,
-    label: bank.name
-  })) || [];
+  // const bankOptions = data?.data?.map((bank: { name: string; code: string }) => ({
+  //   value: bank.code,
+  //   label: bank.name
+  // })) || [];
+
+  // Transform pay-on-us bank data to options format
+  const payOnUsBankOptions = (() => {
+    const bankData = payOnUsBankList?.data?.data || payOnUsBankList?.data;
+    if (bankData && typeof bankData === 'object') {
+      return Object.entries(bankData).map(([code, name]) => ({
+        value: code,
+        label: String(name)
+      }));
+    }
+    return [];
+  })();
+
+  // console.log("payOnUsBankList raw data:", payOnUsBankList);
+  // console.log("payOnUsBankOptions:", payOnUsBankOptions);
 
   // console.log("banks", data);
 
@@ -50,65 +70,74 @@ export default function Step5CollectionAccount({ control, setValue, onAccountVer
   // Verify account when both bank and account number are provided
   useEffect(() => {
     // Clear any existing timeout
-    if (verificationTimeout.current) {
-      clearTimeout(verificationTimeout.current);
+    if (verificationTimeoutPayOnUs.current) {
+      clearTimeout(verificationTimeoutPayOnUs.current);
     }
 
     if (selectedBank && accountNumber && accountNumber.length >= 10) {
       const verificationKey = `${selectedBank}-${accountNumber}`;
-
-      // Only verify if we haven't already verified this combination
-      if (hasVerified.current !== verificationKey && !isVerifying) {
-        // Add a small delay to prevent rapid API calls while typing
-        verificationTimeout.current = setTimeout(() => {
+      if (hasVerifiedPayOnUs.current !== verificationKey && !isVerifyingPayOnUsBank) {
+        verificationTimeoutPayOnUs.current = setTimeout(() => {
           const verifyPayload = {
-            bankCode: selectedBank,
-            accountNumber: accountNumber
+            institutionCode: selectedBank,
+            accountNumber: accountNumber,
+            businessId: "8a86b73d-4cc9-42d6-ba8a-7c099335d62d"
           };
-
-          hasVerified.current = verificationKey;
-          handleVerifyBank(verifyPayload);
+          hasVerifiedPayOnUs.current = verificationKey;
+          handleVerifyPayOnUsBank(verifyPayload);
         }, 500); // 500ms delay
       }
     } else {
       // Reset verification state when requirements aren't met
       setIsAccountValid(false);
-      hasVerified.current = "";
+      hasVerifiedPayOnUs.current = "";
     }
 
     // Cleanup timeout on unmount
     return () => {
-      if (verificationTimeout.current) {
-        clearTimeout(verificationTimeout.current);
+      if (verificationTimeoutPayOnUs.current) {
+        clearTimeout(verificationTimeoutPayOnUs.current);
       }
     };
-  }, [selectedBank, accountNumber, handleVerifyBank, isVerifying]);
+  }, [selectedBank, accountNumber, handleVerifyPayOnUsBank, isVerifyingPayOnUsBank]);
 
   // Handle verification success
   useEffect(() => {
-    if (isVerified && accountName) {
+    if (isVerifiedPayOnUsBank && accountNamePayOnUs) {
       setIsAccountValid(true);
       // Save the verified account name to the form
-      setValue("bankAccountName", accountName);
+      setValue("bankAccountName", accountNamePayOnUs);
       onAccountVerificationChange?.(true);
-    } else if (!isVerifying && accountNumber && accountNumber.length >= 10) {
+    } else if (!isVerifyingPayOnUsBank && accountNumber && accountNumber.length >= 10) {
       setIsAccountValid(false);
       // Clear the account name if verification fails
       setValue("bankAccountName", "");
       onAccountVerificationChange?.(false);
     }
-  }, [isVerified, accountName, isVerifying, accountNumber, setValue, onAccountVerificationChange]);
+  }, [isVerifiedPayOnUsBank, accountNamePayOnUs, isVerifyingPayOnUsBank, accountNumber, setValue, onAccountVerificationChange]);
 
   return (
     <div className="space-y-4">
       <div className="space-y-4">
-        <FormCombobox
+        {/* <FormCombobox
           control={control}
           name="bank"
           disabled={isPending}
           label="Bank"
           options={bankOptions}
           placeholder={isPending ? "Loading banks..." : "Search and select a bank..."}
+          searchPlaceholder="Search banks..."
+          emptyMessage="No bank found."
+          required
+        /> */}
+
+        <FormCombobox
+          control={control}
+          name="bank"
+          disabled={isPayOnUsBankListPending}
+          label="Bank"
+          options={payOnUsBankOptions}
+          placeholder={isPayOnUsBankListPending ? "Loading banks..." : "Search and select a bank..."}
           searchPlaceholder="Search banks..."
           emptyMessage="No bank found."
           required
@@ -125,26 +154,26 @@ export default function Step5CollectionAccount({ control, setValue, onAccountVer
         {/* Account Verification Status */}
         {accountNumber && accountNumber.length >= 10 && (
           <div className="space-y-2">
-            {isVerifying && (
-              <div className="flex items-center space-x-2 text-blue-600">
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+            {isVerifyingPayOnUsBank && (
+              <div className="flex items-center space-x-2 text-theme-green">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-theme-green"></div>
                 <span className="text-sm">Verifying account...</span>
               </div>
             )}
 
-            {isAccountValid && accountName && (
+            {isAccountValid && accountNamePayOnUs && (
               <div className="bg-green-50 border border-green-200 rounded-lg p-3">
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-green-500 rounded-full"></div>
                   <span className="text-sm font-medium text-green-800">Account Verified</span>
                 </div>
                 <p className="text-sm text-green-700 mt-1">
-                  Account Name: <span className="font-semibold">{accountName}</span>
+                  Account Name: <span className="font-semibold">{accountNamePayOnUs}</span>
                 </p>
               </div>
             )}
 
-            {!isVerifying && !isAccountValid && accountNumber && accountNumber.length >= 10 && (
+            {!isVerifyingPayOnUsBank && !isAccountValid && accountNumber && accountNumber.length >= 10 && (
               <div className="bg-red-50 border border-red-200 rounded-lg p-3">
                 <div className="flex items-center space-x-2">
                   <div className="w-2 h-2 bg-red-500 rounded-full"></div>
