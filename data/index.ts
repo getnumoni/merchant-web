@@ -87,6 +87,11 @@ const rewardTableData = [
   { min: "70,000", max: "Above", reward: "5%" }
 ];
 
+const regions = [
+  "Lagos", "Kogi", "Abuja", "Delta", "Bayelsa", "Rivers", "Kano", "Kaduna",
+  "Ogun", "Oyo", "Osun", "Ondo", "Edo", "Enugu", "Anambra", "Imo", "Abia"
+];
+
 const summaryData = [
   {
     icon: giftIcon,
@@ -148,10 +153,7 @@ const branches = [
   "Chicken Republic Surulere"
 ];
 
-const regions = [
-  "Lagos", "Kogi", "Abuja", "Delta", "Bayelsa", "Rivers", "Kano", "Kaduna",
-  "Ogun", "Oyo", "Osun", "Ondo", "Edo", "Enugu", "Anambra", "Imo", "Abia"
-];
+
 
 const timelineOptions = [
   "Today",
@@ -417,10 +419,7 @@ const mockMerchantData = {
 export {
   adminNavigationItem, benefitsData,
   branches,
-  customerData, mockMerchantData, months,
-  navigationItems,
-  regions,
-  rewardTableData,
+  customerData, mockMerchantData, months, navigationItems, regions, rewardTableData,
   socialMediaPlatforms,
   summaryData,
   tabs,
