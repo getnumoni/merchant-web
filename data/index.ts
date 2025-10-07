@@ -148,10 +148,7 @@ const branches = [
   "Chicken Republic Surulere"
 ];
 
-const regions = [
-  "Lagos", "Kogi", "Abuja", "Delta", "Bayelsa", "Rivers", "Kano", "Kaduna",
-  "Ogun", "Oyo", "Osun", "Ondo", "Edo", "Enugu", "Anambra", "Imo", "Abia"
-];
+
 
 const timelineOptions = [
   "Today",
@@ -419,7 +416,7 @@ export {
   branches,
   customerData, mockMerchantData, months,
   navigationItems,
-  regions,
+
   rewardTableData,
   socialMediaPlatforms,
   summaryData,
