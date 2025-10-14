@@ -59,7 +59,7 @@ export default function BranchFormFooter({
 
         {/* Navigation Buttons */}
         <div className="flex items-center gap-2">
-          {currentStep > 1 && (
+          {currentStep > 1 && !isLastStep && (
             <Button
               type="button"
               variant="outline"
