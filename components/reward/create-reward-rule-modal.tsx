@@ -46,7 +46,7 @@ export default function CreateRewardRuleModal({ open, onOpenChange }: CreateRewa
   const { handleCreateRewards, isPending, isSuccess } = useCreateRewards();
 
   // Check if all required fields are filled
-  const isFormValid = earnMethod && receiveMethod && startDate && rewardRules.length > 0 && rewardCap && (receiveMethod === "instantly" || milestoneTarget);
+  const isFormValid = earnMethod && receiveMethod && startDate && rewardRules.length > 0 && rewardCap && (receiveMethod === "INSTANT" || milestoneTarget);
 
   const handleSave = () => {
     // Map form values to API enum values
@@ -62,24 +62,24 @@ export default function CreateRewardRuleModal({ open, onOpenChange }: CreateRewa
       })),
       rewardCap: parseFloat(rewardCap) || 0,
       distributionType: getDistributionType(receiveMethod),
-      milestoneTarget: receiveMethod === "instantly" ? 1 : (parseInt(milestoneTarget) || 0),
+      milestoneTarget: receiveMethod === "INSTANT" ? 1 : (parseInt(milestoneTarget) || 0),
       pointExpirationDays: parseInt(pointExpiration) || 0,
       status: "ACTIVE", // Using uppercase as per API example
       startDate: startDate || null,
       endDate: endDate || null
     };
 
-    console.log("=== REWARD RULE PAYLOAD ===");
+    // console.log("=== REWARD RULE PAYLOAD ===");
     console.log("Payload:", payload);
-    console.log("=============================");
+    // console.log("=============================");
 
     // Call the mutation hook
     handleCreateRewards(payload);
   };
 
-  // Auto-set milestone target to 1 when receiveMethod is "instantly"
+  // Auto-set milestone target to 1 when receiveMethod is "INSTANT"
   useEffect(() => {
-    if (receiveMethod === "instantly") {
+    if (receiveMethod === "INSTANT") {
       setMilestoneTarget("1");
     }
   }, [receiveMethod]);
@@ -137,7 +137,7 @@ export default function CreateRewardRuleModal({ open, onOpenChange }: CreateRewa
             setReceiveMethod={setReceiveMethod}
           />
 
-          {receiveMethod === "later" && (
+          {receiveMethod === "LATER" && (
             <MilestoneTargetSection
               milestoneTarget={milestoneTarget}
               setMilestoneTarget={setMilestoneTarget}
