@@ -60,6 +60,13 @@ export const useUpdateRewardForm = (ruleData: Rewards | null, open: boolean) => 
     }
   }, [ruleData, open]);
 
+  // Auto-set milestone target to 1 when receiveMethod is "INSTANT"
+  useEffect(() => {
+    if (receiveMethod === "INSTANT") {
+      setMilestoneTarget("1");
+    }
+  }, [receiveMethod]);
+
   return {
     earnMethod, setEarnMethod,
     rewardCap, setRewardCap,

@@ -310,10 +310,10 @@ export const getRewardType = (earnMethod: string) => {
 
 export const getDistributionType = (receiveMethod: string) => {
   switch (receiveMethod) {
-    case "instantly":
+    case "INSTANT":
       return "INSTANT";
-    case "later":
-      return "MILESTONE_BASED";
+    case "LATER":
+      return "LATER";
     default:
       return "INSTANT";
   }
@@ -334,11 +334,11 @@ export const getEarnMethodFromRewardType = (rewardType: string) => {
 export const getReceiveMethodFromDistributionType = (distributionType: string) => {
   switch (distributionType) {
     case "INSTANT":
-      return "instantly";
+      return "INSTANT";
     case "MILESTONE_BASED":
-      return "later";
+      return "LATER";
     default:
-      return "instantly";
+      return "INSTANT";
   }
 };
 
