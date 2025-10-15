@@ -58,7 +58,7 @@ const createUpdatePayload = (
 export default function UpdateRewardRuleModal({ open, onOpenChange, ruleData }: UpdateRewardRuleModalProps) {
   const { userId } = getAuthCookies();
   const merchantId = userId as string;
-  console.log("ruleData", ruleData);
+  // console.log("ruleData", ruleData);
 
   // Use custom hook for form state management
   const formData = useUpdateRewardForm(ruleData, open);
