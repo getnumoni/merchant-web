@@ -62,7 +62,7 @@ export default function AddBranch() {
       bank: formData.bank || '',
       accountNumber: formData.accountNumber || '',
       bankAccountName: formData.bankAccountName || '',
-      minPayment: formData.minPayment || '',
+      minPayment: formData.minPayment || merchantInfo?.spendMinimumAmount || '',
     },
   });
 
