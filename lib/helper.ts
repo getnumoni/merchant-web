@@ -69,10 +69,10 @@ export const isNavigationItemActive = (itemPath: string, currentPath: string, al
  */
 export const getPageTitle = (path: string, searchParams?: Record<string, string>): string => {
   // Debug logging
-  console.log('getPageTitle - path:', path);
-  console.log('getPageTitle - searchParams:', searchParams);
-  console.log('getPageTitle - searchParams type:', typeof searchParams);
-  console.log('getPageTitle - searchParams keys:', searchParams ? Object.keys(searchParams) : 'undefined');
+  // console.log('getPageTitle - path:', path);
+  // console.log('getPageTitle - searchParams:', searchParams);
+  // console.log('getPageTitle - searchParams type:', typeof searchParams);
+  // console.log('getPageTitle - searchParams keys:', searchParams ? Object.keys(searchParams) : 'undefined');
 
   // Check if we have a branchName in search params for branch-level routes
   if (searchParams?.branchName && path.includes('/branch-level/')) {
@@ -966,4 +966,25 @@ export const calculatePayloadSize = (data: { logo?: File; images?: File[]; manag
   }
 
   return totalSize;
+};
+
+
+// Function to clean phone number by removing country code and formatting
+export const cleanPhoneNumber = (phoneNumber: string): string => {
+  if (!phoneNumber) return '';
+
+  // Remove all non-digit characters
+  let cleaned = phoneNumber.replace(/\D/g, '');
+
+  // Remove Nigerian country code (234) if present
+  if (cleaned.startsWith('234')) {
+    cleaned = cleaned.substring(3);
+  }
+
+  // Remove leading zero if present (since we removed country code)
+  if (cleaned.startsWith('0')) {
+    cleaned = cleaned.substring(1);
+  }
+
+  return cleaned;
 };

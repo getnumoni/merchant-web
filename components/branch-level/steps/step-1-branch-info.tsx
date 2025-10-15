@@ -161,17 +161,17 @@ export default function Step1BranchInfo({ control, setValue, onLogoChange, onBus
   }, [selectedState, setValue, isInitialLoad, hasInitialValues]);
 
   // Filter closing time options based on opening time
-  const getClosingTimeOptions = () => {
-    if (!selectedOpeningTime) {
-      return timeOptions;
-    }
+  // const getClosingTimeOptions = () => {
+  //   if (!selectedOpeningTime) {
+  //     return timeOptions;
+  //   }
 
-    // Find the index of the selected opening time
-    const openingTimeIndex = timeOptions.findIndex(option => option.value === selectedOpeningTime);
+  //   // Find the index of the selected opening time
+  //   const openingTimeIndex = timeOptions.findIndex(option => option.value === selectedOpeningTime);
 
-    // Return only times after the opening time
-    return timeOptions.slice(openingTimeIndex + 1);
-  };
+  //   // Return only times after the opening time
+  //   return timeOptions.slice(openingTimeIndex + 1);
+  // };
 
 
 
@@ -231,18 +231,20 @@ export default function Step1BranchInfo({ control, setValue, onLogoChange, onBus
           <FormSelectTopLabel
             control={control}
             name="openingTime"
-            label="Branch Opening Time (Optional)"
+            label="Branch Opening Time"
             options={timeOptions}
             placeholder="Choose Time"
+            required
           />
 
           <FormSelectTopLabel
             control={control}
             name="closingTime"
-            label="Branch Closing Time (Optional)"
-            options={getClosingTimeOptions()}
+            label="Branch Closing Time"
+            options={timeOptions}
             placeholder={selectedOpeningTime ? "Choose Closing Time" : "Select Opening Time First"}
             disabled={!selectedOpeningTime}
+            required
           />
         </div>
 

@@ -70,7 +70,7 @@ export default function CreateRewardRuleModal({ open, onOpenChange }: CreateRewa
     };
 
     // console.log("=== REWARD RULE PAYLOAD ===");
-    console.log("Payload:", payload);
+    // console.log("Payload:", payload);
     // console.log("=============================");
 
     // Call the mutation hook

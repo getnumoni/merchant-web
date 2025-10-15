@@ -1,10 +1,8 @@
 'use client';
 
-import { crownIcon, messageIcon, notificationIcon } from '@/constant/icons';
 import { getPageTitle } from '@/lib/helper';
 import { useBranchStore } from '@/stores/branch-store';
 import { Plus } from 'lucide-react';
-import Image from 'next/image';
 import { usePathname, useSearchParams } from 'next/navigation';
 import UserProfile from './user-profile';
 
@@ -18,9 +16,9 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
   const { openDialog } = useBranchStore();
 
   // Debug logging
-  console.log('Navbar - pathname:', pathname);
-  console.log('Navbar - searchParams:', searchParams.toString());
-  console.log('Navbar - searchParams entries:', Object.fromEntries(searchParams.entries()));
+  // console.log('Navbar - pathname:', pathname);
+  // console.log('Navbar - searchParams:', searchParams.toString());
+  // console.log('Navbar - searchParams entries:', Object.fromEntries(searchParams.entries()));
 
   // Function to get action button based on current page
   const getActionButton = () => {
@@ -100,7 +98,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
           {/* Right side - Notifications and User Profile */}
           <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4">
             {/* Upgrade Business - Hidden on mobile and small screens */}
-            <button className="hidden lg:flex items-center px-3 xl:px-4 py-2 xl:py-4 text-xs xl:text-sm font-medium bg-white hover:bg-gray-50 text-black relative overflow-hidden">
+            {/* <button className="hidden lg:flex items-center px-3 xl:px-4 py-2 xl:py-4 text-xs xl:text-sm font-medium bg-white hover:bg-gray-50 text-black relative overflow-hidden">
               <div className="absolute inset-0 rounded-full bg-gradient-to-r from-yellow-500 to-green-500 p-[2px]">
                 <div className="w-full h-full bg-white rounded-full"></div>
               </div>
@@ -109,23 +107,23 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
                 <span className="text-xs xl:text-sm font-medium hidden xl:inline">Upgrade Business</span>
                 <span className="text-xs font-medium xl:hidden">Upgrade</span>
               </div>
-            </button>
+            </button> */}
 
             {/* Chat Notifications */}
-            <button className="relative p-1.5 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 border">
+            {/* <button className="relative p-1.5 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 border">
               <Image src={messageIcon} alt="message" width={24} height={24} className="sm:w-8 sm:h-8" />
               <span className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 h-4 w-4 sm:h-5 sm:w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                 43
               </span>
-            </button>
+            </button> */}
 
             {/* Bell Notifications */}
-            <button className="relative p-1.5 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 border">
+            {/* <button className="relative p-1.5 sm:p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 border">
               <Image src={notificationIcon} alt="notification" width={24} height={24} className="sm:w-8 sm:h-8" />
               <span className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 h-4 w-4 sm:h-5 sm:w-5 bg-red-500 text-white text-xs rounded-full flex items-center justify-center">
                 43
               </span>
-            </button>
+            </button> */}
 
             {/* User Profile */}
             <div className="ml-1 sm:ml-0">
