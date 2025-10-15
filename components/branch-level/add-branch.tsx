@@ -1,7 +1,9 @@
 "use client"
 
 import { useGeneratePayOnUsToken } from "@/hooks/mutation/useGeneratePayOnUsToken";
+import useGetMerchant from "@/hooks/query/useGetMerchant";
 import { useBranchFormHandlers } from "@/hooks/use-branch-form-handlers";
+import { cleanPhoneNumber } from "@/lib/helper";
 import { BranchFormData, branchFormSchema } from "@/lib/schemas/branch-schema";
 import { getStepDescription } from "@/lib/step-utils";
 import { useBranchStore } from "@/stores/branch-store";
@@ -15,7 +17,11 @@ import BranchFormHeader from "./branch-form-header";
 import BranchStepContent from "./branch-step-content";
 
 export default function AddBranch() {
-  const { currentStep, formData, isOpen, closeDialog } = useBranchStore();
+  const { currentStep, formData, isOpen, closeDialog, resetForm } = useBranchStore();
+
+  const { data: merchant } = useGetMerchant();
+  const merchantInfo = merchant?.data?.data;
+
   // const { handleGenerateBankToken } = useGenerateBankToken();
   const { handleGeneratePayOnUsToken } = useGeneratePayOnUsToken();
   // const hasGeneratedToken = useRef(false);
@@ -32,9 +38,9 @@ export default function AddBranch() {
       lga: formData.lga || '',
       openingTime: formData.openingTime || '',
       closingTime: formData.closingTime || '',
-      description: formData.description || '',
-      phone: formData.phone || '',
-      email: formData.email || '',
+      description: formData.description || merchantInfo?.description || '',
+      phone: formData.phone || cleanPhoneNumber(merchantInfo?.businessPhoneNo || ''),
+      email: formData.email || merchantInfo?.businessEmail || '',
       businessPhoto: formData.businessPhoto || undefined,
       businessPhotos: formData.businessPhotos || undefined,
       address: formData.address || '',
@@ -47,12 +53,12 @@ export default function AddBranch() {
       managerName: formData.managerName || '',
       managerPhone: formData.managerPhone || '',
       managerEmail: formData.managerEmail || '',
-      website: formData.website || '',
+      website: formData.website || merchantInfo?.website || '',
       whatsapp: formData.whatsapp || '',
-      linkedin: formData.linkedin || '',
-      instagram: formData.instagram || '',
-      twitter: formData.twitter || '',
-      snapchat: formData.snapchat || '',
+      linkedin: formData.linkedin || merchantInfo?.linkedin || '',
+      instagram: formData.instagram || merchantInfo?.instagram || '',
+      twitter: formData.twitter || merchantInfo?.twitter || '',
+      snapchat: formData.snapchat || merchantInfo?.snapchat || '',
       bank: formData.bank || '',
       accountNumber: formData.accountNumber || '',
       bankAccountName: formData.bankAccountName || '',
@@ -72,6 +78,37 @@ export default function AddBranch() {
     isSuccess,
   } = useBranchFormHandlers(form.setValue, form.trigger, form.getValues(), isAccountVerified);
 
+  // Prefill form with merchant info when available
+  useEffect(() => {
+    if (merchantInfo && isOpen) {
+      // Only update if formData doesn't already have values (to preserve user input)
+      if (!formData.description) {
+        form.setValue('description', merchantInfo.description || '');
+      }
+      if (!formData.phone) {
+        form.setValue('phone', cleanPhoneNumber(merchantInfo.businessPhoneNo || ''));
+      }
+      if (!formData.email) {
+        form.setValue('email', merchantInfo.businessEmail || '');
+      }
+      if (!formData.website) {
+        form.setValue('website', merchantInfo.website || '');
+      }
+      if (!formData.linkedin) {
+        form.setValue('linkedin', merchantInfo.linkedin || '');
+      }
+      if (!formData.instagram) {
+        form.setValue('instagram', merchantInfo.instagram || '');
+      }
+      if (!formData.twitter) {
+        form.setValue('twitter', merchantInfo.twitter || '');
+      }
+      if (!formData.snapchat) {
+        form.setValue('snapchat', merchantInfo.snapchat || '');
+      }
+    }
+  }, [merchantInfo, isOpen, form, formData]);
+
   // Generate bank token when modal opens (only once per modal session)
   useEffect(() => {
     if (isOpen && !hasGeneratedPayOnUsToken.current) {
@@ -83,18 +120,28 @@ export default function AddBranch() {
     }
   }, [isOpen, handleGeneratePayOnUsToken]);
 
-  // Reset token generation flag when modal closes
+  // Reset token generation flag and form state when modal closes
   useEffect(() => {
     if (!isOpen) {
       // hasGeneratedToken.current = false;
       hasGeneratedPayOnUsToken.current = false;
+      // Reset form to default values
+      form.reset();
+      // Reset account verification state
+      setIsAccountVerified(false);
+      // Reset store state
+      resetForm();
     }
-  }, [isOpen]);
+  }, [isOpen, form, resetForm]);
 
   // Close modal when branch creation is successful
   useEffect(() => {
     if (isSuccess) {
       closeDialog();
+      form.reset();
+      resetForm();
+
+
     }
   }, [isSuccess, closeDialog]);
 
