@@ -45,7 +45,7 @@ export default function CustomerCard({ customer, rank }: CustomerCardProps) {
             </span>
           </div>
           <div className=" w-full">
-            {/* <h3 className="font-semibold text-black text-base">{customer.customerName}</h3> */}
+            <h3 className="font-semibold text-black text-base">{customer.customerName?.split(' ')[0]}</h3>
             <p className="text-xs text-gray-500">ID: {customer.customerId}</p>
             <hr className="border-theme-gray mt-2 " />
             {/* Financial Info */}
