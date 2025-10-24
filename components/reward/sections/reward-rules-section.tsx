@@ -3,6 +3,7 @@
 import { RewardIcon } from "@/components/common/icon-svg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { formatNumber } from "@/lib/helper";
 import { RewardRulesSectionProps } from "@/lib/types";
 import { Edit, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -92,8 +93,8 @@ export default function RewardRulesSection({
               </div>
               {rewardRules.map((rule, index) => (
                 <div key={index} className={`grid grid-cols-4 text-sm text-gray-900 ${index !== rewardRules.length - 1 ? 'border-b border-gray-200' : ''}`}>
-                  <div className="px-3 lg:px-4 py-3 text-left">{rule.min}</div>
-                  <div className="px-3 lg:px-4 py-3 text-center">{rule.max}</div>
+                  <div className="px-3 lg:px-4 py-3 text-left">{formatNumber(rule.min)}</div>
+                  <div className="px-3 lg:px-4 py-3 text-center">{formatNumber(rule.max)}</div>
                   <div className="px-3 lg:px-4 py-3 text-right">
                     {rule.percentage}{earnMethod === "percentage" ? "%" : ""}
                   </div>
