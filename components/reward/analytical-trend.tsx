@@ -8,7 +8,7 @@ export default function AnalyticalTrend() {
 
 
   const branchAnalysisData = data?.data?.data;
-  const isEmpty = branchAnalysisData.length === 0;
+  const isEmpty = branchAnalysisData?.length === 0;
   return (
     <div className="space-y-4 sm:space-y-6">
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
