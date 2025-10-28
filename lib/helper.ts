@@ -335,6 +335,8 @@ export const getReceiveMethodFromDistributionType = (distributionType: string) =
   switch (distributionType) {
     case "INSTANT":
       return "INSTANT";
+    case "LATER":
+      return "LATER";
     case "MILESTONE_BASED":
       return "LATER";
     default:
@@ -987,4 +989,36 @@ export const cleanPhoneNumber = (phoneNumber: string): string => {
   }
 
   return cleaned;
+};
+
+/**
+ * Formats a number with commas (e.g., 10000 -> 10,000)
+ * @param value - The string value to format
+ * @returns Formatted string with commas
+ */
+export const formatNumberWithCommas = (value: string): string => {
+  // Remove all non-digit characters
+  const digits = value.replace(/\D/g, '');
+
+  // Add commas every 3 digits from the right
+  return digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
+
+/**
+ * Removes commas from a string for numeric operations
+ * @param value - The string value with commas
+ * @returns String without commas
+ */
+export const removeCommas = (value: string): string => {
+  return value.replace(/,/g, '');
+};
+
+/**
+ * Validates if input contains only numeric characters and commas
+ * @param value - The string value to validate
+ * @returns Boolean indicating if input is numeric only
+ */
+export const isNumericOnly = (value: string): boolean => {
+  // Allow empty string or only digits and commas
+  return value === '' || /^[\d,]*$/.test(value);
 };

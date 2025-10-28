@@ -5,6 +5,7 @@ import { ReceiveMethodSectionProps } from "@/lib/types";
 
 
 export default function ReceiveMethodSection({ receiveMethod, setReceiveMethod }: ReceiveMethodSectionProps) {
+  // console.log('receiveMethod', receiveMethod);
   return (
     <div className="space-y-3">
       <label className="text-sm font-semibold text-gray-900">
