@@ -45,11 +45,11 @@ export default function CustomerCard({ customer, rank }: CustomerCardProps) {
             </span>
           </div>
           <div className=" w-full">
-            <h3 className="font-semibold text-black text-base">{customer.customerName}</h3>
+            <h3 className="font-semibold text-black text-base">{customer.customerName?.split(' ')[0]}</h3>
             <p className="text-xs text-gray-500">ID: {customer.customerId}</p>
             <hr className="border-theme-gray mt-2 " />
             {/* Financial Info */}
-            <div className="flex flex-row items-start gap-6 my-2">
+            <div className="flex flex-row items-start gap-6 ">
               <div className="flex flex-col items-start gap-1 mt-2">
                 <span className="text-xs sm:text-sm text-gray-600 font-medium">Transactions:</span>
                 <span className="font-semibold text-black text-xs sm:text-sm">{customer.totalTransactions}</span>

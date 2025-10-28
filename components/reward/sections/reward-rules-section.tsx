@@ -3,6 +3,7 @@
 import { RewardIcon } from "@/components/common/icon-svg";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { formatNumber, formatNumberWithCommas, isNumericOnly, removeCommas } from "@/lib/helper";
 import { RewardRulesSectionProps } from "@/lib/types";
 import { Edit, Trash2 } from "lucide-react";
 import { useState } from "react";
@@ -24,8 +25,8 @@ export default function RewardRulesSection({
   const handleSaveRule = () => {
     if (minSpending && maxSpending && rewardPercentage) {
       const newRule = {
-        min: minSpending,
-        max: maxSpending,
+        min: removeCommas(minSpending),
+        max: removeCommas(maxSpending),
         percentage: rewardPercentage
       };
 
@@ -49,8 +50,8 @@ export default function RewardRulesSection({
 
   const handleEditRule = (index: number) => {
     const rule = rewardRules[index];
-    setMinSpending(rule.min);
-    setMaxSpending(rule.max);
+    setMinSpending(formatNumberWithCommas(rule.min));
+    setMaxSpending(formatNumberWithCommas(rule.max));
     setRewardPercentage(rule.percentage);
     setEditingIndex(index);
   };
@@ -92,8 +93,8 @@ export default function RewardRulesSection({
               </div>
               {rewardRules.map((rule, index) => (
                 <div key={index} className={`grid grid-cols-4 text-sm text-gray-900 ${index !== rewardRules.length - 1 ? 'border-b border-gray-200' : ''}`}>
-                  <div className="px-3 lg:px-4 py-3 text-left">{rule.min}</div>
-                  <div className="px-3 lg:px-4 py-3 text-center">{rule.max}</div>
+                  <div className="px-3 lg:px-4 py-3 text-left">{formatNumber(rule.min)}</div>
+                  <div className="px-3 lg:px-4 py-3 text-center">{formatNumber(rule.max)}</div>
                   <div className="px-3 lg:px-4 py-3 text-right">
                     {rule.percentage}{earnMethod === "percentage" ? "%" : ""}
                   </div>
@@ -175,20 +176,30 @@ export default function RewardRulesSection({
             <div>
               <label className="text-xs text-gray-600 mb-1 block">Min Spending</label>
               <Input
-                type="number"
+                type="text"
                 placeholder="Min"
                 value={minSpending}
-                onChange={(e) => setMinSpending(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (isNumericOnly(value)) {
+                    setMinSpending(formatNumberWithCommas(value));
+                  }
+                }}
                 className="w-full px-3 py-3 focus:outline-none focus:ring-0 focus:border-none"
               />
             </div>
             <div>
               <label className="text-xs text-gray-600 mb-1 block">Max Spending</label>
               <Input
-                type="number"
+                type="text"
                 placeholder="Max"
                 value={maxSpending}
-                onChange={(e) => setMaxSpending(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (isNumericOnly(value)) {
+                    setMaxSpending(formatNumberWithCommas(value));
+                  }
+                }}
                 className="w-full px-3 py-3 focus:outline-none focus:ring-0 focus:border-none"
               />
             </div>
@@ -197,10 +208,15 @@ export default function RewardRulesSection({
             <label className="text-xs text-gray-600 mb-1 block">Reward {earnMethod === "percentage" ? "Percentage" : "Amount"}</label>
             <div className="relative">
               <Input
-                type="number"
+                type="text"
                 placeholder="0"
                 value={rewardPercentage}
-                onChange={(e) => setRewardPercentage(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (isNumericOnly(value)) {
+                    setRewardPercentage(value);
+                  }
+                }}
                 className="w-full pl-10 pr-3 py-3 focus:outline-none focus:ring-0 focus:border-none"
               />
               {earnMethod === "percentage" ? (
@@ -236,27 +252,42 @@ export default function RewardRulesSection({
         {/* Desktop Layout */}
         <div className="hidden sm:flex items-center gap-2 w-full">
           <Input
-            type="number"
+            type="text"
             placeholder="Min"
             value={minSpending}
-            onChange={(e) => setMinSpending(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (isNumericOnly(value)) {
+                setMinSpending(formatNumberWithCommas(value));
+              }
+            }}
             className="flex-1 min-w-0 px-3 py-6 focus:outline-none focus:ring-0 focus:border-none"
           />
           <span className="text-gray-500 flex-shrink-0">-</span>
           <Input
-            type="number"
+            type="text"
             placeholder="Max. Spending"
             value={maxSpending}
-            onChange={(e) => setMaxSpending(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (isNumericOnly(value)) {
+                setMaxSpending(formatNumberWithCommas(value));
+              }
+            }}
             className="flex-1 min-w-0 px-3 py-6 focus:outline-none focus:ring-0 focus:border-none"
           />
           <span className="text-gray-500 flex-shrink-0">=</span>
           <div className="flex-1 min-w-0 relative">
             <Input
-              type="number"
+              type="text"
               placeholder="0"
               value={rewardPercentage}
-              onChange={(e) => setRewardPercentage(e.target.value)}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (isNumericOnly(value)) {
+                  setRewardPercentage(value);
+                }
+              }}
               className="w-full pl-10 pr-3 py-6 focus:outline-none focus:ring-0 focus:border-none"
             />
             {earnMethod === "percentage" ? (

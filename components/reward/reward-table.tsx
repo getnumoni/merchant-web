@@ -4,6 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { calenderIcon, giftIcon, grayPointIcon } from "@/constant/icons";
 import {
   createRewardsSummaryData,
+  formatNumber,
   getRewardsRules,
   shouldShowEmptyState,
   shouldShowRules,
@@ -90,8 +91,8 @@ export default function RewardTable({ rewards, isPending }: { rewards: Rewards |
                       key={index}
                       className="border-b border-theme-gray last:border-b-0"
                     >
-                      <td className="px-4 py-3 text-sm text-gray-900">{rule.minSpend}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900">{rule.maxSpend}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900">{formatNumber(rule.minSpend, 0)}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900">{formatNumber(rule.maxSpend, 0)}</td>
                       <td className="px-4 py-3 text-sm text-gray-900">
                         {rule.rewardValue}{rewards?.rewardType === "FIXED_POINTS" ? "" : "%"}
                       </td>

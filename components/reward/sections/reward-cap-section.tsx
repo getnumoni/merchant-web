@@ -2,6 +2,7 @@
 
 import { RewardIcon } from "@/components/common/icon-svg";
 import { Input } from "@/components/ui/input";
+import { formatNumberWithCommas, isNumericOnly } from "@/lib/helper";
 import { RewardCapSectionProps } from "@/lib/types";
 
 
@@ -12,10 +13,15 @@ export default function RewardCapSection({ rewardCap, setRewardCap }: RewardCapS
 
       <div className="relative">
         <Input
-          type="number"
+          type="text"
           placeholder="0"
-          value={rewardCap}
-          onChange={(e) => setRewardCap(e.target.value)}
+          value={formatNumberWithCommas(rewardCap)}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (isNumericOnly(value)) {
+              setRewardCap(formatNumberWithCommas(value));
+            }
+          }}
           className="w-full pl-10 pr-3 py-6 focus:outline-none focus:ring-0 focus:border-none"
         />
         <RewardIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-theme-dark-green pointer-events-none h-4 w-4" />
