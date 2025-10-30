@@ -73,7 +73,7 @@ export default function SignInForm() {
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-black mb-2">Welcome Back</h2>
           <p className="text-gray-600 text-sm">
-            Enter your mobile/Email and password to login
+            Enter your Email and password to login
           </p>
         </div>
 
@@ -87,12 +87,12 @@ export default function SignInForm() {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-sm font-medium text-gray-700">
-                    Email/Phone Number
+                    Email
                   </FormLabel>
                   <FormControl>
                     <Input
                       type="email"
-                      placeholder="Enter your email or phone number"
+                      placeholder="Enter your email"
                       className="w-full px-4 py-6 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                       {...field}
                     />
