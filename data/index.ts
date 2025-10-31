@@ -1,9 +1,8 @@
 import { BranchIcon, DashboardIcon, RewardIcon } from "@/components/common/icon-svg";
 import { avatarIcon, branchIcon, calenderIcon, dealIcon, emailIcon, giftIcon, graphDirectionIcon, grayPointIcon, instagramIcon, musicPauseIcon, phoneNotificationIcon, twitterIcon, whatsappIcon } from "@/constant/icons";
 import { sampleUserIcon } from "@/constant/images";
-import { ADMIN_ACTIVITY_LOGS_URL, ADMIN_CHARITY_ADD_URL, ADMIN_CHARITY_URL, ADMIN_CUSTOMERS_ADD_URL, ADMIN_CUSTOMERS_TRANSACTION_URL, ADMIN_CUSTOMERS_URL, ADMIN_MANAGEMENT_ADD_URL, ADMIN_MANAGEMENT_URL, ADMIN_MERCHANTS_ADD_URL, ADMIN_MERCHANTS_TRANSACTION_URL, ADMIN_MERCHANTS_URL, ADMIN_NOTIFICATIONS_URL, ADMIN_URL, BRANCH_LEVEL_URL, DASHBOARD_URL, REWARD_TABLE_URL } from "@/constant/routes";
-import { AdminNavigationItem } from "@/lib/types";
-import { BarChart3, Bell, Building, FileBarChart, FileText, Heart, LayoutDashboard, Plus, Shield, User, Users } from "lucide-react";
+import { BRANCH_LEVEL_URL, DASHBOARD_URL, POINTS_URL, REWARD_TABLE_URL } from "@/constant/routes";
+import { BarChart3 } from "lucide-react";
 
 const navigationItems = [
   {
@@ -21,6 +20,11 @@ const navigationItems = [
     path: REWARD_TABLE_URL,
     icon: RewardIcon
   },
+  {
+    name: 'Points',
+    path: POINTS_URL,
+    icon: BarChart3
+  }
   // {
   //   name: 'Deals & Promos',
   //   path: DEALS_AND_PROMOS_URL,
@@ -77,6 +81,11 @@ const tabs = [
   // { id: "customers-score", label: "Customers Score" },
   { id: "points-allocation", label: "Points Allocation" },
   { id: "analytics-trends", label: "Analytics & Trends" }
+];
+
+const pointsTabs = [
+  { id: "points-distributed", label: "Points Distributed" },
+  { id: "points-redeemed", label: "Points Redeemed" }
 ];
 
 const rewardTableData = [
@@ -237,84 +246,6 @@ const customerData = [
 ];
 
 
-const adminNavigationItem: AdminNavigationItem[] = [
-  {
-    name: 'Overview',
-    path: ADMIN_URL,
-    icon: LayoutDashboard
-  },
-  {
-    name: 'Notifications',
-    path: ADMIN_NOTIFICATIONS_URL,
-    icon: Bell,
-    badge: '12'
-  },
-  {
-    name: 'Merchants',
-    icon: Users,
-    children: [
-      { name: 'All Merchants', path: ADMIN_MERCHANTS_URL, icon: Users },
-      { name: 'Add Merchant', path: ADMIN_MERCHANTS_ADD_URL, icon: Plus },
-      { name: 'Merchant Transactions', path: ADMIN_MERCHANTS_TRANSACTION_URL, icon: BarChart3 }
-    ]
-  },
-  {
-    name: 'Customers',
-    icon: User,
-    children: [
-      { name: 'Add new customers', path: ADMIN_CUSTOMERS_ADD_URL, icon: Plus },
-      { name: 'All customers', path: ADMIN_CUSTOMERS_URL, icon: User },
-      { name: 'Customers transactions', path: ADMIN_CUSTOMERS_TRANSACTION_URL, icon: FileText }
-    ]
-  },
-  {
-    name: 'Charities',
-    icon: Heart,
-    children: [
-      { name: 'All Charities', path: ADMIN_CHARITY_URL, icon: Heart },
-      { name: 'Add New Charities', path: ADMIN_CHARITY_ADD_URL, icon: Plus },
-    ]
-  },
-  {
-    name: 'Admin Management',
-    icon: Building,
-    children: [
-      { name: 'All Admins', path: ADMIN_MANAGEMENT_URL, icon: Building },
-      { name: 'Add New Admin', path: ADMIN_MANAGEMENT_ADD_URL, icon: Plus },
-    ]
-  },
-  {
-    name: 'Roles & Permission',
-    path: '/admin/roles',
-    icon: Shield
-  },
-  {
-    name: 'Activity Logs',
-    path: ADMIN_ACTIVITY_LOGS_URL,
-    icon: FileText,
-
-  },
-  {
-    name: 'Sales Report',
-    icon: BarChart3,
-    children: [
-      { name: 'Daily Sales', path: '/admin/reports/sales/daily', icon: BarChart3 },
-      { name: 'Monthly Sales', path: '/admin/reports/sales/monthly', icon: BarChart3 },
-      { name: 'Yearly Sales', path: '/admin/reports/sales/yearly', icon: BarChart3 }
-    ]
-  },
-  {
-    name: 'Points Report',
-    path: '/admin/reports/points',
-    icon: FileBarChart
-  },
-  {
-    name: 'Charity Report',
-    path: '/admin/reports/charity',
-    icon: Heart
-  }
-];
-
 // Social Media Platforms Configuration
 const socialMediaPlatforms = [
   {
@@ -417,13 +348,12 @@ const mockMerchantData = {
 };
 
 export {
-  adminNavigationItem, benefitsData,
+  benefitsData,
   branches,
-  customerData, mockMerchantData, months, navigationItems, regions, rewardTableData,
+  customerData, mockMerchantData, months, navigationItems, pointsTabs, regions, rewardTableData,
   socialMediaPlatforms,
   summaryData,
-  tabs,
-  timelineOptions,
+  tabs, timelineOptions,
   transactionData,
   whatYouCanDoData,
   years

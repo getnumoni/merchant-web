@@ -398,6 +398,22 @@ export const formatDate = (dateString: string | null, fallback: string) => {
 };
 
 /**
+ * Formats a date string with date and time
+ * @param dateString - Date string to format
+ * @returns Formatted date string with date and time (e.g., "Jan 15, 2024, 10:30 AM")
+ */
+export const formatDateTime = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+};
+
+/**
  * Creates summary data array from rewards object
  * @param rewards - The rewards object or null
  * @returns Array of summary data objects
