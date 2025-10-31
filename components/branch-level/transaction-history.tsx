@@ -51,6 +51,7 @@ export default function TransactionHistory({ singleBranch }: { singleBranch: sin
             totalPages={data.data.totalPages}
             totalRows={data.data.totalRows}
             currentPageDataLength={transactionData?.length || 0}
+            pageSize={10}
             onPageChange={handlePageChange}
           />
         )}
