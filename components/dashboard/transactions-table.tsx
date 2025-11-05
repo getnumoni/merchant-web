@@ -30,12 +30,9 @@ const columns: ColumnDef<TransactionData>[] = [
     header: "Transaction Reference",
     cell: ({ row }) => {
       const ref = row.getValue("transactionReference") as string;
-      return <div className="font-mono text-sm">{ref}</div>;
+      const truncatedRef = ref ? `${ref.substring(0, 8)}...` : "";
+      return <div className="font-mono text-sm" title={ref}>{truncatedRef}</div>;
     },
-  },
-  {
-    accessorKey: "merchantName",
-    header: "Merchant",
   },
   {
     accessorKey: "branchName",
@@ -68,22 +65,6 @@ const columns: ColumnDef<TransactionData>[] = [
           {type}
         </div>
       );
-    },
-  },
-  {
-    accessorKey: "previousDealPrice",
-    header: "Previous Price",
-    cell: ({ row }) => {
-      const price = row.getValue("previousDealPrice") as number | null;
-      return <div>{price !== null ? `${price} points` : "—"}</div>;
-    },
-  },
-  {
-    accessorKey: "currentDealPrice",
-    header: "Current Price",
-    cell: ({ row }) => {
-      const price = row.getValue("currentDealPrice") as number | null;
-      return <div>{price !== null ? `${price} points` : "—"}</div>;
     },
   },
   {

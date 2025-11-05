@@ -78,7 +78,7 @@ const benefitsData = [
 const tabs = [
   { id: "reward-table", label: "Reward Table" },
   // { id: "customers-score", label: "Customers Score" },
-  { id: "points-allocation", label: "Points Allocation" },
+  { id: "customer", label: "Customer" },
   { id: "analytics-trends", label: "Analytics & Trends" },
   { id: "points-distributed", label: "Points Distributed" },
   { id: "points-redeemed", label: "Points Redeemed" }
