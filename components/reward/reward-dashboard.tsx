@@ -11,7 +11,6 @@ import {
   TotalPointsRewardedCard
 } from "./cards";
 import PointAnalytics from "./point-analytics";
-import TotalDistributedPoints from "./total-distributed-points";
 import TotalOutstandingAllocation from "./total-outstanding-allocation";
 import TotalRewardIssued from "./total-reward-issued";
 
@@ -165,7 +164,7 @@ export default function RewardDashboard() {
             />
           </div>
 
-          <div className="min-w-[280px] flex-shrink-0">
+          {/* <div className="min-w-[280px] flex-shrink-0">
             <TotalDistributedPoints
               totalRewardDistributed={analyticsData?.totalRewardDistributed}
               isLoading={isPendingRewardAnalysis}
@@ -173,7 +172,7 @@ export default function RewardDashboard() {
               errorMessage={errorRewardAnalysis?.message}
               onRetry={() => refetchRewardAnalysis()}
             />
-          </div>
+          </div> */}
         </div>
       </section>
 
