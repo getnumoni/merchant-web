@@ -35,8 +35,16 @@ const columns: ColumnDef<TransactionData>[] = [
     },
   },
   {
+    accessorKey: "customerName",
+    header: "Customer",
+  },
+  {
     accessorKey: "branchName",
     header: "Branch",
+  },
+  {
+    accessorKey: "merchantName",
+    header: "Merchant",
   },
   {
     accessorKey: "dealName",
@@ -47,18 +55,38 @@ const columns: ColumnDef<TransactionData>[] = [
     },
   },
   {
-    accessorKey: "points",
-    header: "Points",
+    accessorKey: "totalAmountPaid",
+    header: "Amount Paid",
+  },
+  {
+    accessorKey: "paidInNumoniPoints",
+    header: "Numoni Points",
     cell: ({ row }) => {
-      const points = row.getValue("points") as number;
+      const points = row.getValue("paidInNumoniPoints") as number;
       return <div className="font-semibold">{points}</div>;
     },
   },
   {
-    accessorKey: "transactionType",
+    'accessorKey': 'issuedPoints',
+    'header': 'Issued Points',
+    'cell': ({ row }) => {
+      const points = row.getValue("issuedPoints") as number;
+      return <div className="font-semibold">{points}</div>;
+    },
+  },
+  {
+    accessorKey: "transactionCategory",
+    header: "Category",
+    cell: ({ row }) => {
+      const category = row.getValue("transactionCategory") as string;
+      return <div className="font-semibold">{category}</div>;
+    },
+  },
+  {
+    accessorKey: "type",
     header: "Type",
     cell: ({ row }) => {
-      const type = row.getValue("transactionType") as string;
+      const type = row.getValue("type") as string;
       return (
         <div className={`px-2 py-1 rounded-full text-xs font-medium inline-block ${type === "DEBIT" ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
           }`}>
@@ -68,10 +96,10 @@ const columns: ColumnDef<TransactionData>[] = [
     },
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "timestamp",
     header: "Date",
     cell: ({ row }) => {
-      const date = row.getValue("createdAt") as string;
+      const date = row.getValue("timestamp") as string;
       return <div className="text-sm">{formatDateTime(date)}</div>;
     },
   },
