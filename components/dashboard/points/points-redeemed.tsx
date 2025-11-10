@@ -31,6 +31,8 @@ export default function PointsRedeemed() {
   const pointsRedeemedData = data?.data?.data as TransactionData[] | undefined;
   const paginationInfo = data?.data?.pagination as PaginationInfo | undefined;
 
+  // console.log('points redeemed', pointsRedeemedData);
+
   const isEmpty = !isPending && (!pointsRedeemedData || pointsRedeemedData.length === 0);
 
   const handlePageChange = (page: number) => {
