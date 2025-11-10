@@ -43,10 +43,6 @@ const columns: ColumnDef<TransactionData>[] = [
     header: "Branch",
   },
   {
-    accessorKey: "merchantName",
-    header: "Merchant",
-  },
-  {
     accessorKey: "dealName",
     header: "Deal",
     cell: ({ row }) => {
