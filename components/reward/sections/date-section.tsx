@@ -56,7 +56,11 @@ export default function DateSection({ startDate, setStartDate, endDate, setEndDa
               mode="single"
               selected={startDateObj}
               onSelect={handleStartDateSelect}
-              disabled={(date) => date < new Date()}
+              disabled={(date) => {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                return date < today;
+              }}
               initialFocus
             />
           </PopoverContent>
