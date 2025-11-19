@@ -5,7 +5,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DateSectionProps } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { format } from "date-fns";
+import { format, isBefore, startOfDay } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 
 export default function DateSection({ startDate, setStartDate, endDate, setEndDate }: DateSectionProps) {
@@ -57,9 +57,9 @@ export default function DateSection({ startDate, setStartDate, endDate, setEndDa
               selected={startDateObj}
               onSelect={handleStartDateSelect}
               disabled={(date) => {
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                return date < today;
+                const today = startOfDay(new Date());
+                const dateToCheck = startOfDay(date);
+                return isBefore(dateToCheck, today);
               }}
               initialFocus
             />
