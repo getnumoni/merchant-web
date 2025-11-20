@@ -1,6 +1,7 @@
 'use client';
 
 import useGetMerchant from "@/hooks/query/useGetMerchant";
+import { cleanS3Url } from "@/lib/helper";
 import { DashboardProps } from "@/lib/types";
 import { usePathname } from "next/navigation";
 import BrandProfile from "../dashboard/brand-profile";
@@ -43,7 +44,7 @@ export default function Hero({
       />
 
       <QRCodeCard
-        qrCodeUrl={merchantInfo?.qrCode}
+        qrCodeUrl={cleanS3Url(merchantInfo?.qrCode)}
         title={qrTitle}
         description={qrDescription}
         onDownload={onDownload}
