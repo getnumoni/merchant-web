@@ -52,7 +52,7 @@ export default function TotalRewardIssued({
   };
 
   return (
-    <div className="bg-theme-gray rounded-xl p-6 flex flex-col">
+    <div className="bg-gray-200/40 rounded-xl p-6 flex flex-col">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-[#727272] text-md font-semibold">Total Points Redeemed</h3>
         <div className="bg-white rounded-full p-3">
