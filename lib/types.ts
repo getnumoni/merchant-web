@@ -50,6 +50,7 @@ type BrandProfileProps = {
   isLoading?: boolean;
   isError?: boolean;
   error?: Error | null;
+  isVerified?: boolean;
 }
 
 type SummaryItem = {
