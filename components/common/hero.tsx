@@ -23,6 +23,13 @@ export default function Hero({
   const { data: merchant, isPending, isError, error } = useGetMerchant();
   const merchantInfo = merchant?.data?.data;
 
+
+
+  // Merchant is verified if all three verification fields are true
+  const isVerified = merchantInfo?.verifiedNin === true &&
+    merchantInfo?.verifiedTin === true &&
+    merchantInfo?.verifiedCac === true;
+
   // Determine which summary component to show based on route
   const getSummaryComponent = () => {
     if (pathname.includes("branch-level")) {
@@ -41,6 +48,7 @@ export default function Hero({
         isLoading={isPending}
         isError={isError}
         error={error}
+        isVerified={isVerified}
       />
 
       <QRCodeCard
