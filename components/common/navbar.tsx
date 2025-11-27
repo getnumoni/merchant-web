@@ -1,9 +1,9 @@
 'use client';
 
 import { getPageTitle } from '@/lib/helper';
+import { useBranchStore } from '@/stores/branch-store';
 import { Plus } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { toast } from 'sonner';
 import UserProfile from './user-profile';
 
 interface NavbarProps {
@@ -13,13 +13,7 @@ interface NavbarProps {
 export default function Navbar({ onMenuClick }: NavbarProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  // const { openDialog } = useBranchStore();
-
-
-  const handleOpenAddBranchDialog = () => {
-    toast('Coming Soon...');
-  };
-
+  const { openDialog } = useBranchStore();
 
 
   // Debug logging
@@ -35,7 +29,7 @@ export default function Navbar({ onMenuClick }: NavbarProps) {
     if (lastSegment === 'branch-level' || pathname.includes('branch-level')) {
       return (
         <button
-          onClick={handleOpenAddBranchDialog}
+          onClick={openDialog}
           className="flex items-center px-3 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 cursor-pointer"
         >
           <Plus className="mr-2 h-4 w-4" />

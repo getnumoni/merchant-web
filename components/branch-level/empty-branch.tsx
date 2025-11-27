@@ -1,18 +1,16 @@
 "use client"
 
 import { emptyBranchIcon } from "@/constant/icons";
+import { useBranchStore } from "@/stores/branch-store";
 import { motion } from "framer-motion";
 import { Plus } from "lucide-react";
 import Image from "next/image";
-import { toast } from "sonner";
 import { Button } from "../ui/button";
 
 export default function EmptyBranch() {
-  // const { openDialog } = useBranchStore();
+  const { openDialog } = useBranchStore();
 
-  const handleOpenAddBranchDialog = () => {
-    toast('Coming Soon...');
-  };
+
 
   return (
     <main>
@@ -74,7 +72,7 @@ export default function EmptyBranch() {
           }}
         >
           <Button
-            onClick={handleOpenAddBranchDialog}
+            onClick={openDialog}
             className="bg-theme-dark-green hover:bg-theme-green text-white rounded-lg p-6 flex items-center gap-2 shadow-sm w-80 cursor-pointer"
           >
             <Plus className="w-4 h-4 font-semibold" />
