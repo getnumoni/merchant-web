@@ -4,8 +4,9 @@ import EmptyState from "@/components/common/empty-state";
 import { ErrorState } from "@/components/ui/error-state";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import useGetPointsRedeemed from "@/hooks/query/useGetPointsRedeemed";
+import { TransactionData } from "@/lib/types";
 import { useEffect, useState } from "react";
-import TransactionsTable, { PaginationInfo, TransactionData } from "../transactions-table";
+import TransactionsTable, { PaginationInfo } from "../transactions-table";
 
 export default function PointsRedeemed() {
   const [currentPage, setCurrentPage] = useState(0);
