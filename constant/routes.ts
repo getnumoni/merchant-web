@@ -1,7 +1,7 @@
 
 //auth
 const SIGN_IN_URL: string = '/auth/sign-in';
-
+const SIGN_UP_URL: string = '/auth/sign-up';
 
 
 const DASHBOARD_URL: string = '/dashboard';
@@ -14,5 +14,6 @@ const CHARITY_ORGS_URL: string = `${DASHBOARD_URL}/charity-orgs`;
 
 
 
-export { BRANCH_LEVEL_URL, CHARITY_ORGS_URL, DASHBOARD_URL, DEALS_AND_PROMOS_URL, POINTS_URL, REWARD_TABLE_URL, SIGN_IN_URL, TRANSACTIONS_URL };
+
+export { BRANCH_LEVEL_URL, CHARITY_ORGS_URL, DASHBOARD_URL, DEALS_AND_PROMOS_URL, POINTS_URL, REWARD_TABLE_URL, SIGN_IN_URL, SIGN_UP_URL, TRANSACTIONS_URL };
 
