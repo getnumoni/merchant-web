@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { FieldPath, FieldValues, UseFormSetError } from "react-hook-form";
 import { RewardRule } from './types';
 
 /**
@@ -1128,15 +1129,15 @@ export const normalizePhoneNumber = (phoneNumber: string): string => {
  * @param schema - The Zod schema to validate against
  * @returns Boolean indicating if validation passed
  */
-export const validateOtpInput = <T extends Record<string, unknown>>(
+export const validateOtpInput = <TFieldValues extends FieldValues = FieldValues>(
   otp: string,
-  setError: (name: keyof T | string, error: { type: string; message: string }) => void,
+  setError: UseFormSetError<TFieldValues>,
   schema: { safeParse: (data: { otp: string }) => { success: boolean; error?: { issues: Array<{ path: PropertyKey[]; message: string }> } } }
 ): boolean => {
   const result = schema.safeParse({ otp });
   if (!result.success && result.error) {
     result.error.issues.forEach((issue) => {
-      const fieldName = String(issue.path[0]) as keyof T | string;
+      const fieldName = String(issue.path[0]) as FieldPath<TFieldValues>;
       setError(fieldName, {
         type: "manual",
         message: issue.message,
