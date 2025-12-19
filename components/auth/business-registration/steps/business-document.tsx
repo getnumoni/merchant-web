@@ -33,7 +33,6 @@ export default function BusinessDocument() {
       registrationNumber: "",
       tin: "",
       cacDocument: null,
-      certificateOfRegistration: null,
     },
   });
 
@@ -105,7 +104,7 @@ export default function BusinessDocument() {
       businessRegNo: data.registrationNumber,
       tinNo: data.tin || undefined,
       cacDocumentPath: data.cacDocument || null,
-      reqCertificatePath: data.certificateOfRegistration || null,
+      reqCertificatePath: null,
       tinPath: null, // Removed from form
       menuPath: null, // Removed from form
       verifiedNin: false,
@@ -278,85 +277,6 @@ export default function BusinessDocument() {
             )}
           />
 
-          {/* Upload Certificate Of Registration */}
-          <FormField
-            control={form.control}
-            name="certificateOfRegistration"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-sm font-medium text-gray-700">
-                  Upload Certificate Of Registration <span className="text-red-500">*</span>
-                </FormLabel>
-                {field.value ? (
-                  <div className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg bg-white">
-                    <div className="shrink-0">
-                      <FileText className="w-8 h-8 text-gray-400" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
-                        {getFileInfo(field.value).fileName.length > 30
-                          ? `${getFileInfo(field.value).fileName.substring(0, 30)}...`
-                          : getFileInfo(field.value).fileName}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {getFileInfo(field.value).extension}
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <label className="cursor-pointer">
-                        <input
-                          type="file"
-                          accept="image/jpeg,image/png,application/pdf"
-                          onChange={handleReuploadDocument("certificateOfRegistration")}
-                          disabled={uploadingField === "certificateOfRegistration"}
-                          className="hidden"
-                          id="reupload-certificate-document"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => document.getElementById('reupload-certificate-document')?.click()}
-                          disabled={uploadingField === "certificateOfRegistration"}
-                          className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
-                          aria-label="Re-upload document"
-                        >
-                          <RefreshCw className="w-4 h-4 text-gray-600" />
-                        </button>
-                      </label>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveDocument("certificateOfRegistration")}
-                        disabled={uploadingField === "certificateOfRegistration"}
-                        className="p-1.5 hover:bg-red-50 rounded-full transition-colors"
-                        aria-label="Delete document"
-                      >
-                        <Trash2 className="w-4 h-4 text-red-500" />
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <FormControl>
-                    <label className={`cursor-pointer flex flex-col items-center justify-center w-full p-6 border-2 border-dashed border-gray-300 rounded-lg hover:bg-gray-50 ${uploadingField === "certificateOfRegistration" ? "opacity-50 cursor-not-allowed" : ""}`}>
-                      <input
-                        type="file"
-                        accept="image/jpeg,image/png,application/pdf"
-                        onChange={handleFileUpload("certificateOfRegistration")}
-                        disabled={uploadingField === "certificateOfRegistration"}
-                        className="hidden"
-                      />
-                      <Upload className="w-8 h-8 text-gray-400 mb-2" />
-                      <span className="text-sm text-gray-600">
-                        {uploadingField === "certificateOfRegistration" ? "Uploading..." : "Tap to upload from device"}
-                      </span>
-                      <span className="text-xs text-gray-500 mt-1">
-                        Jpeg, png, pdf files supported. Max file size 3mb
-                      </span>
-                    </label>
-                  </FormControl>
-                )}
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
           {/* Tax Identification Number */}
           <FormField

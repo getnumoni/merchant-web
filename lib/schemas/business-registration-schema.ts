@@ -51,7 +51,7 @@ export const businessDocumentSchema = z.object({
   registrationNumber: z.string().min(1, 'Business registration number is required'),
   tin: z.string().optional(),
   cacDocument: z.string().url('Invalid document URL').nullable(),
-  certificateOfRegistration: z.string().url('Invalid document URL').nullable(),
+  certificateOfRegistration: z.string().url('Invalid document URL').nullable().optional(),
   tinDocument: z.string().url('Invalid document URL').nullable().optional(),
   menuOrCatalogue: z.string().url('Invalid document URL').nullable().optional(),
 }).refine(
@@ -59,12 +59,6 @@ export const businessDocumentSchema = z.object({
   {
     message: 'CAC document is required',
     path: ['cacDocument'],
-  }
-).refine(
-  (data) => data.certificateOfRegistration !== null && data.certificateOfRegistration.length > 0,
-  {
-    message: 'Certificate of registration is required',
-    path: ['certificateOfRegistration'],
   }
 );
 
