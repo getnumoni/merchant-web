@@ -25,6 +25,8 @@ export const registerBusinessSchema = z.object({
     .regex(/^\d{10,11}$/, 'Phone number must be 10 or 11 digits'),
   businessEmail: z.string().email('Please enter a valid email address'),
   businessPhoto: z.array(z.string().url('Invalid photo URL')).optional(),
+  businessOpenHours: z.string().min(1, 'Business open hours is required'),
+  businessClosingHours: z.string().min(1, 'Business closing hours is required'),
 });
 
 // Step 3: Business Location Schema

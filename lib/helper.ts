@@ -628,47 +628,101 @@ export const downloadQRCodeAsImage = async (printRef: React.RefObject<HTMLDivEle
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
 
-    // Set canvas size
-    canvas.width = 400;
-    canvas.height = 400;
+    // Set canvas size - increased height to accommodate logo
+    const qrCodeSize = 400;
+    const logoHeight = 60; // Space for logo at top
+    const padding = 40; // Padding around content
+    canvas.width = qrCodeSize + (padding * 2);
+    canvas.height = qrCodeSize + logoHeight + (padding * 3); // Extra padding for spacing
 
     if (ctx) {
       // Draw white background
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Convert SVG to data URL
+      // Load logo image
+      const logoImg = new Image();
+      logoImg.crossOrigin = 'anonymous';
+
+      // Convert SVG to data URL for QR code
       const svgData = new XMLSerializer().serializeToString(svgElement);
       const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
       const svgUrl = URL.createObjectURL(svgBlob);
 
-      const img = document.createElement('img');
-      img.onload = () => {
-        // Calculate position to center the QR code
-        const size = Math.min(canvas.width, canvas.height) - 40; // 20px padding on each side
-        const x = (canvas.width - size) / 2;
-        const y = (canvas.height - size) / 2;
+      const qrCodeImg = document.createElement('img');
 
-        // Draw the QR code image
-        ctx.drawImage(img, x, y, size, size);
+      // Load logo first
+      logoImg.onload = () => {
+        // Draw logo at the top center
+        const logoWidth = 120; // Logo width
+        const logoHeightActual = 28; // Logo height (maintaining aspect ratio)
+        const logoX = (canvas.width - logoWidth) / 2;
+        const logoY = padding;
 
-        // Convert canvas to blob and download
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `${title.replace(/\s+/g, '-').toLowerCase()}-qr-code.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            URL.revokeObjectURL(svgUrl);
-          }
-        }, 'image/png');
+        ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeightActual);
+
+        // Then load and draw QR code
+        qrCodeImg.onload = () => {
+          // Calculate position for QR code (below logo)
+          const qrSize = qrCodeSize;
+          const qrX = (canvas.width - qrSize) / 2;
+          const qrY = logoY + logoHeightActual + padding; // Position below logo with padding
+
+          // Draw the QR code image
+          ctx.drawImage(qrCodeImg, qrX, qrY, qrSize, qrSize);
+
+          // Convert canvas to blob and download
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `${title.replace(/\s+/g, '-').toLowerCase()}-qr-code.png`;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+              URL.revokeObjectURL(svgUrl);
+            }
+          }, 'image/png');
+        };
+
+        qrCodeImg.onerror = () => {
+          console.error('Error loading QR code image');
+          URL.revokeObjectURL(svgUrl);
+        };
+
+        qrCodeImg.src = svgUrl;
       };
 
-      img.src = svgUrl;
+      logoImg.onerror = () => {
+        console.error('Error loading logo image');
+        // Fallback: draw QR code without logo
+        qrCodeImg.onload = () => {
+          const qrSize = qrCodeSize;
+          const qrX = (canvas.width - qrSize) / 2;
+          const qrY = (canvas.height - qrSize) / 2;
+          ctx.drawImage(qrCodeImg, qrX, qrY, qrSize, qrSize);
+
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `${title.replace(/\s+/g, '-').toLowerCase()}-qr-code.png`;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+              URL.revokeObjectURL(svgUrl);
+            }
+          }, 'image/png');
+        };
+        qrCodeImg.src = svgUrl;
+      };
+
+      // Load logo from public assets
+      logoImg.src = '/assets/icons/numoni-logo-dark.svg';
     }
   } catch (error) {
     console.error('Error downloading QR code as image:', error);
