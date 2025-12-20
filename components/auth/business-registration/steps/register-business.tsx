@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { FormComboboxMulti } from "@/components/ui/form-combobox-multi";
 import { FormPhoneInput } from "@/components/ui/form-phone-input";
+import { FormSelectTopLabel } from "@/components/ui/form-select";
 import { FormTextareaTopLabel } from "@/components/ui/form-textarea";
 import { Input } from "@/components/ui/input";
 import { useSaveBusinessDetails } from "@/hooks/mutation/useSaveBusinessDetails";
@@ -15,8 +16,35 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRight, FileImage, RefreshCw, Trash2, Upload, User } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
+
+const timeOptions = [
+  { value: "6:00 AM", label: "6:00 AM" },
+  { value: "7:00 AM", label: "7:00 AM" },
+  { value: "8:00 AM", label: "8:00 AM" },
+  { value: "9:00 AM", label: "9:00 AM" },
+  { value: "10:00 AM", label: "10:00 AM" },
+  { value: "11:00 AM", label: "11:00 AM" },
+  { value: "12:00 PM", label: "12:00 PM" },
+  { value: "1:00 PM", label: "1:00 PM" },
+  { value: "2:00 PM", label: "2:00 PM" },
+  { value: "3:00 PM", label: "3:00 PM" },
+  { value: "4:00 PM", label: "4:00 PM" },
+  { value: "5:00 PM", label: "5:00 PM" },
+  { value: "6:00 PM", label: "6:00 PM" },
+  { value: "7:00 PM", label: "7:00 PM" },
+  { value: "8:00 PM", label: "8:00 PM" },
+  { value: "9:00 PM", label: "9:00 PM" },
+  { value: "10:00 PM", label: "10:00 PM" },
+  { value: "11:00 PM", label: "11:00 PM" },
+  { value: "12:00 AM", label: "12:00 AM" },
+  { value: "1:00 AM", label: "1:00 AM" },
+  { value: "2:00 AM", label: "2:00 AM" },
+  { value: "3:00 AM", label: "3:00 AM" },
+  { value: "4:00 AM", label: "4:00 AM" },
+  { value: "5:00 AM", label: "5:00 AM" },
+];
 
 export default function RegisterBusiness() {
   const {
@@ -42,7 +70,15 @@ export default function RegisterBusiness() {
       businessPhone: "",
       businessEmail: "",
       businessPhoto: [],
+      businessOpenHours: "",
+      businessClosingHours: "",
     },
+  });
+
+  // Watch the selected opening time
+  const selectedOpeningTime = useWatch({
+    control: form.control,
+    name: "businessOpenHours"
   });
 
 
@@ -302,6 +338,28 @@ export default function RegisterBusiness() {
             )}
           />
 
+          {/* Business Opening and Closing Hours */}
+          <div className="grid grid-cols-2 gap-4">
+            <FormSelectTopLabel
+              control={form.control}
+              name="businessOpenHours"
+              label="Business Opening Time"
+              options={timeOptions}
+              placeholder="Choose Time"
+              required
+            />
+
+            <FormSelectTopLabel
+              control={form.control}
+              name="businessClosingHours"
+              label="Business Closing Time"
+              options={timeOptions}
+              placeholder={selectedOpeningTime ? "Choose Closing Time" : "Select Opening Time First"}
+              disabled={!selectedOpeningTime}
+              required
+            />
+          </div>
+
           {/* Business Photo */}
           <FormField
             control={form.control}
@@ -347,7 +405,7 @@ export default function RegisterBusiness() {
                           key={index}
                           className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg bg-white"
                         >
-                          <div className="flex-shrink-0">
+                          <div className="shrink-0">
                             <FileImage className="w-8 h-8 text-gray-400" />
                           </div>
                           <div className="flex-1 min-w-0">

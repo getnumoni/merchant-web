@@ -23,6 +23,8 @@ interface SaveBusinessDetailsPayload {
   description: string;
   category: string[]; // Array of category IDs
   businessImagePath?: string[]; // Array of image URLs from upload
+  businessOpenHours: string;
+  businessClosingHours: string;
 }
 
 export const useSaveBusinessDetails = () => {
@@ -60,6 +62,8 @@ export const useSaveBusinessDetails = () => {
         businessName: businessDetails.businessName,
         description: businessDetails.businessDescription,
         category,
+        businessOpenHours: businessDetails.businessOpenHours,
+        businessClosingHours: businessDetails.businessClosingHours,
       };
 
       // Add optional image URL fields
