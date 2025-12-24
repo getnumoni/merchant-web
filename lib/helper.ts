@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { FieldPath, FieldValues, UseFormSetError } from "react-hook-form";
 import { RewardRule } from './types';
 
 /**
@@ -599,7 +600,7 @@ export const cleanS3Url = (url: string | null | undefined): string => {
     // Parse the URL and extract just the base URL without query parameters
     const urlObj = new URL(url);
     return `${urlObj.protocol}//${urlObj.host}${urlObj.pathname}`;
-  } catch (error) {
+  } catch {
     // If URL parsing fails, try to remove query string manually
     const queryIndex = url.indexOf('?');
     if (queryIndex !== -1) {
@@ -627,47 +628,101 @@ export const downloadQRCodeAsImage = async (printRef: React.RefObject<HTMLDivEle
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
 
-    // Set canvas size
-    canvas.width = 400;
-    canvas.height = 400;
+    // Set canvas size - increased height to accommodate logo
+    const qrCodeSize = 400;
+    const logoHeight = 60; // Space for logo at top
+    const padding = 40; // Padding around content
+    canvas.width = qrCodeSize + (padding * 2);
+    canvas.height = qrCodeSize + logoHeight + (padding * 3); // Extra padding for spacing
 
     if (ctx) {
       // Draw white background
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Convert SVG to data URL
+      // Load logo image
+      const logoImg = new Image();
+      logoImg.crossOrigin = 'anonymous';
+
+      // Convert SVG to data URL for QR code
       const svgData = new XMLSerializer().serializeToString(svgElement);
       const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
       const svgUrl = URL.createObjectURL(svgBlob);
 
-      const img = document.createElement('img');
-      img.onload = () => {
-        // Calculate position to center the QR code
-        const size = Math.min(canvas.width, canvas.height) - 40; // 20px padding on each side
-        const x = (canvas.width - size) / 2;
-        const y = (canvas.height - size) / 2;
+      const qrCodeImg = document.createElement('img');
 
-        // Draw the QR code image
-        ctx.drawImage(img, x, y, size, size);
+      // Load logo first
+      logoImg.onload = () => {
+        // Draw logo at the top center
+        const logoWidth = 120; // Logo width
+        const logoHeightActual = 28; // Logo height (maintaining aspect ratio)
+        const logoX = (canvas.width - logoWidth) / 2;
+        const logoY = padding;
 
-        // Convert canvas to blob and download
-        canvas.toBlob((blob) => {
-          if (blob) {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `${title.replace(/\s+/g, '-').toLowerCase()}-qr-code.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-            URL.revokeObjectURL(svgUrl);
-          }
-        }, 'image/png');
+        ctx.drawImage(logoImg, logoX, logoY, logoWidth, logoHeightActual);
+
+        // Then load and draw QR code
+        qrCodeImg.onload = () => {
+          // Calculate position for QR code (below logo)
+          const qrSize = qrCodeSize;
+          const qrX = (canvas.width - qrSize) / 2;
+          const qrY = logoY + logoHeightActual + padding; // Position below logo with padding
+
+          // Draw the QR code image
+          ctx.drawImage(qrCodeImg, qrX, qrY, qrSize, qrSize);
+
+          // Convert canvas to blob and download
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `${title.replace(/\s+/g, '-').toLowerCase()}-qr-code.png`;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+              URL.revokeObjectURL(svgUrl);
+            }
+          }, 'image/png');
+        };
+
+        qrCodeImg.onerror = () => {
+          console.error('Error loading QR code image');
+          URL.revokeObjectURL(svgUrl);
+        };
+
+        qrCodeImg.src = svgUrl;
       };
 
-      img.src = svgUrl;
+      logoImg.onerror = () => {
+        console.error('Error loading logo image');
+        // Fallback: draw QR code without logo
+        qrCodeImg.onload = () => {
+          const qrSize = qrCodeSize;
+          const qrX = (canvas.width - qrSize) / 2;
+          const qrY = (canvas.height - qrSize) / 2;
+          ctx.drawImage(qrCodeImg, qrX, qrY, qrSize, qrSize);
+
+          canvas.toBlob((blob) => {
+            if (blob) {
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `${title.replace(/\s+/g, '-').toLowerCase()}-qr-code.png`;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+              URL.revokeObjectURL(svgUrl);
+            }
+          }, 'image/png');
+        };
+        qrCodeImg.src = svgUrl;
+      };
+
+      // Load logo from public assets
+      logoImg.src = '/assets/icons/numoni-logo-dark.svg';
     }
   } catch (error) {
     console.error('Error downloading QR code as image:', error);
@@ -1066,4 +1121,130 @@ export const removeCommas = (value: string): string => {
 export const isNumericOnly = (value: string): boolean => {
   // Allow empty string or only digits and commas
   return value === '' || /^[\d,]*$/.test(value);
+};
+
+/**
+ * Removes the leading zero from a phone number for OTP generation
+ * This function is specifically used when generating mobile OTP where the phone number
+ * should not have a leading zero.
+ * 
+ * @param phoneNumber - The phone number string (e.g., "07001234567" or "7001234567")
+ * @returns Phone number without leading zero (e.g., "7001234567")
+ * 
+ * @example
+ * removeLeadingZero("07001234567") // Returns: "7001234567"
+ * removeLeadingZero("7001234567") // Returns: "7001234567"
+ * removeLeadingZero("") // Returns: ""
+ */
+export const removeLeadingZero = (phoneNumber: string): string => {
+  if (!phoneNumber) return '';
+
+  // Remove leading zero if present
+  return phoneNumber.startsWith('0') ? phoneNumber.substring(1) : phoneNumber;
+};
+
+/**
+ * Normalizes a phone number to store only the last 10 digits (without country code or leading zero)
+ * Handles various input formats: +2347034947199, 2347034947199, 07034947199, 7034947199
+ * 
+ * @param phoneNumber - The phone number string in any format
+ * @returns Normalized phone number with only the last 10 digits (e.g., "7034947199")
+ * 
+ * @example
+ * normalizePhoneNumber("+2347034947199") // Returns: "7034947199"
+ * normalizePhoneNumber("2347034947199")  // Returns: "7034947199"
+ * normalizePhoneNumber("07034947199")    // Returns: "7034947199"
+ * normalizePhoneNumber("7034947199")     // Returns: "7034947199"
+ */
+export const normalizePhoneNumber = (phoneNumber: string): string => {
+  if (!phoneNumber) return '';
+
+  // Remove all non-digit characters
+  let digits = phoneNumber.replace(/\D/g, '');
+
+  // Remove Nigerian country code (234) if present at the start
+  if (digits.startsWith('234')) {
+    digits = digits.substring(3);
+  }
+
+  // Remove leading zero if present
+  if (digits.startsWith('0')) {
+    digits = digits.substring(1);
+  }
+
+  // Return only the last 10 digits (in case of extra digits)
+  return digits.length >= 10 ? digits.slice(-10) : digits;
+};
+
+/**
+ * Validates OTP input using the step2Schema
+ * @param otp - The OTP string to validate
+ * @param setError - React Hook Form's setError function
+ * @param schema - The Zod schema to validate against
+ * @returns Boolean indicating if validation passed
+ */
+export const validateOtpInput = <TFieldValues extends FieldValues = FieldValues>(
+  otp: string,
+  setError: UseFormSetError<TFieldValues>,
+  schema: { safeParse: (data: { otp: string }) => { success: boolean; error?: { issues: Array<{ path: PropertyKey[]; message: string }> } } }
+): boolean => {
+  const result = schema.safeParse({ otp });
+  if (!result.success && result.error) {
+    result.error.issues.forEach((issue) => {
+      const fieldName = String(issue.path[0]) as FieldPath<TFieldValues>;
+      setError(fieldName, {
+        type: "manual",
+        message: issue.message,
+      });
+    });
+    return false;
+  }
+  return true;
+};
+
+/**
+ * Extracts address components from Google Places API address_components array
+ * @param addressComponents - Array of address components from Google Places API
+ * @returns Object containing extracted street, city, state, country, and postalCode
+ * 
+ * @example
+ * const components = [
+ *   { long_name: '123 Main St', types: ['street_address'] },
+ *   { long_name: 'Lagos', types: ['locality'] },
+ *   { long_name: 'Lagos State', types: ['administrative_area_level_1'] },
+ *   { long_name: 'Nigeria', types: ['country'] },
+ *   { long_name: '101233', types: ['postal_code'] }
+ * ];
+ * extractAddressComponents(components)
+ * // Returns: { street: '123 Main St', city: 'Lagos', state: 'Lagos State', country: 'Nigeria', postalCode: '101233' }
+ */
+export const extractAddressComponents = (
+  addressComponents?: Array<{
+    long_name: string;
+    types: string[];
+  }>
+): { street: string; city: string; state: string; country: string; postalCode: string } => {
+  const components = addressComponents || [];
+
+  const street = components.find(comp =>
+    comp.types.includes('route') || comp.types.includes('street_address')
+  )?.long_name || '';
+
+  const city = components.find(comp =>
+    comp.types.includes('locality') || comp.types.includes('administrative_area_level_2')
+  )?.long_name || '';
+
+  const state = components.find(comp =>
+    comp.types.includes('administrative_area_level_1')
+  )?.long_name || '';
+
+  const country = components.find(comp =>
+    comp.types.includes('country')
+  )?.long_name || 'Nigeria';
+
+  const postalCode = components.find(comp =>
+    comp.types.includes('postal_code')
+  )?.long_name || '100001';
+
+  return { street, city, state, country, postalCode };
 };
