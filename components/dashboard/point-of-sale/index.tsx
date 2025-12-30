@@ -45,7 +45,7 @@ export default function PointOfSale() {
       </Button>
     </section>
 
-    <PointOfSaleTable data={posData} title="Point of Sale History" searchValue="" />
+    <PointOfSaleTable data={posData} title="Point of Sale History" />
 
     <AddPOSDialog
       isOpen={isAddPOSOpen}
