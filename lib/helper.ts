@@ -1459,7 +1459,7 @@ export const downloadQRCodeImageWithLogo = async (
         // Check if canvas is tainted (CORS issue)
         try {
           ctx.getImageData(0, 0, 1, 1);
-        } catch (_e) {
+        } catch {
           cleanupBlobUrls();
           reject(new Error('Canvas is tainted due to CORS restrictions. Images must be served with proper CORS headers.'));
           return;
@@ -1496,7 +1496,7 @@ export const downloadQRCodeImageWithLogo = async (
             reject(new Error('Failed to create blob from canvas. Canvas may be tainted due to CORS restrictions.'));
           }
         }, 'image/png');
-      } catch (_error) {
+      } catch {
         // Fallback: try to draw QR code without logos if logo loading fails
         try {
           const qrCodeImg = await loadImageWithCors(qrCodeUrl);
@@ -1550,7 +1550,7 @@ export const downloadQRCodeImageWithLogo = async (
           // Check if canvas is tainted (CORS issue)
           try {
             ctx.getImageData(0, 0, 1, 1);
-          } catch (_e) {
+          } catch {
             if (qrCodeImg.src.startsWith('blob:')) {
               URL.revokeObjectURL(qrCodeImg.src);
             }
