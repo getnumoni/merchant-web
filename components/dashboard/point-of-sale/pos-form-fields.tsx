@@ -5,16 +5,16 @@
  */
 
 import { FormInputTopLabel } from "@/components/ui/form-input";
-import { Control } from "react-hook-form";
+import { Control, FieldValues } from "react-hook-form";
 
-interface POSFormFieldsProps<T> {
+interface POSFormFieldsProps<T extends FieldValues> {
   control: Control<T>;
   posNameField: string;
   locationField: string;
   addressField: string;
 }
 
-export function POSFormFields<T>({
+export function POSFormFields<T extends FieldValues>({
   control,
   posNameField,
   locationField,
