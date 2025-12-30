@@ -4,8 +4,9 @@ import { useDeletePos } from "@/hooks/mutation/useDeletePos";
 import { downloadQRCodeImageWithLogo, formatDateTime } from "@/lib/helper";
 import { PointOfSaleData } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
-import { Download, Edit, MoreVertical, Trash2 } from "lucide-react";
+import { ArrowUpRight, Copy, Download, Edit, MoreVertical, Trash2 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import DeletePOSDialog from "./delete-pos-dialog";
@@ -63,6 +64,52 @@ export const pointOfSaleColumns: ColumnDef<PointOfSaleData>[] = [
     cell: ({ row }) => {
       const updatedDate = row.getValue("updatedDate") as string;
       return <div>{formatDateTime(updatedDate)}</div>;
+    },
+  },
+  {
+    accessorKey: "transactions",
+    header: "View Transactions",
+    cell: ({ row }) => {
+      const posId = row.original.posId;
+      const merchantName = row.original.merchantName;
+      const posName = row.original.posName;
+      const merchantId = row.original.merchantId;
+
+      const handleCopyLink = async () => {
+        try {
+          const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+          const transactionLink = `${baseUrl}/pos-transaction-history/${posId}?merchantName=${merchantName}&posName=${posName}&merchantId=${merchantId}`;
+          await navigator.clipboard.writeText(transactionLink);
+          toast.success("Transaction link copied to clipboard");
+        } catch {
+          toast.error("Failed to copy link");
+        }
+      };
+
+      return (
+        <div className="flex items-center gap-2">
+          <Link href={`/pos-transaction-history/${posId}?merchantName=${merchantName}&posName=${posName}&merchantId=${merchantId}`} target="_blank">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-8 w-8 p-0"
+              title="View Transactions"
+            >
+              <ArrowUpRight className="h-4 w-4" />
+            </Button>
+          </Link>
+          <Button
+            type="button"
+            size="sm"
+            className="h-8 w-8 p-0 bg-theme-dark-green"
+            onClick={handleCopyLink}
+            title="Copy Transaction Link"
+          >
+            <Copy className="h-4 w-4" />
+          </Button>
+        </div>
+      );
     },
   },
   {

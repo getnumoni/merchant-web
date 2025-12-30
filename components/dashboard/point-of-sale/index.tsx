@@ -23,8 +23,6 @@ export default function PointOfSale() {
     return <ErrorState title="Error loading data" message={error?.message || "An error occurred while loading point of sale."} />;
   }
 
-  console.log(data?.data?.data);
-
   const posData: PointOfSaleData[] = data?.data?.data;
 
   if (posData?.length === 0) {
@@ -36,16 +34,16 @@ export default function PointOfSale() {
 
   return <main>
     <section className="flex justify-between items-center px-1">
-      <h1 className="text-2xl font-bold">Point of Sale History</h1>
+      <h1 className="text-2xl font-bold">POS Management</h1>
       <Button
         onClick={() => setIsAddPOSOpen(true)}
         className="bg-theme-dark-green hover:bg-theme-dark-green/90 text-white px-12 py-6 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        <Plus /> Add Point of Sale
+        <Plus /> Add POS
       </Button>
     </section>
 
-    <PointOfSaleTable data={posData} title="Point of Sale History" />
+    <PointOfSaleTable data={posData} title="POS List" />
 
     <AddPOSDialog
       isOpen={isAddPOSOpen}
