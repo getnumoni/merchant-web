@@ -160,7 +160,12 @@ const columns: ColumnDef<PosTransactionData>[] = [
   },
 ];
 
-export default function PosTransactionTable({ posId, merchantId }: { posId: string, merchantId: string }) {
+interface DirectSalesTableProps {
+  posId: string;
+  merchantId: string;
+}
+
+export default function DirectSalesTable({ posId, merchantId }: DirectSalesTableProps) {
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const pageSize = 50;
@@ -177,60 +182,62 @@ export default function PosTransactionTable({ posId, merchantId }: { posId: stri
     setCurrentPage(0);
   }, [searchQuery]);
 
-  // Extract transaction data and pagination info from API response
+  // Extract transaction data and filter for DIRECT_TRANSFER only
   const allTransactionData = data?.data?.pageData as PosTransactionData[] | undefined;
 
-  // Apply search filter to transaction data
-  const transactionListData = useMemo(() => {
-    if (!allTransactionData) return undefined;
+  // Filter to show only DIRECT_TRANSFER transactions and apply search filter
+  const filteredTransactionData = useMemo(() => {
+    if (!allTransactionData) return [];
 
-    if (!searchQuery.trim()) {
-      return allTransactionData;
+    let filtered = allTransactionData.filter(
+      (transaction) => transaction.transactionCategory === "DIRECT_TRANSFER"
+    );
+
+    // Apply search filter if search query exists
+    if (searchQuery.trim()) {
+      const searchLower = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter((transaction) => {
+        const customerName = transaction.customerName?.toLowerCase() || "";
+        const transactionRef = transaction.transactionReferenceId?.toLowerCase() || "";
+        const description = transaction.description?.toLowerCase() || "";
+        const title = transaction.title?.toLowerCase() || "";
+        const posName = transaction.posName?.toLowerCase() || "";
+        const status = transaction.status?.toLowerCase() || "";
+        const transactionType = transaction.transactionType?.toLowerCase() || "";
+        const amount = formatCurrency(transaction.amount || 0).toLowerCase();
+        const amountPaid = formatCurrency(transaction.amountPaid || 0).toLowerCase();
+
+        return (
+          customerName.includes(searchLower) ||
+          transactionRef.includes(searchLower) ||
+          description.includes(searchLower) ||
+          title.includes(searchLower) ||
+          posName.includes(searchLower) ||
+          status.includes(searchLower) ||
+          transactionType.includes(searchLower) ||
+          amount.includes(searchLower) ||
+          amountPaid.includes(searchLower)
+        );
+      });
     }
 
-    const searchLower = searchQuery.toLowerCase().trim();
-    return allTransactionData.filter((transaction) => {
-      const customerName = transaction.customerName?.toLowerCase() || "";
-      const transactionRef = transaction.transactionReferenceId?.toLowerCase() || "";
-      const description = transaction.description?.toLowerCase() || "";
-      const title = transaction.title?.toLowerCase() || "";
-      const posName = transaction.posName?.toLowerCase() || "";
-      const status = transaction.status?.toLowerCase() || "";
-      const transactionType = transaction.transactionType?.toLowerCase() || "";
-      const operationType = transaction.operationType?.toLowerCase() || "";
-      const category = transaction.transactionCategory?.toLowerCase() || "";
-      const amount = formatCurrency(transaction.amount || 0).toLowerCase();
-      const amountPaid = formatCurrency(transaction.amountPaid || 0).toLowerCase();
-
-      return (
-        customerName.includes(searchLower) ||
-        transactionRef.includes(searchLower) ||
-        description.includes(searchLower) ||
-        title.includes(searchLower) ||
-        posName.includes(searchLower) ||
-        status.includes(searchLower) ||
-        transactionType.includes(searchLower) ||
-        operationType.includes(searchLower) ||
-        category.includes(searchLower) ||
-        amount.includes(searchLower) ||
-        amountPaid.includes(searchLower)
-      );
-    });
+    return filtered;
   }, [allTransactionData, searchQuery]);
 
   const paginationData = data?.data;
 
   // Map API pagination response to PaginationInfo format
+  // Note: We're using the filtered count for display, but pagination is based on API response
   const pagination: PaginationInfo | undefined = paginationData ? {
     isFirst: paginationData.isFirst,
     isLast: paginationData.isLast,
-    currentPageElements: transactionListData?.length || 0,
+    currentPageElements: filteredTransactionData.length,
     totalPages: paginationData.totalPages,
     pageSize: paginationData.pageSize,
     hasPrevious: paginationData.hasPrevious,
     hasNext: paginationData.hasNext,
     currentPage: paginationData.currentPage,
-    totalElements: paginationData.totalElements,
+    totalElements: filteredTransactionData.length, // This will show filtered count on current page
   } : undefined;
 
   const handlePageChange = (page: number) => {
@@ -240,7 +247,7 @@ export default function PosTransactionTable({ posId, merchantId }: { posId: stri
   if (isPending) {
     return (
       <div className="bg-white rounded-2xl p-4 my-4">
-        <LoadingSpinner size="lg" message="Loading transaction list..." />
+        <LoadingSpinner size="lg" message="Loading direct sales transactions..." />
       </div>
     );
   }
@@ -249,19 +256,19 @@ export default function PosTransactionTable({ posId, merchantId }: { posId: stri
     return (
       <div className="bg-white rounded-2xl p-4 my-4">
         <ErrorState
-          title="Error loading transaction list"
-          message={error?.message || "Failed to load transaction list data. Please try again."}
+          title="Error loading direct sales transactions"
+          message={error?.message || "Failed to load direct sales transaction data. Please try again."}
           onRetry={refetch}
         />
       </div>
     );
   }
 
-  if (!transactionListData || transactionListData.length === 0) {
+  if (!filteredTransactionData || filteredTransactionData.length === 0) {
     return (
       <div className="bg-gray-50 rounded-2xl p-4 m-8">
         <div className="flex items-center justify-between mb-4">
-          <h1 className="text-lg font-semibold text-gray-900">POS Transactions</h1>
+          <h1 className="text-lg font-semibold text-gray-900">Direct Sales Transactions</h1>
           <SearchInput
             placeholder="Search transactions..."
             value={searchQuery}
@@ -270,17 +277,17 @@ export default function PosTransactionTable({ posId, merchantId }: { posId: stri
           />
         </div>
         <EmptyState
-          title={searchQuery ? "No matching transactions found" : "No transactions found"}
-          description={searchQuery ? "Try adjusting your search query" : "No transactions found for the selected date range"}
+          title={searchQuery ? "No matching transactions found" : "No direct sales transactions found"}
+          description={searchQuery ? "Try adjusting your search query" : "No direct transfer transactions found for this POS"}
         />
       </div>
     );
   }
 
   return (
-    <div className="bg-gray-50 rounded-2xl p-4 m-8">
+    <div className="bg-gray-50 rounded-2xl p-4 my-8">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-lg font-semibold text-gray-900">POS Transactions</h1>
+        <h1 className="text-lg font-semibold text-gray-900">Direct Sales Transactions</h1>
         <SearchInput
           placeholder="Search transactions..."
           value={searchQuery}
@@ -289,7 +296,7 @@ export default function PosTransactionTable({ posId, merchantId }: { posId: stri
         />
       </div>
       <div className="overflow-x-auto">
-        <DataTable columns={columns} data={transactionListData} />
+        <DataTable columns={columns} data={filteredTransactionData} />
       </div>
       {pagination && (
         <TransactionPagination
