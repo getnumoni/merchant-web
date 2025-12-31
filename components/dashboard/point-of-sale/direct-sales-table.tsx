@@ -30,6 +30,30 @@ const columns: ColumnDef<PosTransactionData>[] = [
     },
   },
   {
+    accessorKey: "amount",
+    header: "Amount",
+    cell: ({ row }) => {
+      const amount = row.getValue("amount") as number;
+      return <div className="font-semibold">{formatCurrency(amount || 0)}</div>;
+    },
+  },
+  {
+    accessorKey: "amountPaid",
+    header: "Amount Paid",
+    cell: ({ row }) => {
+      const amount = row.getValue("amountPaid") as number;
+      return <div className="font-semibold">{formatCurrency(amount || 0)}</div>;
+    },
+  },
+  {
+    accessorKey: "settledAmount",
+    header: "Settled Amount",
+    cell: ({ row }) => {
+      const amount = row.getValue("settledAmount") as number | null;
+      return <div>{amount ? formatCurrency(amount) : "—"}</div>;
+    },
+  },
+  {
     accessorKey: "customerName",
     header: "Customer",
     cell: ({ row }) => {
@@ -77,30 +101,7 @@ const columns: ColumnDef<PosTransactionData>[] = [
       return <div className="font-semibold text-sm">{category?.replace(/_/g, " ") || "—"}</div>;
     },
   },
-  {
-    accessorKey: "amount",
-    header: "Amount",
-    cell: ({ row }) => {
-      const amount = row.getValue("amount") as number;
-      return <div className="font-semibold">{formatCurrency(amount || 0)}</div>;
-    },
-  },
-  {
-    accessorKey: "amountPaid",
-    header: "Amount Paid",
-    cell: ({ row }) => {
-      const amount = row.getValue("amountPaid") as number;
-      return <div className="font-semibold">{formatCurrency(amount || 0)}</div>;
-    },
-  },
-  {
-    accessorKey: "settledAmount",
-    header: "Settled Amount",
-    cell: ({ row }) => {
-      const amount = row.getValue("settledAmount") as number | null;
-      return <div>{amount ? formatCurrency(amount) : "—"}</div>;
-    },
-  },
+
   {
     accessorKey: "fee",
     header: "Fee",
