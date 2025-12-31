@@ -1248,3 +1248,350 @@ export const extractAddressComponents = (
 
   return { street, city, state, country, postalCode };
 };
+
+
+/**
+ * Helper function to load an image with CORS handling
+ * Uses fetch + blob approach to avoid CORS issues when drawing to canvas
+ */
+const loadImageWithCors = (src: string): Promise<HTMLImageElement> => {
+  return new Promise((resolve, reject) => {
+    // For data URLs or blob URLs, load directly
+    if (src.startsWith('data:') || src.startsWith('blob:')) {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error(`Failed to load image: ${src}`));
+      img.src = src;
+      return;
+    }
+
+    // Check if this is an S3 URL that needs proxying
+    const isS3Url = src.includes('s3.amazonaws.com') || src.includes('s3.eu-west-1.amazonaws.com');
+    const isLocalPath = src.startsWith('/');
+    const proxyUrl = isS3Url ? `/api/images/proxy?url=${encodeURIComponent(src)}` : src;
+
+    // For external URLs, use fetch to bypass CORS restrictions
+    // This works because fetch can read the image data, then we create a blob URL
+    // which is same-origin and can be used in canvas without CORS issues
+    // Local paths don't need CORS mode
+    fetch(proxyUrl, {
+      mode: isLocalPath ? 'same-origin' : 'cors',
+      credentials: 'omit'
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        return response.blob();
+      })
+      .then(blob => {
+        // Create a blob URL (same-origin, no CORS issues)
+        const blobUrl = URL.createObjectURL(blob);
+        const img = new Image();
+
+        img.onload = () => {
+          // Don't revoke URL yet - we need it until canvas is drawn
+          resolve(img);
+        };
+
+        img.onerror = () => {
+          URL.revokeObjectURL(blobUrl);
+          reject(new Error(`Failed to load image blob: ${src}`));
+        };
+
+        img.src = blobUrl;
+      })
+      .catch((error) => {
+        // If fetch fails (CORS or network error), try direct load as fallback
+        // This won't work for canvas export, but at least the image might display
+        console.warn(`Fetch failed for ${src}, trying direct load:`, error);
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => resolve(img);
+        img.onerror = () => reject(new Error(`Failed to load image: ${src}. CORS may be blocking access.`));
+        img.src = src;
+      });
+  });
+};
+
+/**
+ * Downloads a QR code image URL with merchant logo and Numoni logo at the top, and merchant name/location/address below
+ * @param qrCodeUrl - URL or base64 data URL of the QR code image
+ * @param title - Merchant name to display at the bottom
+ * @param merchantLogo - Optional merchant logo URL
+ * @param location - Optional location text to display below QR code
+ * @param address - Optional address text to display below QR code
+ */
+export const downloadQRCodeImageWithLogo = async (
+  qrCodeUrl: string,
+  title: string,
+  merchantLogo?: string | null,
+  location?: string | null,
+  address?: string | null,
+  posId?: string | null
+): Promise<void> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Convert image URL to canvas
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      // Set canvas size - increased height to accommodate logos, QR code, and text
+      const qrCodeSize = 400;
+      const numoniLogoHeight = 50; // Space for Numoni logo at top
+      const merchantLogoHeight = merchantLogo ? 30 : 0; // Space for merchant logo if available (smaller)
+      const gapBetweenLogos = 15; // Gap between Numoni and merchant logos
+      const logoHeight = numoniLogoHeight + (merchantLogo ? gapBetweenLogos + merchantLogoHeight : 0); // Total logo area height
+      const textHeight = (title || location || address) ? 100 : 0; // Space for merchant name, location, and address text
+      const padding = 40; // Padding around content
+      canvas.width = qrCodeSize + (padding * 2);
+      canvas.height = qrCodeSize + logoHeight + textHeight + (padding * 4); // Extra padding for spacing
+
+      if (!ctx) {
+        reject(new Error('Could not get canvas context'));
+        return;
+      }
+
+      // Draw white background
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      try {
+        // Always load Numoni logo
+        const numoniLogoUrl = '/assets/icons/numoni-logo-dark.svg';
+        const numoniLogoImg = await loadImageWithCors(numoniLogoUrl);
+
+        // Load merchant logo if provided
+        let merchantLogoImg: HTMLImageElement | null = null;
+        if (merchantLogo) {
+          try {
+            merchantLogoImg = await loadImageWithCors(merchantLogo);
+          } catch (error) {
+            console.warn('Failed to load merchant logo, will show only Numoni logo:', error);
+          }
+        }
+
+        // Load QR code image
+        const qrCodeImg = await loadImageWithCors(qrCodeUrl);
+
+        // Clean up blob URLs if they were created (for images loaded via fetch)
+        const cleanupBlobUrls = () => {
+          if (numoniLogoImg.src.startsWith('blob:')) {
+            URL.revokeObjectURL(numoniLogoImg.src);
+          }
+          if (merchantLogoImg && merchantLogoImg.src.startsWith('blob:')) {
+            URL.revokeObjectURL(merchantLogoImg.src);
+          }
+          if (qrCodeImg.src.startsWith('blob:')) {
+            URL.revokeObjectURL(qrCodeImg.src);
+          }
+        };
+
+        // Draw logos at the top center - Numoni on top, merchant underneath (if available)
+        const numoniLogoWidth = 120; // Numoni logo width
+        const numoniLogoHeightActual = Math.min(numoniLogoImg.height * (numoniLogoWidth / numoniLogoImg.width), 50); // Max 50px height
+
+        const logoY = padding;
+        const numoniLogoX = (canvas.width - numoniLogoWidth) / 2; // Center Numoni logo
+
+        // Always draw Numoni logo at the top
+        ctx.drawImage(numoniLogoImg, numoniLogoX, logoY, numoniLogoWidth, numoniLogoHeightActual);
+
+        let bottomOfLogos = logoY + numoniLogoHeightActual; // Bottom of Numoni logo
+
+        if (merchantLogoImg) {
+          // Draw merchant logo underneath Numoni logo (smaller)
+          const gapBetweenLogos = 15; // Gap between Numoni and merchant logos
+          const merchantLogoWidth = 60; // Smaller merchant logo
+          const merchantLogoHeightActual = Math.min(merchantLogoImg.height * (merchantLogoWidth / merchantLogoImg.width), 30); // Max 30px height (smaller)
+
+          const merchantLogoY = bottomOfLogos + gapBetweenLogos; // Position below Numoni logo with gap
+          const merchantLogoX = (canvas.width - merchantLogoWidth) / 2; // Center merchant logo
+          ctx.drawImage(merchantLogoImg, merchantLogoX, merchantLogoY, merchantLogoWidth, merchantLogoHeightActual);
+
+          bottomOfLogos = merchantLogoY + merchantLogoHeightActual; // Update to bottom of merchant logo
+        }
+
+        // Calculate position for QR code (below logos)
+        const qrSize = qrCodeSize;
+        const qrX = (canvas.width - qrSize) / 2;
+        const qrY = bottomOfLogos + padding; // Position below logos with padding
+
+        // Draw the QR code image
+        ctx.drawImage(qrCodeImg, qrX, qrY, qrSize, qrSize);
+
+        // Draw merchant name, location, and address text below QR code (all in small letters)
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = '#333333';
+
+        let textY = qrY + qrSize + padding;
+
+        // Draw merchant name
+        if (title) {
+          ctx.font = '12px Arial, sans-serif';
+          ctx.fillText(title.toLowerCase(), canvas.width / 2, textY);
+          textY += 18;
+        }
+
+        // Draw location
+        if (location) {
+          ctx.font = '11px Arial, sans-serif';
+          ctx.fillStyle = '#666666';
+          ctx.fillText(location.toLowerCase(), canvas.width / 2, textY);
+          textY += 16;
+        }
+        // Draw pos ID
+        if (posId) {
+          ctx.font = '11px Arial, sans-serif';
+          ctx.fillStyle = '#666666';
+          ctx.fillText('POS ID: ' + posId.toLowerCase(), canvas.width / 2, textY);
+          textY += 16;
+        }
+
+        // Draw address
+        if (address) {
+          ctx.font = '11px Arial, sans-serif';
+          ctx.fillStyle = '#666666';
+          ctx.fillText(address.toLowerCase(), canvas.width / 2, textY);
+        }
+
+        // Check if canvas is tainted (CORS issue)
+        try {
+          ctx.getImageData(0, 0, 1, 1);
+        } catch {
+          cleanupBlobUrls();
+          reject(new Error('Canvas is tainted due to CORS restrictions. Images must be served with proper CORS headers.'));
+          return;
+        }
+
+        // Convert canvas to blob and download
+        canvas.toBlob((blob) => {
+          // Clean up blob URLs after drawing to canvas
+          cleanupBlobUrls();
+
+          if (blob) {
+            try {
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `${posId ? `${posId}-` : ''}${title.replace(/\s+/g, '-').toLowerCase()}-qr-code.png`;
+              link.style.display = 'none';
+              document.body.appendChild(link);
+
+              // Trigger download synchronously within user gesture context
+              link.click();
+
+              // Clean up after a short delay to ensure download starts
+              setTimeout(() => {
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+              }, 100);
+
+              resolve();
+            } catch (downloadError) {
+              reject(new Error(`Failed to trigger download: ${downloadError instanceof Error ? downloadError.message : String(downloadError)}`));
+            }
+          } else {
+            reject(new Error('Failed to create blob from canvas. Canvas may be tainted due to CORS restrictions.'));
+          }
+        }, 'image/png');
+      } catch {
+        // Fallback: try to draw QR code without logos if logo loading fails
+        try {
+          const qrCodeImg = await loadImageWithCors(qrCodeUrl);
+          const qrSize = qrCodeSize;
+          const qrX = (canvas.width - qrSize) / 2;
+          const qrY = (canvas.height - qrSize - textHeight) / 2;
+          ctx.drawImage(qrCodeImg, qrX, qrY, qrSize, qrSize);
+
+          // Draw merchant name, location, and address text (all in small letters)
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'top';
+          ctx.fillStyle = '#333333';
+
+          let textY = qrY + qrSize + padding;
+
+          // Draw merchant name
+          if (title) {
+            ctx.font = '12px Arial, sans-serif';
+            ctx.fillText(title.toLowerCase(), canvas.width / 2, textY);
+            textY += 18;
+          }
+
+          // Draw location
+          if (location) {
+            ctx.font = '11px Arial, sans-serif';
+            ctx.fillStyle = '#666666';
+            ctx.fillText(location.toLowerCase(), canvas.width / 2, textY);
+            textY += 16;
+          }
+
+          // Draw pos ID
+          if (posId) {
+            ctx.font = '11px Arial, sans-serif';
+            ctx.fillStyle = '#666666';
+            ctx.fillText('POS ID: ' + posId.toLowerCase(), canvas.width / 2, textY);
+            textY += 16;
+          }
+
+          // Draw address
+          if (address) {
+            ctx.font = '11px Arial, sans-serif';
+            ctx.fillStyle = '#666666';
+            ctx.fillText(address.toLowerCase(), canvas.width / 2, textY);
+          }
+
+          // Clean up blob URLs after drawing to canvas
+          if (qrCodeImg.src.startsWith('blob:')) {
+            URL.revokeObjectURL(qrCodeImg.src);
+          }
+
+          // Check if canvas is tainted (CORS issue)
+          try {
+            ctx.getImageData(0, 0, 1, 1);
+          } catch {
+            if (qrCodeImg.src.startsWith('blob:')) {
+              URL.revokeObjectURL(qrCodeImg.src);
+            }
+            reject(new Error('Canvas is tainted due to CORS restrictions. Images must be served with proper CORS headers.'));
+            return;
+          }
+
+          canvas.toBlob((blob) => {
+            if (blob) {
+              try {
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `${posId ? `${posId}-` : ''}${title.replace(/\s+/g, '-').toLowerCase()}-qr-code.png`;
+                link.style.display = 'none';
+                document.body.appendChild(link);
+
+                // Trigger download synchronously within user gesture context
+                link.click();
+
+                // Clean up after a short delay to ensure download starts
+                setTimeout(() => {
+                  document.body.removeChild(link);
+                  URL.revokeObjectURL(url);
+                }, 100);
+
+                resolve();
+              } catch (downloadError) {
+                reject(new Error(`Failed to trigger download: ${downloadError instanceof Error ? downloadError.message : String(downloadError)}`));
+              }
+            } else {
+              reject(new Error('Failed to create blob from canvas. Canvas may be tainted due to CORS restrictions.'));
+            }
+          }, 'image/png');
+        } catch (fallbackError) {
+          reject(new Error(`Failed to load images: ${fallbackError instanceof Error ? fallbackError.message : String(fallbackError)}`));
+        }
+      }
+    } catch (error) {
+      console.error('Error downloading QR code as image:', error);
+      reject(error);
+    }
+  });
+};
