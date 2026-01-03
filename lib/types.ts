@@ -501,6 +501,8 @@ type TransactionData = {
   customerId: string;
   customerName: string | null;
   customerImageUrl: string | null;
+  customerEmail: string | null;
+  customerPhoneNo: string | null;
   merchantId: string;
   merchantName: string | null;
   businessImagePath: string | null;

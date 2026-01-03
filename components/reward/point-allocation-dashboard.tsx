@@ -38,7 +38,6 @@ export default function PointAllocationDashboard() {
 
   const consumerData: CustomerAnalyticsResponse | undefined = data?.data;
 
-  console.log(consumerData);
   // Transform API data to match component expectations
   const loyalCustomers = consumerData?.topLoyalCustomers?.map((customer: CustomerAnalyticsData, index: number) => ({
     totalTransactions: customer.totalTransactions,
