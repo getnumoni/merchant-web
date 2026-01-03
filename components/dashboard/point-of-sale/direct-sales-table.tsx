@@ -2,16 +2,16 @@
 
 import TransactionPagination from "@/components/branch-level/transaction-pagination";
 import EmptyState from "@/components/common/empty-state";
-import SearchInput from "@/components/common/search-input";
 import { DataTable } from "@/components/ui/data-table";
 import { ErrorState } from "@/components/ui/error-state";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import useGetPosTransactionList from "@/hooks/query/useGetPosTransactionList";
-import { formatCurrency, formatDateTime } from "@/lib/helper";
+import { formatCurrency, formatDateTime, getTimelineDates } from "@/lib/helper";
 import { TransactionData } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
 import { PaginationInfo } from "../transactions-table";
+import TransactionTableHeader, { DateRangeOption } from "./transaction-table-header";
 
 // Extended TransactionData type for POS transactions
 type PosTransactionData = TransactionData & {
@@ -59,6 +59,22 @@ const columns: ColumnDef<PosTransactionData>[] = [
     cell: ({ row }) => {
       const customerName = row.getValue("customerName") as string | null;
       return <div>{customerName || "—"}</div>;
+    },
+  },
+  {
+    accessorKey: "customerEmail",
+    header: "Customer Email",
+    cell: ({ row }) => {
+      const customerEmail = row.getValue("customerEmail") as string | null;
+      return <div>{customerEmail || "—"}</div>;
+    },
+  },
+  {
+    accessorKey: "customerPhoneNo",
+    header: "Customer Phone No",
+    cell: ({ row }) => {
+      const customerPhoneNo = row.getValue("customerPhoneNo") as string | null;
+      return <div>{customerPhoneNo || "—"}</div>;
     },
   },
   {
@@ -169,61 +185,81 @@ interface DirectSalesTableProps {
 export default function DirectSalesTable({ posId, merchantId }: DirectSalesTableProps) {
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
+  const [dateRange, setDateRange] = useState<DateRangeOption>(null);
   const pageSize = 50;
+
+  // Parse search query to extract potential values for API filtering
+  // Search by customerEmail, customerPhoneNo, customerName, and transactionType
+  const searchParams = useMemo(() => {
+    const trimmed = searchQuery.trim();
+    if (!trimmed) return {};
+
+    const params: {
+      customerEmail?: string;
+      customerPhoneNo?: string;
+      customerName?: string;
+      transactionType?: string;
+    } = {};
+
+    // Check if it looks like an email
+    if (trimmed.includes('@')) {
+      params.customerEmail = trimmed;
+      return params;
+    }
+
+    // Check if it looks like a phone number (all digits or starts with +)
+    if (/^[\d+\-\s()]+$/.test(trimmed)) {
+      params.customerPhoneNo = trimmed;
+      return params;
+    }
+
+    // Check if it's a transaction type (CREDIT or DEBIT)
+    if (trimmed.toUpperCase() === 'CREDIT' || trimmed.toUpperCase() === 'DEBIT') {
+      params.transactionType = trimmed.toUpperCase();
+      return params;
+    }
+
+    // Default: search by customer name
+    params.customerName = trimmed;
+    return params;
+  }, [searchQuery]);
+
+  // Get date range based on selected option using helper function
+  // Only calculate dates if a date range is selected
+  const dateParams = useMemo(() => {
+    if (!dateRange) {
+      return {};
+    }
+    const { startDate, endDate } = getTimelineDates(dateRange);
+    return { startDate, endDate };
+  }, [dateRange]);
 
   const { data, isPending, isError, error, refetch } = useGetPosTransactionList({
     posId,
     merchantId,
     page: currentPage,
     size: pageSize,
+    ...searchParams,
+    ...dateParams,
   });
 
-  // Reset to first page when search query changes
+  // Reset to first page when search query or date range changes
   useEffect(() => {
     setCurrentPage(0);
-  }, [searchQuery]);
+  }, [searchQuery, dateRange]);
 
   // Extract transaction data and filter for DIRECT_TRANSFER only
   const allTransactionData = data?.data?.pageData as PosTransactionData[] | undefined;
 
-  // Filter to show only DIRECT_TRANSFER transactions and apply search filter
+  // Filter to show only DIRECT_TRANSFER transactions
+  // Search filtering is handled by the API
   const filteredTransactionData = useMemo(() => {
     if (!allTransactionData) return [];
 
-    let filtered = allTransactionData.filter(
+    return allTransactionData.filter(
       (transaction) => transaction.transactionCategory === "DIRECT_TRANSFER"
     );
-
-    // Apply search filter if search query exists
-    if (searchQuery.trim()) {
-      const searchLower = searchQuery.toLowerCase().trim();
-      filtered = filtered.filter((transaction) => {
-        const customerName = transaction.customerName?.toLowerCase() || "";
-        const transactionRef = transaction.transactionReferenceId?.toLowerCase() || "";
-        const description = transaction.description?.toLowerCase() || "";
-        const title = transaction.title?.toLowerCase() || "";
-        const posName = transaction.posName?.toLowerCase() || "";
-        const status = transaction.status?.toLowerCase() || "";
-        const transactionType = transaction.transactionType?.toLowerCase() || "";
-        const amount = formatCurrency(transaction.amount || 0).toLowerCase();
-        const amountPaid = formatCurrency(transaction.amountPaid || 0).toLowerCase();
-
-        return (
-          customerName.includes(searchLower) ||
-          transactionRef.includes(searchLower) ||
-          description.includes(searchLower) ||
-          title.includes(searchLower) ||
-          posName.includes(searchLower) ||
-          status.includes(searchLower) ||
-          transactionType.includes(searchLower) ||
-          amount.includes(searchLower) ||
-          amountPaid.includes(searchLower)
-        );
-      });
-    }
-
-    return filtered;
-  }, [allTransactionData, searchQuery]);
+  }, [allTransactionData]);
 
   const paginationData = data?.data;
 
@@ -268,15 +304,13 @@ export default function DirectSalesTable({ posId, merchantId }: DirectSalesTable
   if (!filteredTransactionData || filteredTransactionData.length === 0) {
     return (
       <div className="bg-gray-50 rounded-2xl p-4 m-8">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-lg font-semibold text-gray-900">Direct Sales Transactions</h1>
-          <SearchInput
-            placeholder="Search transactions..."
-            value={searchQuery}
-            onChange={setSearchQuery}
-            maxWidth="max-w-xs"
-          />
-        </div>
+        <TransactionTableHeader
+          title="Direct Sales Transactions"
+          dateRange={dateRange}
+          searchQuery={searchQuery}
+          onDateRangeChange={setDateRange}
+          onSearchChange={setSearchQuery}
+        />
         <EmptyState
           title={searchQuery ? "No matching transactions found" : "No direct sales transactions found"}
           description={searchQuery ? "Try adjusting your search query" : "No direct transfer transactions found for this POS"}
@@ -287,15 +321,13 @@ export default function DirectSalesTable({ posId, merchantId }: DirectSalesTable
 
   return (
     <div className="bg-gray-50 rounded-2xl p-4 my-8">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-lg font-semibold text-gray-900">Direct Sales Transactions</h1>
-        <SearchInput
-          placeholder="Search transactions..."
-          value={searchQuery}
-          onChange={setSearchQuery}
-          maxWidth="max-w-xs"
-        />
-      </div>
+      <TransactionTableHeader
+        title="Direct Sales Transactions"
+        dateRange={dateRange}
+        searchQuery={searchQuery}
+        onDateRangeChange={setDateRange}
+        onSearchChange={setSearchQuery}
+      />
       <div className="overflow-x-auto">
         <DataTable columns={columns} data={filteredTransactionData} />
       </div>
