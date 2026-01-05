@@ -128,7 +128,7 @@ export default function RewardDashboard() {
             </div>
           </div>
 
-          <div className="min-w-[280px] flex-shrink-0 flex">
+          <div className="min-w-[280px] shrink-0 flex">
             <div className="w-full h-full">
               <TotalPointsBalanceCard
                 availablePoints={analyticsData?.availablePoints}
@@ -140,7 +140,7 @@ export default function RewardDashboard() {
             </div>
           </div>
 
-          <div className="min-w-[280px] flex-shrink-0 flex">
+          <div className="min-w-[280px] shrink-0 flex">
             <div className="w-full h-full">
               <CustomerPoolCard
                 totalLifetimeCustomers={analyticsData?.totalLifetimeCustomers}
@@ -152,7 +152,7 @@ export default function RewardDashboard() {
             </div>
           </div>
 
-          <div className="min-w-[280px] flex-shrink-0 flex">
+          <div className="min-w-[280px] shrink-0 flex">
             <div className="w-full h-full">
               <TotalRewardIssued
                 totalIssued={analyticsData?.totalIssued}
@@ -164,7 +164,7 @@ export default function RewardDashboard() {
             </div>
           </div>
 
-          <div className="min-w-[280px] flex-shrink-0 flex">
+          <div className="min-w-[280px] shrink-0 flex">
             <div className="w-full h-full">
               <TotalOutstandingAllocation
                 outStandingAllocation={analyticsData?.outStandingAllocation}

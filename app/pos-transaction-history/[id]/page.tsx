@@ -35,13 +35,13 @@ export default function Page() {
 
   return <main>
     <OpenNavbar />
-    <section className="p-8 flex justify-between items-center">
+    <section className="p-8 md:flex justify-between items-center">
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-bold">Welcome to {merchantName}&apos;s POS Transaction History</h1>
         <p className="text-gray-500">View the transaction history for {posName}</p>
       </div>
       {oppositeTab && (
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-row gap-2 md:mt-0 mt-4">
           <Button
             onClick={handleTabSwitch}
             variant="outline"

@@ -2,16 +2,16 @@
 
 import TransactionPagination from "@/components/branch-level/transaction-pagination";
 import EmptyState from "@/components/common/empty-state";
-import SearchInput from "@/components/common/search-input";
 import { DataTable } from "@/components/ui/data-table";
 import { ErrorState } from "@/components/ui/error-state";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import useGetPosTransactionList from "@/hooks/query/useGetPosTransactionList";
-import { formatCurrency, formatDateTime } from "@/lib/helper";
+import { formatCurrency, formatDateTime, getTimelineDates } from "@/lib/helper";
 import { TransactionData } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
 import { PaginationInfo } from "../transactions-table";
+import TransactionTableHeader, { DateRangeOption } from "./transaction-table-header";
 
 // Extended TransactionData type for POS transactions
 type PosTransactionData = TransactionData & {
@@ -59,6 +59,22 @@ const columns: ColumnDef<PosTransactionData>[] = [
     cell: ({ row }) => {
       const customerName = row.getValue("customerName") as string | null;
       return <div>{customerName || "—"}</div>;
+    },
+  },
+  {
+    accessorKey: "customerEmail",
+    header: "Customer Email",
+    cell: ({ row }) => {
+      const customerEmail = row.getValue("customerEmail") as string | null;
+      return <div>{customerEmail || "—"}</div>;
+    },
+  },
+  {
+    accessorKey: "customerPhoneNo",
+    header: "Customer Phone No",
+    cell: ({ row }) => {
+      const customerPhoneNo = row.getValue("customerPhoneNo") as string | null;
+      return <div>{customerPhoneNo || "—"}</div>;
     },
   },
   {
@@ -164,19 +180,31 @@ const columns: ColumnDef<PosTransactionData>[] = [
 export default function PosTransactionTable({ posId, merchantId }: { posId: string, merchantId: string }) {
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
+  const [dateRange, setDateRange] = useState<DateRangeOption>(null);
   const pageSize = 50;
+
+  // Get date range based on selected option using helper function
+  // Only calculate dates if a date range is selected
+  const dateParams = useMemo(() => {
+    if (!dateRange) {
+      return {};
+    }
+    const { startDate, endDate } = getTimelineDates(dateRange);
+    return { startDate, endDate };
+  }, [dateRange]);
 
   const { data, isPending, isError, error, refetch } = useGetPosTransactionList({
     posId,
     merchantId,
     page: currentPage,
     size: pageSize,
+    ...dateParams,
   });
 
-  // Reset to first page when search query changes
+  // Reset to first page when search query or date range changes
   useEffect(() => {
     setCurrentPage(0);
-  }, [searchQuery]);
+  }, [searchQuery, dateRange]);
 
   // Extract transaction data and pagination info from API response
   const allTransactionData = data?.data?.pageData as PosTransactionData[] | undefined;
@@ -192,6 +220,8 @@ export default function PosTransactionTable({ posId, merchantId }: { posId: stri
     const searchLower = searchQuery.toLowerCase().trim();
     return allTransactionData.filter((transaction) => {
       const customerName = transaction.customerName?.toLowerCase() || "";
+      const customerEmail = transaction.customerEmail?.toLowerCase() || "";
+      const customerPhoneNo = transaction.customerPhoneNo?.toLowerCase() || "";
       const transactionRef = transaction.transactionReferenceId?.toLowerCase() || "";
       const description = transaction.description?.toLowerCase() || "";
       const title = transaction.title?.toLowerCase() || "";
@@ -205,6 +235,8 @@ export default function PosTransactionTable({ posId, merchantId }: { posId: stri
 
       return (
         customerName.includes(searchLower) ||
+        customerEmail.includes(searchLower) ||
+        customerPhoneNo.includes(searchLower) ||
         transactionRef.includes(searchLower) ||
         description.includes(searchLower) ||
         title.includes(searchLower) ||
@@ -261,15 +293,13 @@ export default function PosTransactionTable({ posId, merchantId }: { posId: stri
   if (!transactionListData || transactionListData.length === 0) {
     return (
       <div className="bg-gray-50 rounded-2xl p-4 m-8">
-        <div className="flex items-center justify-between mb-4">
-          <h1 className="text-lg font-semibold text-gray-900">POS Transactions</h1>
-          <SearchInput
-            placeholder="Search transactions..."
-            value={searchQuery}
-            onChange={setSearchQuery}
-            maxWidth="max-w-xs"
-          />
-        </div>
+        <TransactionTableHeader
+          title="POS Transactions"
+          dateRange={dateRange}
+          searchQuery={searchQuery}
+          onDateRangeChange={setDateRange}
+          onSearchChange={setSearchQuery}
+        />
         <EmptyState
           title={searchQuery ? "No matching transactions found" : "No transactions found"}
           description={searchQuery ? "Try adjusting your search query" : "No transactions found for the selected date range"}
@@ -280,15 +310,13 @@ export default function PosTransactionTable({ posId, merchantId }: { posId: stri
 
   return (
     <div className="bg-gray-50 rounded-2xl p-4 m-8">
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-lg font-semibold text-gray-900">POS Transactions</h1>
-        <SearchInput
-          placeholder="Search transactions..."
-          value={searchQuery}
-          onChange={setSearchQuery}
-          maxWidth="max-w-xs"
-        />
-      </div>
+      <TransactionTableHeader
+        title="POS Transactions"
+        dateRange={dateRange}
+        searchQuery={searchQuery}
+        onDateRangeChange={setDateRange}
+        onSearchChange={setSearchQuery}
+      />
       <div className="overflow-x-auto">
         <DataTable columns={columns} data={transactionListData} />
       </div>
