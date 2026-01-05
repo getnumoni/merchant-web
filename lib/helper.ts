@@ -1,4 +1,5 @@
 
+import { DateRangeOption } from '@/components/ui/date-range-selector';
 import React from 'react';
 import { FieldPath, FieldValues, UseFormSetError } from "react-hook-form";
 import { RewardRule } from './types';
@@ -1594,4 +1595,36 @@ export const downloadQRCodeImageWithLogo = async (
       reject(error);
     }
   });
+};
+
+/**
+ * Parses a YYYY-MM-DD date string to a local Date object
+ * @param dateString - Date string in YYYY-MM-DD format
+ * @returns Date object in local timezone
+ * 
+ * @example
+ * parseDateString('2024-01-15') // Returns Date object for January 15, 2024
+ */
+export const parseDateString = (dateString: string): Date => {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+};
+
+/**
+ * Converts a date range option to actual start and end Date objects
+ * @param option - Date range option (Today, Yesterday, This Week, etc.)
+ * @returns Object with start and end Date objects, or null if option is invalid
+ * 
+ * @example
+ * getDatesFromRangeOption('Today') // Returns { start: Date, end: Date }
+ * getDatesFromRangeOption('Custom Range') // Returns null
+ */
+export const getDatesFromRangeOption = (option: DateRangeOption): { start: Date; end: Date } | null => {
+  if (!option || option === 'Custom Range') return null;
+
+  const dateStrings = getTimelineDates(option);
+  const start = parseDateString(dateStrings.startDate);
+  const end = parseDateString(dateStrings.endDate);
+
+  return { start, end };
 };
