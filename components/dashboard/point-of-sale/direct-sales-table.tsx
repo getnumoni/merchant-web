@@ -6,12 +6,13 @@ import { DataTable } from "@/components/ui/data-table";
 import { ErrorState } from "@/components/ui/error-state";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import useGetPosTransactionList from "@/hooks/query/useGetPosTransactionList";
-import { formatCurrency, formatDateTime, getTimelineDates } from "@/lib/helper";
+import { formatCurrency, formatDateDDMMYYYY } from "@/lib/helper";
 import { TransactionData } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
 import { PaginationInfo } from "../transactions-table";
-import TransactionTableHeader, { DateRangeOption } from "./transaction-table-header";
+import TransactionTableHeader from "./transaction-table-header";
+import { useDateFilter } from "./use-date-filter";
 
 // Extended TransactionData type for POS transactions
 type PosTransactionData = TransactionData & {
@@ -172,7 +173,7 @@ const columns: ColumnDef<PosTransactionData>[] = [
     header: "Date",
     cell: ({ row }) => {
       const date = row.getValue("date") as string;
-      return <div className="text-sm">{formatDateTime(date)}</div>;
+      return <div className="text-sm">{formatDateDDMMYYYY(date)}</div>;
     },
   },
 ];
@@ -185,8 +186,10 @@ interface DirectSalesTableProps {
 export default function DirectSalesTable({ posId, merchantId }: DirectSalesTableProps) {
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
-  const [dateRange, setDateRange] = useState<DateRangeOption>(null);
   const pageSize = 50;
+
+  // Use date filter hook to manage date range and conversion
+  const { dateRange, dateParams, setDateRange, handleCustomDatesChange } = useDateFilter();
 
   // Parse search query to extract potential values for API filtering
   // Search by customerEmail, customerPhoneNo, customerName, and transactionType
@@ -224,15 +227,6 @@ export default function DirectSalesTable({ posId, merchantId }: DirectSalesTable
     return params;
   }, [searchQuery]);
 
-  // Get date range based on selected option using helper function
-  // Only calculate dates if a date range is selected
-  const dateParams = useMemo(() => {
-    if (!dateRange) {
-      return {};
-    }
-    const { startDate, endDate } = getTimelineDates(dateRange);
-    return { startDate, endDate };
-  }, [dateRange]);
 
   const { data, isPending, isError, error, refetch } = useGetPosTransactionList({
     posId,
@@ -246,7 +240,7 @@ export default function DirectSalesTable({ posId, merchantId }: DirectSalesTable
   // Reset to first page when search query or date range changes
   useEffect(() => {
     setCurrentPage(0);
-  }, [searchQuery, dateRange]);
+  }, [searchQuery, dateRange, dateParams]);
 
   // Extract transaction data and filter for DIRECT_TRANSFER only
   const allTransactionData = data?.data?.pageData as PosTransactionData[] | undefined;
@@ -310,6 +304,7 @@ export default function DirectSalesTable({ posId, merchantId }: DirectSalesTable
           searchQuery={searchQuery}
           onDateRangeChange={setDateRange}
           onSearchChange={setSearchQuery}
+          onDatesChange={handleCustomDatesChange}
         />
         <EmptyState
           title={searchQuery ? "No matching transactions found" : "No direct sales transactions found"}
