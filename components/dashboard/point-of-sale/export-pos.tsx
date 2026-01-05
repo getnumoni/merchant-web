@@ -10,52 +10,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useExportPosTransaction } from "@/hooks/query/useExportPosTransaction";
 import useGetAllPos from "@/hooks/query/useGetAllPos";
 import useGetMerchant from "@/hooks/query/useGetMerchant";
-import { getTimelineDates } from "@/lib/helper";
+import { getDatesFromRangeOption } from "@/lib/helper";
+import { ExportPosTransactionFormData, exportPosTransactionSchema } from "@/lib/schemas/export-pos-schema";
 import { PointOfSaleData } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import z from "zod";
 
 interface ExportPOSProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-const exportSchema = z.object({
-  posId: z.string().optional(),
-  startDate: z.date().optional(),
-  endDate: z.date().optional(),
-  transactionType: z.string().optional(),
-  customerEmail: z.string().email("Invalid email address").optional().or(z.literal("")),
-  customerPhoneNo: z.string().optional(),
-  customerId: z.string().optional(),
-}).superRefine((data, ctx) => {
-  if (!data.startDate) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "Start date is required",
-      path: ["startDate"],
-    });
-  }
-  if (!data.endDate) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "End date is required",
-      path: ["endDate"],
-    });
-  }
-  if (data.startDate && data.endDate && data.endDate < data.startDate) {
-    ctx.addIssue({
-      code: z.ZodIssueCode.custom,
-      message: "End date must be after start date",
-      path: ["endDate"],
-    });
-  }
-});
-
-type ExportFormData = z.infer<typeof exportSchema>;
 
 export default function ExportPOS({ isOpen, onClose }: ExportPOSProps) {
   const { isPending: isLoadingMerchant, data: merchantData } = useGetMerchant();
@@ -83,8 +49,8 @@ export default function ExportPOS({ isOpen, onClose }: ExportPOSProps) {
     return allPos || [];
   }, [posData]);
 
-  const form = useForm<ExportFormData>({
-    resolver: zodResolver(exportSchema),
+  const form = useForm<ExportPosTransactionFormData>({
+    resolver: zodResolver(exportPosTransactionSchema),
     defaultValues: {
       posId: "",
       transactionType: "",
@@ -94,22 +60,6 @@ export default function ExportPOS({ isOpen, onClose }: ExportPOSProps) {
     },
   });
 
-  // Helper function to parse YYYY-MM-DD string to local Date
-  const parseDateString = useCallback((dateString: string): Date => {
-    const [year, month, day] = dateString.split('-').map(Number);
-    return new Date(year, month - 1, day);
-  }, []);
-
-  // Helper function to convert date range option to actual dates
-  const getDatesFromRangeOption = useCallback((option: DateRangeOption): { start: Date; end: Date } | null => {
-    if (!option || option === 'Custom Range') return null;
-
-    const dateStrings = getTimelineDates(option);
-    const start = parseDateString(dateStrings.startDate);
-    const end = parseDateString(dateStrings.endDate);
-
-    return { start, end };
-  }, [parseDateString]);
 
   // Handle date range option changes
   const handleDateRangeOptionChange = useCallback((option: DateRangeOption) => {
@@ -136,7 +86,7 @@ export default function ExportPOS({ isOpen, onClose }: ExportPOSProps) {
       form.setValue("startDate", undefined, { shouldValidate: true });
       form.setValue("endDate", undefined, { shouldValidate: true });
     }
-  }, [getDatesFromRangeOption, form]);
+  }, [form]);
 
   // Handle custom date changes from DateRangeSelector
   const handleCustomDatesChange = useCallback((customStart: Date | undefined, customEnd: Date | undefined) => {
@@ -160,7 +110,7 @@ export default function ExportPOS({ isOpen, onClose }: ExportPOSProps) {
     onClose();
   }, [form, onClose]);
 
-  const handleSubmit = async (formData: ExportFormData) => {
+  const handleSubmit = async (formData: ExportPosTransactionFormData) => {
     if (!merchant) return;
 
     if (!formData.startDate || !formData.endDate) {
@@ -212,34 +162,6 @@ export default function ExportPOS({ isOpen, onClose }: ExportPOSProps) {
             <div className="flex-1 overflow-y-auto px-6 py-6">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-                  {/* Query Parameters Display */}
-                  {/* <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-3">Query Parameters</h3>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="text-gray-600">merchantId:</span>
-                        <span className="ml-2 font-mono text-gray-900">{merchant?.merchantId || "N/A"}</span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">posId:</span>
-                        <span className="ml-2 font-mono text-gray-900">
-                          {form.watch("posId") || "Not selected (optional)"}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">startDate:</span>
-                        <span className="ml-2 font-mono text-gray-900">
-                          {startDate ? format(startDate, "dd-MM-yyyy") : "Select start date"}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-gray-600">endDate:</span>
-                        <span className="ml-2 font-mono text-gray-900">
-                          {endDate ? format(endDate, "dd-MM-yyyy") : "Select end date"}
-                        </span>
-                      </div>
-                    </div>
-                  </div> */}
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Date Range Picker - Required */}
@@ -298,11 +220,30 @@ export default function ExportPOS({ isOpen, onClose }: ExportPOSProps) {
 
                   {/* Optional Parameters */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <FormInputTopLabel
+                    <FormField
                       control={form.control}
                       name="transactionType"
-                      label="Transaction Type"
-                      placeholder="e.g. CREDIT, DEBIT"
+                      render={({ field }) => (
+                        <FormItem className="space-y-2">
+                          <label className="text-sm font-medium text-[#838383]">
+                            Transaction Type
+                          </label>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger className="w-full p-5 shadow-none">
+                                <SelectValue placeholder="Select transaction type" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="SERVICEFEE">SERVICE FEE</SelectItem>
+                              <SelectItem value="PAYOUT">PAYOUT</SelectItem>
+                              <SelectItem value="SALES">SALES</SelectItem>
+
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
 
                     <FormInputTopLabel
