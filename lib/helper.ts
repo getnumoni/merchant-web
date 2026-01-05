@@ -416,6 +416,19 @@ export const formatDateTime = (dateString: string) => {
 };
 
 /**
+ * Formats a date string to DD-MM-YYYY format
+ * @param dateString - Date string to format
+ * @returns Formatted date string in DD-MM-YYYY format (e.g., "25-12-2024")
+ */
+export const formatDateDDMMYYYY = (dateString: string): string => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+};
+
+/**
  * Creates summary data array from rewards object
  * @param rewards - The rewards object or null
  * @returns Array of summary data objects
@@ -1608,6 +1621,19 @@ export const downloadQRCodeImageWithLogo = async (
 export const parseDateString = (dateString: string): Date => {
   const [year, month, day] = dateString.split('-').map(Number);
   return new Date(year, month - 1, day);
+};
+
+/**
+ * Converts a date string from YYYY-MM-DD format to DD-MM-YYYY format
+ * @param dateString - Date string in YYYY-MM-DD format (e.g., "2026-01-05")
+ * @returns Date string in DD-MM-YYYY format (e.g., "05-01-2026")
+ * 
+ * @example
+ * convertYYYYMMDDtoDDMMYYYY('2026-01-05') // Returns "05-01-2026"
+ */
+export const convertYYYYMMDDtoDDMMYYYY = (dateString: string): string => {
+  const [year, month, day] = dateString.split('-');
+  return `${day}-${month}-${year}`;
 };
 
 /**

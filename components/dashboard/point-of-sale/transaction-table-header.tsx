@@ -13,6 +13,7 @@ interface TransactionTableHeaderProps {
   searchQuery: string;
   onDateRangeChange: (range: DateRangeOption) => void;
   onSearchChange: (query: string) => void;
+  onDatesChange?: (startDate: Date | undefined, endDate: Date | undefined) => void;
 }
 
 export default function TransactionTableHeader({
@@ -21,6 +22,7 @@ export default function TransactionTableHeader({
   searchQuery,
   onDateRangeChange,
   onSearchChange,
+  onDatesChange,
 }: TransactionTableHeaderProps) {
   const [isExportOpen, setIsExportOpen] = useState(false);
 
@@ -32,7 +34,9 @@ export default function TransactionTableHeader({
           <DateRangeSelector
             value={dateRange}
             onValueChange={onDateRangeChange}
+            onDatesChange={onDatesChange}
             showAllTime={true}
+            showCustomRange={true}
             placeholder="Select Date Range"
           />
           <Button
