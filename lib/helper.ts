@@ -1,4 +1,5 @@
 
+import { DateRangeOption } from '@/components/ui/date-range-selector';
 import React from 'react';
 import { FieldPath, FieldValues, UseFormSetError } from "react-hook-form";
 import { RewardRule } from './types';
@@ -412,6 +413,19 @@ export const formatDateTime = (dateString: string) => {
     hour: '2-digit',
     minute: '2-digit',
   });
+};
+
+/**
+ * Formats a date string to DD-MM-YYYY format
+ * @param dateString - Date string to format
+ * @returns Formatted date string in DD-MM-YYYY format (e.g., "25-12-2024")
+ */
+export const formatDateDDMMYYYY = (dateString: string): string => {
+  const date = new Date(dateString);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}-${month}-${year}`;
 };
 
 /**
@@ -1594,4 +1608,49 @@ export const downloadQRCodeImageWithLogo = async (
       reject(error);
     }
   });
+};
+
+/**
+ * Parses a YYYY-MM-DD date string to a local Date object
+ * @param dateString - Date string in YYYY-MM-DD format
+ * @returns Date object in local timezone
+ * 
+ * @example
+ * parseDateString('2024-01-15') // Returns Date object for January 15, 2024
+ */
+export const parseDateString = (dateString: string): Date => {
+  const [year, month, day] = dateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+};
+
+/**
+ * Converts a date string from YYYY-MM-DD format to DD-MM-YYYY format
+ * @param dateString - Date string in YYYY-MM-DD format (e.g., "2026-01-05")
+ * @returns Date string in DD-MM-YYYY format (e.g., "05-01-2026")
+ * 
+ * @example
+ * convertYYYYMMDDtoDDMMYYYY('2026-01-05') // Returns "05-01-2026"
+ */
+export const convertYYYYMMDDtoDDMMYYYY = (dateString: string): string => {
+  const [year, month, day] = dateString.split('-');
+  return `${day}-${month}-${year}`;
+};
+
+/**
+ * Converts a date range option to actual start and end Date objects
+ * @param option - Date range option (Today, Yesterday, This Week, etc.)
+ * @returns Object with start and end Date objects, or null if option is invalid
+ * 
+ * @example
+ * getDatesFromRangeOption('Today') // Returns { start: Date, end: Date }
+ * getDatesFromRangeOption('Custom Range') // Returns null
+ */
+export const getDatesFromRangeOption = (option: DateRangeOption): { start: Date; end: Date } | null => {
+  if (!option || option === 'Custom Range') return null;
+
+  const dateStrings = getTimelineDates(option);
+  const start = parseDateString(dateStrings.startDate);
+  const end = parseDateString(dateStrings.endDate);
+
+  return { start, end };
 };
