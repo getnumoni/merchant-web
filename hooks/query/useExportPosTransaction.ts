@@ -14,7 +14,7 @@ interface ExportPosTransactionParams {
 }
 
 export const useExportPosTransaction = () => {
-  const { mutate, isPending, isSuccess } = useMutation({
+  const { mutate, isPending, isSuccess, reset } = useMutation({
     mutationFn: async (params: ExportPosTransactionParams) => {
       const queryParams = new URLSearchParams();
       queryParams.append("merchantId", params.merchantId);
@@ -68,7 +68,7 @@ export const useExportPosTransaction = () => {
     mutate(params);
   };
 
-  return { handleExportPosTransaction, isPending, isSuccess };
+  return { handleExportPosTransaction, isPending, isSuccess, reset };
 };
 
 export default useExportPosTransaction;

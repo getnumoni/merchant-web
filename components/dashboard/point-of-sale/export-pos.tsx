@@ -26,7 +26,7 @@ interface ExportPOSProps {
 export default function ExportPOS({ isOpen, onClose }: ExportPOSProps) {
   const { isPending: isLoadingMerchant, data: merchantData } = useGetMerchant();
   const { isPending: isLoadingPos, data: posData } = useGetAllPos();
-  const { handleExportPosTransaction, isPending: isExporting, isSuccess } = useExportPosTransaction();
+  const { handleExportPosTransaction, isPending: isExporting, isSuccess, reset } = useExportPosTransaction();
 
   const [dateRangeOption, setDateRangeOption] = useState<DateRangeOption>(null);
   const [startDate, setStartDate] = useState<Date | undefined>();
@@ -107,8 +107,9 @@ export default function ExportPOS({ isOpen, onClose }: ExportPOSProps) {
     setStartDate(undefined);
     setEndDate(undefined);
     setDateRangeOption(null);
+    reset(); // Reset the mutation state to clear isSuccess
     onClose();
-  }, [form, onClose]);
+  }, [form, onClose, reset]);
 
   const handleSubmit = async (formData: ExportPosTransactionFormData) => {
     if (!merchant) return;
@@ -135,10 +136,10 @@ export default function ExportPOS({ isOpen, onClose }: ExportPOSProps) {
   };
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && isOpen) {
       handleClose();
     }
-  }, [isSuccess, handleClose]);
+  }, [isSuccess, isOpen, handleClose]);
 
   return (
     <Dialog
