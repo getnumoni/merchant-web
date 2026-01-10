@@ -18,7 +18,7 @@ interface SalesData {
   totalCount: number;
 }
 
-export default function DirectSalesLanding({ posId, merchantId }: DirectSalesLandingProps) {
+export default function DirectSalesLanding({ posId, merchantId }: Readonly<DirectSalesLandingProps>) {
   const { data, isPending, isError, error, refetch } = useGetPosTransactionStatistics({
     posId,
     // merchantId: merchantId,

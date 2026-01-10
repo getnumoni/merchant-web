@@ -23,12 +23,12 @@ export default function PointOfSaleTable({
   searchValue: externalSearchValue,
   searchPlaceholder = "Search by POS name...",
   data
-}: PointOfSaleTableProps) {
+}: Readonly<PointOfSaleTableProps>) {
   const [internalSearchValue, setInternalSearchValue] = useState("");
   const [isExportOpen, setIsExportOpen] = useState(false);
 
   // Use external search value if provided, otherwise use internal state
-  const searchValue = externalSearchValue !== undefined ? externalSearchValue : internalSearchValue;
+  const searchValue = externalSearchValue ?? internalSearchValue;
   const handleSearchChange = onSearchChange || setInternalSearchValue;
 
   // Filter data by posName (case-insensitive)

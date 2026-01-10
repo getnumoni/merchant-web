@@ -183,7 +183,7 @@ interface DirectSalesTableProps {
   merchantId: string;
 }
 
-export default function DirectSalesTable({ posId, merchantId }: DirectSalesTableProps) {
+export default function DirectSalesTable({ posId, merchantId }: Readonly<DirectSalesTableProps>) {
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const pageSize = 50;

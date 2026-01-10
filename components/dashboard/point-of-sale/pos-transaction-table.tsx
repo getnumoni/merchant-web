@@ -6,7 +6,7 @@ import { DataTable } from "@/components/ui/data-table";
 import { ErrorState } from "@/components/ui/error-state";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import useGetPosTransactionList from "@/hooks/query/useGetPosTransactionList";
-import { formatCurrency, formatDateDDMMYYYY } from "@/lib/helper";
+import { extractErrorMessage, formatCurrency, formatDateDDMMYYYY } from "@/lib/helper";
 import { TransactionData } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
@@ -178,7 +178,7 @@ const columns: ColumnDef<PosTransactionData>[] = [
   },
 ];
 
-export default function PosTransactionTable({ posId, merchantId }: { posId: string, merchantId: string }) {
+export default function PosTransactionTable({ posId, merchantId }: { readonly posId: string, readonly merchantId: string }) {
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
   const pageSize = 50;
@@ -276,7 +276,7 @@ export default function PosTransactionTable({ posId, merchantId }: { posId: stri
       <div className="bg-white rounded-2xl p-4 my-4">
         <ErrorState
           title="Error loading transaction list"
-          message={error?.message || "Failed to load transaction list data. Please try again."}
+          message={extractErrorMessage(error) || "Failed to load transaction list data. Please try again."}
           onRetry={refetch}
         />
       </div>

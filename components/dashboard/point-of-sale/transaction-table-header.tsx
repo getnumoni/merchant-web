@@ -23,7 +23,7 @@ export default function TransactionTableHeader({
   onDateRangeChange,
   onSearchChange,
   onDatesChange,
-}: TransactionTableHeaderProps) {
+}: Readonly<TransactionTableHeaderProps>) {
   const [isExportOpen, setIsExportOpen] = useState(false);
 
   return (

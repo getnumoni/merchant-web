@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ErrorState } from "@/components/ui/error-state";
 import LoadingSpinner from "@/components/ui/loading-spinner";
 import useGetAllPos from "@/hooks/query/useGetAllPos";
+import { extractErrorMessage } from "@/lib/helper";
 import { PointOfSaleData } from "@/lib/types";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -20,7 +21,7 @@ export default function PointOfSale() {
   }
 
   if (isError) {
-    return <ErrorState title="Error loading data" message={error?.message || "An error occurred while loading point of sale."} />;
+    return <ErrorState title="Error loading data" message={extractErrorMessage(error) || "An error occurred while loading point of sale."} />;
   }
 
   const posData: PointOfSaleData[] = data?.data?.data;

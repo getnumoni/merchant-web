@@ -23,7 +23,7 @@ interface ExportPOSProps {
   onClose: () => void;
 }
 
-export default function ExportPOS({ isOpen, onClose }: ExportPOSProps) {
+export default function ExportPOS({ isOpen, onClose }: Readonly<ExportPOSProps>) {
   const { isPending: isLoadingMerchant, data: merchantData } = useGetMerchant();
   const { isPending: isLoadingPos, data: posData } = useGetAllPos();
   const { handleExportPosTransaction, isPending: isExporting, isSuccess, reset } = useExportPosTransaction();
@@ -73,14 +73,8 @@ export default function ExportPOS({ isOpen, onClose }: ExportPOSProps) {
         form.setValue("startDate", dates.start, { shouldValidate: true });
         form.setValue("endDate", dates.end, { shouldValidate: true });
       }
-    } else if (option === 'Custom Range') {
-      // Reset dates when switching to custom range
-      setStartDate(undefined);
-      setEndDate(undefined);
-      form.setValue("startDate", undefined, { shouldValidate: true });
-      form.setValue("endDate", undefined, { shouldValidate: true });
     } else {
-      // Reset when option is null
+      // Reset dates for 'Custom Range' or when option is null
       setStartDate(undefined);
       setEndDate(undefined);
       form.setValue("startDate", undefined, { shouldValidate: true });
@@ -167,7 +161,7 @@ export default function ExportPOS({ isOpen, onClose }: ExportPOSProps) {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* Date Range Picker - Required */}
                     <div className="space-y-2">
-                      <label className="text-sm font-medium text-[#838383]">
+                      <label htmlFor="dateRange" className="text-sm font-medium text-[#838383]">
                         Date Range <span className="text-red-500">*</span>
                       </label>
                       <DateRangeSelector
@@ -194,8 +188,8 @@ export default function ExportPOS({ isOpen, onClose }: ExportPOSProps) {
                       name="posId"
                       render={({ field }) => (
                         <FormItem className="space-y-2">
-                          <label className="text-sm font-medium text-[#838383]">
-                            POS
+                          <label htmlFor="posId" className="text-sm font-medium text-[#838383]">
+                            POS <span className="text-red-500">*</span>
                           </label>
                           <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
@@ -226,7 +220,7 @@ export default function ExportPOS({ isOpen, onClose }: ExportPOSProps) {
                       name="transactionType"
                       render={({ field }) => (
                         <FormItem className="space-y-2">
-                          <label className="text-sm font-medium text-[#838383]">
+                          <label htmlFor="transactionType" className="text-sm font-medium text-[#838383]">
                             Transaction Type
                           </label>
                           <Select onValueChange={field.onChange} value={field.value}>
@@ -280,7 +274,7 @@ export default function ExportPOS({ isOpen, onClose }: ExportPOSProps) {
 
               <Button
                 onClick={form.handleSubmit(handleSubmit)}
-                disabled={isExporting || !startDate || !endDate}
+                disabled={isExporting || !startDate || !endDate || !form.getValues("posId")}
                 className="bg-theme-dark-green text-white disabled:opacity-50 disabled:cursor-not-allowed"
                 isLoading={isExporting}
                 loadingText="Exporting..."

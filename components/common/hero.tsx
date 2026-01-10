@@ -17,7 +17,7 @@ export default function Hero({
   onAccountSettings,
   onDownload,
   onShare
-}: DashboardProps) {
+}: Readonly<DashboardProps>) {
   const pathname = usePathname();
 
   const { data: merchant, isPending, isError, error } = useGetMerchant();
