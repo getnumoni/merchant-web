@@ -1,11 +1,11 @@
 import { z } from 'zod';
 
 export const exportPosTransactionSchema = z.object({
-  posId: z.string().optional(),
+  posId: z.string().min(1, "POS is required"),
   startDate: z.date().optional(),
   endDate: z.date().optional(),
   transactionType: z.string().optional(),
-  customerEmail: z.string().email("Invalid email address").optional().or(z.literal("")),
+  customerEmail: z.email("Invalid email address").optional(),
   customerPhoneNo: z.string().optional(),
   customerId: z.string().optional(),
 }).superRefine((data, ctx) => {

@@ -10,6 +10,11 @@ type SidebarProps = {
   onClose: () => void;
 }
 
+type EmptyStateProps = {
+  title: string;
+  description: string;
+}
+
 type DashboardProps = {
   brandName?: string;
   merchantId?: string;
@@ -568,5 +573,17 @@ type PointOfSaleData = {
   merchantUserId: string;
 }
 
-export type { AccountInformationProps, ActiveBranchModalProps, AdminNavigationItem, AuthUser, AuthUserStore, AxiosError, Bank, BankPayload, BankToken, Branch, BranchAnalyticsData, BranchManagerPayload, BranchSummaryData, BrandProfileProps, BrandSummaryProps, ChangeBranchStatusPayload, CreateRewardsPayload, Customer, CustomerAnalyticsData, CustomerAnalyticsResponse, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, ErrorDisplayProps, ExpirationSectionProps, GenerateOtpPayload, GetBranchesResponse, InfoItem, MainBranchSummaryProps, MetricCardProps, MilestoneTargetSectionProps, MutationErrorType, PointAnalyticsProps, PointOfSaleData, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRule, RewardRulesSectionProps, Rewards, SidebarProps, signInPayload, singleBranchDetails, SocialMediaData, TanstackProviderProps, Transaction, TransactionData, UpdateBranchManagerPayload, UpdateRewardRuleModalProps, ValidateOtpPayload, VerifyBankNamePayload, VerifyBankPayload, VerifyPayOnUsBankPayload };
+
+interface DirectSalesLandingProps {
+  posId: string;
+  merchantId: string;
+}
+
+interface SalesData {
+  periodAmount: number;
+  totalAmount: number;
+  periodCount: number;
+  totalCount: number;
+}
+export type { AccountInformationProps, ActiveBranchModalProps, AdminNavigationItem, AuthUser, AuthUserStore, AxiosError, Bank, BankPayload, BankToken, Branch, BranchAnalyticsData, BranchManagerPayload, BranchSummaryData, BrandProfileProps, BrandSummaryProps, ChangeBranchStatusPayload, CreateRewardsPayload, Customer, CustomerAnalyticsData, CustomerAnalyticsResponse, CustomerCardProps, CustomerSectionProps, DashboardProps, DateSectionProps, DirectSalesLandingProps, EmptyStateProps, ErrorDisplayProps, ExpirationSectionProps, GenerateOtpPayload, GetBranchesResponse, InfoItem, MainBranchSummaryProps, MetricCardProps, MilestoneTargetSectionProps, MutationErrorType, PointAnalyticsProps, PointOfSaleData, QRCodeCardProps, ReceiveMethodSectionProps, RewardCapSectionProps, RewardModalProps, RewardRule, RewardRulesSectionProps, Rewards, SalesData, SidebarProps, signInPayload, singleBranchDetails, SocialMediaData, TanstackProviderProps, Transaction, TransactionData, UpdateBranchManagerPayload, UpdateRewardRuleModalProps, ValidateOtpPayload, VerifyBankNamePayload, VerifyBankPayload, VerifyPayOnUsBankPayload };
 

@@ -14,6 +14,8 @@ interface TransactionTableHeaderProps {
   onDateRangeChange: (range: DateRangeOption) => void;
   onSearchChange: (query: string) => void;
   onDatesChange?: (startDate: Date | undefined, endDate: Date | undefined) => void;
+  posId?: string;
+  merchantId?: string;
 }
 
 export default function TransactionTableHeader({
@@ -23,7 +25,8 @@ export default function TransactionTableHeader({
   onDateRangeChange,
   onSearchChange,
   onDatesChange,
-}: TransactionTableHeaderProps) {
+  posId
+}: Readonly<TransactionTableHeaderProps>) {
   const [isExportOpen, setIsExportOpen] = useState(false);
 
   return (
@@ -58,6 +61,8 @@ export default function TransactionTableHeader({
       <ExportPOS
         isOpen={isExportOpen}
         onClose={() => setIsExportOpen(false)}
+        posId={posId}
+
       />
     </>
   );
