@@ -21,9 +21,10 @@ import { useForm } from "react-hook-form";
 interface ExportPOSProps {
   isOpen: boolean;
   onClose: () => void;
+  posId?: string;
 }
 
-export default function ExportPOS({ isOpen, onClose }: Readonly<ExportPOSProps>) {
+export default function ExportPOS({ isOpen, onClose, posId }: Readonly<ExportPOSProps>) {
   const { isPending: isLoadingMerchant, data: merchantData } = useGetMerchant();
   const { isPending: isLoadingPos, data: posData } = useGetAllPos();
   const { handleExportPosTransaction, isPending: isExporting, isSuccess, reset } = useExportPosTransaction();
@@ -52,13 +53,20 @@ export default function ExportPOS({ isOpen, onClose }: Readonly<ExportPOSProps>)
   const form = useForm<ExportPosTransactionFormData>({
     resolver: zodResolver(exportPosTransactionSchema),
     defaultValues: {
-      posId: "",
+      posId: posId || "",
       transactionType: "",
       customerEmail: "",
       customerPhoneNo: "",
       customerId: "",
     },
   });
+
+  // Update posId field if the prop changes
+  useEffect(() => {
+    if (posId) {
+      form.setValue("posId", posId);
+    }
+  }, [posId, form]);
 
 
   // Handle date range option changes
@@ -191,9 +199,13 @@ export default function ExportPOS({ isOpen, onClose }: Readonly<ExportPOSProps>)
                           <label htmlFor="posId" className="text-sm font-medium text-[#838383]">
                             POS <span className="text-red-500">*</span>
                           </label>
-                          <Select onValueChange={field.onChange} value={field.value}>
+                          <Select
+                            onValueChange={field.onChange}
+                            value={field.value}
+                            disabled={!!posId}
+                          >
                             <FormControl>
-                              <SelectTrigger className="w-full p-5 shadow-none">
+                              <SelectTrigger className="w-full p-5 shadow-none disabled:bg-gray-50 disabled:cursor-not-allowed">
                                 <SelectValue placeholder="Select a POS" />
                               </SelectTrigger>
                             </FormControl>
