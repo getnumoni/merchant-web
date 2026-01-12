@@ -14,7 +14,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "transactionReferenceId",
     header: "Transaction Reference",
     cell: ({ row }) => {
-      const ref = row.getValue("transactionReferenceId") as string;
+      const ref = row.original.transactionReferenceId;
       const truncatedRef = ref ? `${ref.substring(0, 8)}...` : "";
       return <div className="font-mono text-sm" title={ref}>{truncatedRef || "—"}</div>;
     },
@@ -23,7 +23,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "customerName",
     header: "Customer",
     cell: ({ row }) => {
-      const customerName = row.getValue("customerName") as string | null;
+      const customerName = row.original.customerName;
       return <div>{customerName || "—"}</div>;
     },
   },
@@ -31,7 +31,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "description",
     header: "Description",
     cell: ({ row }) => {
-      const description = row.getValue("description") as string;
+      const description = row.original.description;
       return <div className="max-w-xs truncate" title={description}>{description || "—"}</div>;
     },
   },
@@ -39,7 +39,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "title",
     header: "Title",
     cell: ({ row }) => {
-      const title = row.getValue("title") as string;
+      const title = row.original.title;
       return <div>{title || "—"}</div>;
     },
   },
@@ -47,7 +47,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "branchName",
     header: "Branch",
     cell: ({ row }) => {
-      const branchName = row.getValue("branchName") as string;
+      const branchName = row.original.branchName;
       return <div>{branchName || "—"}</div>;
     },
   },
@@ -55,23 +55,23 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "operationType",
     header: "Operation Type",
     cell: ({ row }) => {
-      const operationType = row.getValue("operationType") as string;
-      return <div className="text-sm">{operationType?.replace(/_/g, " ") || "—"}</div>;
+      const operationType = row.original.operationType;
+      return <div className="text-sm">{operationType?.replaceAll("_", " ") || "—"}</div>;
     },
   },
   {
     accessorKey: "transactionCategory",
     header: "Category",
     cell: ({ row }) => {
-      const category = row.getValue("transactionCategory") as string;
-      return <div className="font-semibold text-sm">{category?.replace(/_/g, " ") || "—"}</div>;
+      const category = row.original.transactionCategory;
+      return <div className="font-semibold text-sm">{category?.replaceAll("_", " ") || "—"}</div>;
     },
   },
   {
     accessorKey: "amount",
     header: "Amount",
     cell: ({ row }) => {
-      const amount = row.getValue("amount") as number;
+      const amount = row.original.amount;
       return <div className="font-semibold">{formatCurrency(amount || 0)}</div>;
     },
   },
@@ -79,7 +79,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "amountPaid",
     header: "Amount Paid",
     cell: ({ row }) => {
-      const amount = row.getValue("amountPaid") as number;
+      const amount = row.original.amountPaid;
       return <div className="font-semibold">{formatCurrency(amount || 0)}</div>;
     },
   },
@@ -87,7 +87,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "settledAmount",
     header: "Settled Amount",
     cell: ({ row }) => {
-      const amount = row.getValue("settledAmount") as number | null;
+      const amount = row.original.settledAmount
       return <div>{amount ? formatCurrency(amount) : "—"}</div>;
     },
   },
@@ -95,7 +95,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "fee",
     header: "Fee",
     cell: ({ row }) => {
-      const fee = row.getValue("fee") as number | null;
+      const fee = row.original.fee
       return <div>{fee ? formatCurrency(fee) : "—"}</div>;
     },
   },
@@ -103,7 +103,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "numoniPoints",
     header: "Numoni Points",
     cell: ({ row }) => {
-      const points = row.getValue("numoniPoints") as number | null;
+      const points = row.original.numoniPoints
       return <div className="font-semibold">{points?.toLocaleString() || "—"}</div>;
     },
   },
@@ -111,7 +111,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "brandPoints",
     header: "Brand Points",
     cell: ({ row }) => {
-      const points = row.getValue("brandPoints") as number | null;
+      const points = row.original.brandPoints
       return <div className="font-semibold">{points?.toLocaleString() || "—"}</div>;
     },
   },
@@ -119,7 +119,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "issuedPoints",
     header: "Issued Points",
     cell: ({ row }) => {
-      const points = row.getValue("issuedPoints") as number | null;
+      const points = row.original.issuedPoints
       return <div className="font-semibold">{points?.toLocaleString() || "—"}</div>;
     },
   },
@@ -127,7 +127,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "amountByWallet",
     header: "Amount By Wallet",
     cell: ({ row }) => {
-      const amount = row.getValue("amountByWallet") as number | null;
+      const amount = row.original.amountByWallet
       return <div>{amount ? formatCurrency(amount) : "—"}</div>;
     },
   },
@@ -135,31 +135,15 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "amountBrandWallet",
     header: "Amount Brand Wallet",
     cell: ({ row }) => {
-      const amount = row.getValue("amountBrandWallet") as number | null;
+      const amount = row.original.amountBrandWallet
       return <div>{amount ? formatCurrency(amount) : "—"}</div>;
-    },
-  },
-  {
-    accessorKey: "balanceBeforeTransaction",
-    header: "Balance Before",
-    cell: ({ row }) => {
-      const balance = row.getValue("balanceBeforeTransaction") as number | null;
-      return <div>{balance !== null ? formatCurrency(balance) : "—"}</div>;
-    },
-  },
-  {
-    accessorKey: "balanceAfterTransaction",
-    header: "Balance After",
-    cell: ({ row }) => {
-      const balance = row.getValue("balanceAfterTransaction") as number | null;
-      return <div>{balance !== null ? formatCurrency(balance) : "—"}</div>;
     },
   },
   {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
-      const status = row.getValue("status") as string;
+      const status = row.original.status
       const statusColors: Record<string, string> = {
         "SUCCESSFUL": "bg-green-100 text-green-700",
         "COMPLETED": "bg-blue-100 text-blue-700",
@@ -178,7 +162,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "transactionType",
     header: "Type",
     cell: ({ row }) => {
-      const type = row.getValue("transactionType") as string;
+      const type = row.original.transactionType
       return (
         <div className={`px-2 py-1 rounded-full text-xs font-medium inline-block ${type === "DEBIT" ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
           }`}>
@@ -191,7 +175,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "invoiceNo",
     header: "Invoice No",
     cell: ({ row }) => {
-      const invoiceNo = row.getValue("invoiceNo") as string;
+      const invoiceNo = row.original.invoiceNo
       return <div className="font-mono text-xs">{invoiceNo || "—"}</div>;
     },
   },
@@ -199,7 +183,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "transactionNo",
     header: "Transaction No",
     cell: ({ row }) => {
-      const transactionNo = row.getValue("transactionNo") as string | null;
+      const transactionNo = row.original.transactionNo
       return <div className="font-mono text-xs">{transactionNo || "—"}</div>;
     },
   },
@@ -229,7 +213,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "date",
     header: "Date",
     cell: ({ row }) => {
-      const date = row.getValue("date") as string;
+      const date = row.original.date
       return <div className="text-sm">{formatDateTime(date)}</div>;
     },
   },
@@ -273,7 +257,7 @@ export default function TransactionsTable({
   onDownload,
   onInfo,
   onDelete
-}: TransactionsTableProps) {
+}: Readonly<TransactionsTableProps>) {
   return (
     <div className="bg-white rounded-2xl p-4 my-4">
       <div className="flex items-center justify-between mb-4">
