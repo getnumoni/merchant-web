@@ -2,6 +2,7 @@
 
 import TransactionPagination from "@/components/branch-level/transaction-pagination";
 import EmptyState from "@/components/common/empty-state";
+import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data-table";
 import { ErrorState } from "@/components/ui/error-state";
 import LoadingSpinner from "@/components/ui/loading-spinner";
@@ -9,7 +10,9 @@ import useGetPosTransactionList from "@/hooks/query/useGetPosTransactionList";
 import { formatCurrency, formatDateTime } from "@/lib/helper";
 import { TransactionData } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
+import { Copy } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import { PaginationInfo } from "../transactions-table";
 import TransactionTableHeader from "./transaction-table-header";
 import { useDateFilter } from "./use-date-filter";
@@ -25,17 +28,26 @@ const columns: ColumnDef<PosTransactionData>[] = [
     accessorKey: "transactionReferenceId",
     header: "Transaction Reference",
     cell: ({ row }) => {
+      const handleCopyLink = async () => {
+        await navigator.clipboard.writeText(row.original.transactionReferenceId);
+        toast.success("Transaction reference copied to clipboard");
+      }
       const ref = row.original.transactionReferenceId;
       const truncatedRef = ref ? `${ref.substring(0, 8)}...` : "";
-      return <div className="font-mono text-sm" title={ref}>{truncatedRef || "—"}</div>;
-    },
-  },
-  {
-    accessorKey: "amount",
-    header: "Amount",
-    cell: ({ row }) => {
-      const amount = row.original.amount;
-      return <div className="font-semibold">{formatCurrency(amount || 0)}</div>;
+      return (
+        <div className="flex items-center gap-2">
+          <div className="font-mono text-sm" title={ref}>{truncatedRef || "—"}</div>
+          <Button
+            type="button"
+            size="sm"
+            className="h-8 w-8 p-0 bg-theme-dark-green"
+            onClick={handleCopyLink}
+            title="Copy Transaction Link"
+          >
+            <Copy className="h-4 w-4" />
+          </Button>
+        </div>
+      );
     },
   },
   {
@@ -44,14 +56,6 @@ const columns: ColumnDef<PosTransactionData>[] = [
     cell: ({ row }) => {
       const amount = row.original.amountPaid;
       return <div className="font-semibold">{formatCurrency(amount || 0)}</div>;
-    },
-  },
-  {
-    accessorKey: "settledAmount",
-    header: "Settled Amount",
-    cell: ({ row }) => {
-      const amount = row.original.settledAmount;
-      return <div>{amount ? formatCurrency(amount) : "—"}</div>;
     },
   },
   {
@@ -84,55 +88,6 @@ const columns: ColumnDef<PosTransactionData>[] = [
     cell: ({ row }) => {
       const date = row.original.date;
       return <div className="text-sm">{formatDateTime(date)}</div>;
-    },
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ row }) => {
-      const description = row.original.description;
-      return <div className="max-w-xs truncate" title={description}>{description || "—"}</div>;
-    },
-  },
-  {
-    accessorKey: "title",
-    header: "Title",
-    cell: ({ row }) => {
-      const title = row.original.title;
-      return <div>{title || "—"}</div>;
-    },
-  },
-  {
-    accessorKey: "posName",
-    header: "POS Name",
-    cell: ({ row }) => {
-      const posName = row.original.posName;
-      return <div>{posName || "—"}</div>;
-    },
-  },
-  {
-    accessorKey: "operationType",
-    header: "Operation Type",
-    cell: ({ row }) => {
-      const operationType = row.original.operationType;
-      return <div className="text-sm">{operationType?.replaceAll("_", " ") || "—"}</div>;
-    },
-  },
-  {
-    accessorKey: "transactionCategory",
-    header: "Category",
-    cell: ({ row }) => {
-      const category = row.original.transactionCategory;
-      return <div className="font-semibold text-sm">{category?.replaceAll("_", " ") || "—"}</div>;
-    },
-  },
-
-  {
-    accessorKey: "fee",
-    header: "Fee",
-    cell: ({ row }) => {
-      const fee = row.original.fee;
-      return <div>{fee ? formatCurrency(fee) : "—"}</div>;
     },
   },
   {
