@@ -67,22 +67,6 @@ const columns: ColumnDef<PosTransactionData>[] = [
     },
   },
   {
-    accessorKey: "customerEmail",
-    header: "Customer Email",
-    cell: ({ row }) => {
-      const customerEmail = row.original.customerEmail;
-      return <div>{customerEmail || "—"}</div>;
-    },
-  },
-  {
-    accessorKey: "customerPhoneNo",
-    header: "Customer Phone No",
-    cell: ({ row }) => {
-      const customerPhoneNo = row.original.customerPhoneNo;
-      return <div>{customerPhoneNo || "—"}</div>;
-    },
-  },
-  {
     accessorKey: "date",
     header: "Date & Time",
     cell: ({ row }) => {

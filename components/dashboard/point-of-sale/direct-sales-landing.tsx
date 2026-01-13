@@ -80,17 +80,18 @@ export default function DirectSalesLanding({ posId, merchantId }: Readonly<Direc
           iconBgColor="bg-black"
         />
         <MetricCard
-          title="Period Sales Amount"
-          value={formatCurrency(salesData.periodAmount)}
-          icon={<ShoppingCart className="h-6 w-6 text-gray-200" />}
-          bgColor="bg-[#E3EAFD]"
-          iconBgColor="bg-black"
-        />
-        <MetricCard
           title="Total Sales Count"
           value={salesData.totalCount.toLocaleString()}
           icon={<ShoppingCart className="h-6 w-6 text-gray-200" />}
           bgColor="bg-[#FFFBDA]"
+          iconBgColor="bg-black"
+        />
+
+        <MetricCard
+          title="Period Sales Amount"
+          value={formatCurrency(salesData.periodAmount)}
+          icon={<ShoppingCart className="h-6 w-6 text-gray-200" />}
+          bgColor="bg-[#E3EAFD]"
           iconBgColor="bg-black"
         />
         <MetricCard
