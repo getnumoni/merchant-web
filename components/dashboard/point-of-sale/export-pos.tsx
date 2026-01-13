@@ -29,9 +29,10 @@ export default function ExportPOS({ isOpen, onClose, posId }: Readonly<ExportPOS
   const { isPending: isLoadingPos, data: posData } = useGetAllPos();
   const { handleExportPosTransaction, isPending: isExporting, isSuccess, reset } = useExportPosTransaction();
 
-  const [dateRangeOption, setDateRangeOption] = useState<DateRangeOption>(null);
-  const [startDate, setStartDate] = useState<Date | undefined>();
-  const [endDate, setEndDate] = useState<Date | undefined>();
+  const todayDates = useMemo(() => getDatesFromRangeOption('Today'), []);
+  const [dateRangeOption, setDateRangeOption] = useState<DateRangeOption>('Today');
+  const [startDate, setStartDate] = useState<Date | undefined>(todayDates?.start);
+  const [endDate, setEndDate] = useState<Date | undefined>(todayDates?.end);
 
   // Extract merchant information
   const merchant = useMemo(() => {
@@ -58,6 +59,8 @@ export default function ExportPOS({ isOpen, onClose, posId }: Readonly<ExportPOS
       customerEmail: "",
       customerPhoneNo: "",
       customerId: "",
+      startDate: todayDates?.start,
+      endDate: todayDates?.end,
     },
   });
 
@@ -106,9 +109,9 @@ export default function ExportPOS({ isOpen, onClose, posId }: Readonly<ExportPOS
 
   const handleClose = useCallback(() => {
     form.reset();
-    setStartDate(undefined);
-    setEndDate(undefined);
-    setDateRangeOption(null);
+    setStartDate(todayDates?.start);
+    setEndDate(todayDates?.end);
+    setDateRangeOption('Today');
     reset(); // Reset the mutation state to clear isSuccess
     onClose();
   }, [form, onClose, reset]);
