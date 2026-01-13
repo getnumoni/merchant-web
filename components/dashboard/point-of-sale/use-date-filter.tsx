@@ -17,7 +17,7 @@ interface UseDateFilterReturn {
  * Manages date range state and converts dates to DD-MM-YYYY format for API
  */
 export function useDateFilter(): UseDateFilterReturn {
-  const [dateRange, setDateRange] = useState<DateRangeOption>(null);
+  const [dateRange, setDateRange] = useState<DateRangeOption>('Today');
   const [customStartDate, setCustomStartDate] = useState<Date | undefined>();
   const [customEndDate, setCustomEndDate] = useState<Date | undefined>();
 

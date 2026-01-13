@@ -29,7 +29,7 @@ export function DateRangeSelector({
   showCustomRange = false,
   className,
   disabled = false,
-}: DateRangeSelectorProps) {
+}: Readonly<DateRangeSelectorProps>) {
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [customStartDatePopoverOpen, setCustomStartDatePopoverOpen] = useState(false);
   const [customEndDatePopoverOpen, setCustomEndDatePopoverOpen] = useState(false);
@@ -77,8 +77,8 @@ export function DateRangeSelector({
   }, [value]);
 
   const options: Array<{ value: DateRangeOption; label: string }> = [
-    ...(showAllTime ? [{ value: null as DateRangeOption, label: 'All Time' }] : []),
-    { value: 'Today' as DateRangeOption, label: 'Today' },
+    ...(showAllTime ? [{ value: null as DateRangeOption, label: 'Today' }] : []),
+    // { value: 'Today' as DateRangeOption, label: 'Today' },
     { value: 'Yesterday' as DateRangeOption, label: 'Yesterday' },
     { value: 'This Week' as DateRangeOption, label: 'This Week' },
     { value: 'This Month' as DateRangeOption, label: 'This Month' },
@@ -99,9 +99,9 @@ export function DateRangeSelector({
             <ChevronDownIcon className="h-4 w-4 ml-auto" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-48 p-1">
+        <PopoverContent className="w-38 p-1 shadow-none">
           {options.map((option) => (
-            <div
+            <button
               key={option.value || 'null'}
               className={`px-3 py-2 text-sm cursor-pointer rounded-md transition-colors ${value === option.value
                 ? 'bg-gray-100 font-medium'
@@ -110,7 +110,7 @@ export function DateRangeSelector({
               onClick={() => handleOptionChange(option.value)}
             >
               {option.label}
-            </div>
+            </button>
           ))}
         </PopoverContent>
       </Popover>
@@ -119,7 +119,7 @@ export function DateRangeSelector({
       {showCustomRange && value === 'Custom Range' && (
         <div className="grid grid-cols-2 gap-4 mt-4">
           <div className="space-y-2">
-            <label className="text-xs text-gray-600">Start Date</label>
+            <label htmlFor="custom-start-date" className="text-xs text-gray-600">Start Date</label>
             <Popover open={customStartDatePopoverOpen} onOpenChange={setCustomStartDatePopoverOpen}>
               <PopoverTrigger asChild>
                 <Button
@@ -146,7 +146,7 @@ export function DateRangeSelector({
             </Popover>
           </div>
           <div className="space-y-2">
-            <label className="text-xs text-gray-600">End Date</label>
+            <label htmlFor="custom-end-date" className="text-xs text-gray-600">End Date</label>
             <Popover open={customEndDatePopoverOpen} onOpenChange={setCustomEndDatePopoverOpen}>
               <PopoverTrigger asChild>
                 <Button

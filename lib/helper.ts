@@ -891,11 +891,14 @@ export const getTimelineDates = (
   };
 
   switch (timeline) {
-    case 'Today':
+    case 'Today': {
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
       return {
-        startDate: formatDate(today),
+        startDate: formatDate(yesterday),
         endDate: formatDate(today)
       };
+    }
 
     case 'Yesterday': {
       const yesterday = new Date(today);

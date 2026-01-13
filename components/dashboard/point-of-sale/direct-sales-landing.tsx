@@ -13,7 +13,7 @@ import DirectSalesTable from "./direct-sales-table";
 
 
 export default function DirectSalesLanding({ posId, merchantId }: Readonly<DirectSalesLandingProps>) {
-  const [selectedRange, setSelectedRange] = useState<DateRangeOption>('This Week');
+  const [selectedRange, setSelectedRange] = useState<DateRangeOption>('Today');
   const [customStartDate, setCustomStartDate] = useState<Date | undefined>();
   const [customEndDate, setCustomEndDate] = useState<Date | undefined>();
 
