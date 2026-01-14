@@ -25,7 +25,8 @@ export default function TransactionTableHeader({
   onDateRangeChange,
   onSearchChange,
   onDatesChange,
-  posId
+  posId,
+  merchantId
 }: Readonly<TransactionTableHeaderProps>) {
   const [isExportOpen, setIsExportOpen] = useState(false);
 
@@ -62,7 +63,7 @@ export default function TransactionTableHeader({
         isOpen={isExportOpen}
         onClose={() => setIsExportOpen(false)}
         posId={posId}
-
+        merchantId={merchantId}
       />
     </>
   );
