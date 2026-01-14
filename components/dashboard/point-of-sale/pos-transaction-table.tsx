@@ -58,27 +58,19 @@ const columns: ColumnDef<PosTransactionData>[] = [
     },
   },
   {
+    accessorKey: "settledAmount",
+    header: "Settled Amount",
+    cell: ({ row }) => {
+      const amount = row.original.settledAmount;
+      return <div className="font-semibold">{formatCurrency(amount || 0)}</div>;
+    },
+  },
+  {
     accessorKey: "customerName",
     header: "Customer",
     cell: ({ row }) => {
       const customerName = row.original.customerName;
       return <div>{customerName || "—"}</div>;
-    },
-  },
-  {
-    accessorKey: "customerEmail",
-    header: "Customer Email",
-    cell: ({ row }) => {
-      const customerEmail = row.original.customerEmail;
-      return <div>{customerEmail || "—"}</div>;
-    },
-  },
-  {
-    accessorKey: "customerPhoneNo",
-    header: "Customer Phone No",
-    cell: ({ row }) => {
-      const customerPhoneNo = row.original.customerPhoneNo;
-      return <div>{customerPhoneNo || "—"}</div>;
     },
   },
   {
@@ -95,6 +87,19 @@ const columns: ColumnDef<PosTransactionData>[] = [
     cell: ({ row }) => {
       const points = row.original.numoniPoints;
       return <div className="font-semibold">{points?.toLocaleString() || "—"}</div>;
+    },
+  },
+  {
+    accessorKey: "operationType",
+    header: "Operation Type",
+    cell: ({ row }) => {
+      const type = row.original.operationType;
+      return (
+        <div className={`px-2 py-1 rounded-full text-xs font-medium inline-block ${type === "PAY_OUT" ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
+          }`}>
+          {type}
+        </div>
+      );
     },
   },
   {
@@ -119,7 +124,7 @@ const columns: ColumnDef<PosTransactionData>[] = [
   },
   {
     accessorKey: "transactionType",
-    header: "Type",
+    header: "Transaction Type",
     cell: ({ row }) => {
       const type = row.original.transactionType;
       return (
