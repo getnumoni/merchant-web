@@ -78,7 +78,7 @@ export function DateRangeSelector({
 
   const options: Array<{ value: DateRangeOption; label: string }> = [
     ...(showAllTime ? [{ value: null as DateRangeOption, label: 'Today' }] : []),
-    // { value: 'Today' as DateRangeOption, label: 'Today' },
+    { value: 'Today' as DateRangeOption, label: 'Today' },
     { value: 'Yesterday' as DateRangeOption, label: 'Yesterday' },
     { value: 'This Week' as DateRangeOption, label: 'This Week' },
     { value: 'This Month' as DateRangeOption, label: 'This Month' },
