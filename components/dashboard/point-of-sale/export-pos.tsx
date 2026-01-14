@@ -9,7 +9,8 @@ import { FormInputTopLabel } from "@/components/ui/form-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useExportPosTransaction } from "@/hooks/query/useExportPosTransaction";
 import useGetAllPos from "@/hooks/query/useGetAllPos";
-import { getDatesFromRangeOption } from "@/lib/helper";
+import useGetMerchant from "@/hooks/query/useGetMerchant";
+import { extractErrorMessage, getDatesFromRangeOption } from "@/lib/helper";
 import { ExportPosTransactionFormData, exportPosTransactionSchema } from "@/lib/schemas/export-pos-schema";
 import { PointOfSaleData } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,8 +26,11 @@ interface ExportPOSProps {
 }
 
 export default function ExportPOS({ isOpen, onClose, posId, merchantId }: Readonly<ExportPOSProps>) {
-  const { isPending: isLoadingPos, data: posData } = useGetAllPos();
+  const { isPending: isLoadingPos, data: posData, error, isError } = useGetAllPos();
   const { handleExportPosTransaction, isPending: isExporting, isSuccess, reset } = useExportPosTransaction();
+  const { isPending, data, error: merchantDataError, isError: isMerchantDataError } = useGetMerchant();
+
+  const sessionMerchantId = data?.data?.data?.merchantId;
 
   const todayDates = useMemo(() => getDatesFromRangeOption('Today'), []);
   const [dateRangeOption, setDateRangeOption] = useState<DateRangeOption>('Today');
@@ -118,7 +122,7 @@ export default function ExportPOS({ isOpen, onClose, posId, merchantId }: Readon
     const endDateStr = format(formData.endDate, "dd-MM-yyyy");
 
     handleExportPosTransaction({
-      merchantId: String(merchantId),
+      merchantId: merchantId ?? sessionMerchantId,
       posId: formData.posId || undefined,
       startDate: startDateStr,
       endDate: endDateStr,
@@ -148,10 +152,10 @@ export default function ExportPOS({ isOpen, onClose, posId, merchantId }: Readon
         </DialogHeader>
 
         <LoadingErrorState
-          isLoading={isLoadingPos}
-          hasError={!merchantId}
+          isLoading={isLoadingPos || isPending}
+          hasError={isError || isMerchantDataError}
           loadingMessage="Loading data..."
-          errorMessage="Unable to load merchant information"
+          errorMessage={extractErrorMessage(error || merchantDataError)}
         >
           <>
             <div className="flex-1 overflow-y-auto px-6 py-6">
