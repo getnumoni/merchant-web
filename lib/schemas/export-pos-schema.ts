@@ -5,7 +5,10 @@ export const exportPosTransactionSchema = z.object({
   startDate: z.date().optional(),
   endDate: z.date().optional(),
   transactionType: z.string().optional(),
-  customerEmail: z.email("Invalid email address").optional(),
+  customerEmail: z.union([
+    z.string().regex(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "Invalid email address"),
+    z.literal("")
+  ]).optional(),
   customerPhoneNo: z.string().optional(),
   customerId: z.string().optional(),
 }).superRefine((data, ctx) => {
