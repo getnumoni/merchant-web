@@ -9,7 +9,6 @@ import { FormInputTopLabel } from "@/components/ui/form-input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useExportPosTransaction } from "@/hooks/query/useExportPosTransaction";
 import useGetAllPos from "@/hooks/query/useGetAllPos";
-import useGetMerchant from "@/hooks/query/useGetMerchant";
 import { getDatesFromRangeOption } from "@/lib/helper";
 import { ExportPosTransactionFormData, exportPosTransactionSchema } from "@/lib/schemas/export-pos-schema";
 import { PointOfSaleData } from "@/lib/types";
@@ -22,10 +21,10 @@ interface ExportPOSProps {
   isOpen: boolean;
   onClose: () => void;
   posId?: string;
+  merchantId?: string
 }
 
-export default function ExportPOS({ isOpen, onClose, posId }: Readonly<ExportPOSProps>) {
-  const { isPending: isLoadingMerchant, data: merchantData } = useGetMerchant();
+export default function ExportPOS({ isOpen, onClose, posId, merchantId }: Readonly<ExportPOSProps>) {
   const { isPending: isLoadingPos, data: posData } = useGetAllPos();
   const { handleExportPosTransaction, isPending: isExporting, isSuccess, reset } = useExportPosTransaction();
 
@@ -34,16 +33,7 @@ export default function ExportPOS({ isOpen, onClose, posId }: Readonly<ExportPOS
   const [startDate, setStartDate] = useState<Date | undefined>(todayDates?.start);
   const [endDate, setEndDate] = useState<Date | undefined>(todayDates?.end);
 
-  // Extract merchant information
-  const merchant = useMemo(() => {
-    const merchantInfo = merchantData?.data?.data;
-    if (!merchantInfo) return null;
 
-    return {
-      merchantId: merchantInfo.merchantId || merchantInfo.userId,
-      merchantName: merchantInfo.businessName || merchantInfo.brandName,
-    };
-  }, [merchantData]);
 
   // Extract POS list
   const posList = useMemo(() => {
@@ -117,7 +107,6 @@ export default function ExportPOS({ isOpen, onClose, posId }: Readonly<ExportPOS
   }, [form, onClose, reset]);
 
   const handleSubmit = async (formData: ExportPosTransactionFormData) => {
-    if (!merchant) return;
 
     if (!formData.startDate || !formData.endDate) {
       form.setError("startDate", { message: "Date range is required" });
@@ -129,7 +118,7 @@ export default function ExportPOS({ isOpen, onClose, posId }: Readonly<ExportPOS
     const endDateStr = format(formData.endDate, "dd-MM-yyyy");
 
     handleExportPosTransaction({
-      merchantId: merchant.merchantId,
+      merchantId: String(merchantId),
       posId: formData.posId || undefined,
       startDate: startDateStr,
       endDate: endDateStr,
@@ -159,8 +148,8 @@ export default function ExportPOS({ isOpen, onClose, posId }: Readonly<ExportPOS
         </DialogHeader>
 
         <LoadingErrorState
-          isLoading={isLoadingMerchant || isLoadingPos}
-          hasError={!merchant}
+          isLoading={isLoadingPos}
+          hasError={!merchantId}
           loadingMessage="Loading data..."
           errorMessage="Unable to load merchant information"
         >
