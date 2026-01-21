@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import TransactionPagination from "@/components/branch-level/transaction-pagination";
 import SearchInput from "@/components/common/search-input";
@@ -6,8 +6,9 @@ import { DataTable } from "@/components/ui/data-table";
 import { formatCurrency, formatDateTime } from "@/lib/helper";
 import { TransactionData } from "@/lib/types";
 import { ColumnDef } from "@tanstack/react-table";
-
-
+import { Copy } from "lucide-react";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
 
 const columns: ColumnDef<TransactionData>[] = [
   {
@@ -16,7 +17,11 @@ const columns: ColumnDef<TransactionData>[] = [
     cell: ({ row }) => {
       const ref = row.original.transactionReferenceId;
       const truncatedRef = ref ? `${ref.substring(0, 8)}...` : "";
-      return <div className="font-mono text-sm" title={ref}>{truncatedRef || "—"}</div>;
+      return (
+        <div className="font-mono text-sm" title={ref}>
+          {truncatedRef || "—"}
+        </div>
+      );
     },
   },
   {
@@ -28,11 +33,74 @@ const columns: ColumnDef<TransactionData>[] = [
     },
   },
   {
+    accessorKey: "posId",
+    header: "POS ID",
+    cell: ({ row }) => {
+      const handleCopyLink = async () => {
+        await navigator.clipboard.writeText(row.original.posId);
+        toast.success(" POS ID copied to clipboard");
+      };
+      const posId = row.original.posId;
+      return (
+        <div className="flex items-center gap-2">
+          <div className="font-mono text-sm">{posId || "—"}</div>
+          {posId && (
+            <Button
+              type="button"
+              size="sm"
+              className="h-8 w-8 p-0 bg-theme-dark-green"
+              onClick={handleCopyLink}
+              title="Copy POS ID"
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "posName",
+    header: "POS Name",
+    cell: ({ row }) => {
+      const posName = row.original.posName;
+      return <div>{posName || "—"}</div>;
+    },
+  },
+  {
+    accessorKey: "posLocation",
+    header: "POS Location",
+    cell: ({ row }) => {
+      const posLocation = row.original.posLocation;
+      return <div>{posLocation || "—"}</div>;
+    },
+  },
+  {
+    accessorKey: "posBankName",
+    header: "POS Bank Name",
+    cell: ({ row }) => {
+      const posBankName = row.original.posBankName;
+      return <div>{posBankName || "—"}</div>;
+    },
+  },
+  {
+    accessorKey: "posAccountNumber",
+    header: "POS Account Number",
+    cell: ({ row }) => {
+      const posAccountNumber = row.original.posAccountNumber;
+      return <div>{posAccountNumber || "—"}</div>;
+    },
+  },
+  {
     accessorKey: "description",
     header: "Description",
     cell: ({ row }) => {
       const description = row.original.description;
-      return <div className="max-w-xs truncate" title={description}>{description || "—"}</div>;
+      return (
+        <div className="max-w-xs truncate" title={description}>
+          {description || "—"}
+        </div>
+      );
     },
   },
   {
@@ -56,7 +124,11 @@ const columns: ColumnDef<TransactionData>[] = [
     header: "Operation Type",
     cell: ({ row }) => {
       const operationType = row.original.operationType;
-      return <div className="text-sm">{operationType?.replaceAll("_", " ") || "—"}</div>;
+      return (
+        <div className="text-sm">
+          {operationType?.replaceAll("_", " ") || "—"}
+        </div>
+      );
     },
   },
   {
@@ -64,7 +136,11 @@ const columns: ColumnDef<TransactionData>[] = [
     header: "Category",
     cell: ({ row }) => {
       const category = row.original.transactionCategory;
-      return <div className="font-semibold text-sm">{category?.replaceAll("_", " ") || "—"}</div>;
+      return (
+        <div className="font-semibold text-sm">
+          {category?.replaceAll("_", " ") || "—"}
+        </div>
+      );
     },
   },
   {
@@ -72,7 +148,9 @@ const columns: ColumnDef<TransactionData>[] = [
     header: "Amount",
     cell: ({ row }) => {
       const amount = row.original.amount;
-      return <div className="font-semibold">{formatCurrency(amount || 0)}</div>;
+      return (
+        <div className="font-semibold">{formatCurrency(amount || 0)}</div>
+      );
     },
   },
   {
@@ -80,14 +158,16 @@ const columns: ColumnDef<TransactionData>[] = [
     header: "Amount Paid",
     cell: ({ row }) => {
       const amount = row.original.amountPaid;
-      return <div className="font-semibold">{formatCurrency(amount || 0)}</div>;
+      return (
+        <div className="font-semibold">{formatCurrency(amount || 0)}</div>
+      );
     },
   },
   {
     accessorKey: "settledAmount",
     header: "Settled Amount",
     cell: ({ row }) => {
-      const amount = row.original.settledAmount
+      const amount = row.original.settledAmount;
       return <div>{amount ? formatCurrency(amount) : "—"}</div>;
     },
   },
@@ -95,7 +175,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "fee",
     header: "Fee",
     cell: ({ row }) => {
-      const fee = row.original.fee
+      const fee = row.original.fee;
       return <div>{fee ? formatCurrency(fee) : "—"}</div>;
     },
   },
@@ -103,31 +183,43 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "numoniPoints",
     header: "Numoni Points",
     cell: ({ row }) => {
-      const points = row.original.numoniPoints
-      return <div className="font-semibold">{points?.toLocaleString() || "—"}</div>;
+      const points = row.original.numoniPoints;
+      return (
+        <div className="font-semibold">
+          {points?.toLocaleString() || "—"}
+        </div>
+      );
     },
   },
   {
     accessorKey: "brandPoints",
     header: "Brand Points",
     cell: ({ row }) => {
-      const points = row.original.brandPoints
-      return <div className="font-semibold">{points?.toLocaleString() || "—"}</div>;
+      const points = row.original.brandPoints;
+      return (
+        <div className="font-semibold">
+          {points?.toLocaleString() || "—"}
+        </div>
+      );
     },
   },
   {
     accessorKey: "issuedPoints",
     header: "Issued Points",
     cell: ({ row }) => {
-      const points = row.original.issuedPoints
-      return <div className="font-semibold">{points?.toLocaleString() || "—"}</div>;
+      const points = row.original.issuedPoints;
+      return (
+        <div className="font-semibold">
+          {points?.toLocaleString() || "—"}
+        </div>
+      );
     },
   },
   {
     accessorKey: "amountByWallet",
     header: "Amount By Wallet",
     cell: ({ row }) => {
-      const amount = row.original.amountByWallet
+      const amount = row.original.amountByWallet;
       return <div>{amount ? formatCurrency(amount) : "—"}</div>;
     },
   },
@@ -135,7 +227,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "amountBrandWallet",
     header: "Amount Brand Wallet",
     cell: ({ row }) => {
-      const amount = row.original.amountBrandWallet
+      const amount = row.original.amountBrandWallet;
       return <div>{amount ? formatCurrency(amount) : "—"}</div>;
     },
   },
@@ -143,16 +235,18 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
-      const status = row.original.status
+      const status = row.original.status;
       const statusColors: Record<string, string> = {
-        "SUCCESSFUL": "bg-green-100 text-green-700",
-        "COMPLETED": "bg-blue-100 text-blue-700",
-        "PENDING": "bg-yellow-100 text-yellow-700",
-        "FAILED": "bg-red-100 text-red-700",
+        SUCCESSFUL: "bg-green-100 text-green-700",
+        COMPLETED: "bg-blue-100 text-blue-700",
+        PENDING: "bg-yellow-100 text-yellow-700",
+        FAILED: "bg-red-100 text-red-700",
       };
       const colorClass = statusColors[status] || "bg-gray-100 text-gray-700";
       return (
-        <div className={`px-2 py-1 rounded-full text-xs font-medium inline-block ${colorClass}`}>
+        <div
+          className={`px-2 py-1 rounded-full text-xs font-medium inline-block ${colorClass}`}
+        >
           {status}
         </div>
       );
@@ -162,10 +256,14 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "transactionType",
     header: "Type",
     cell: ({ row }) => {
-      const type = row.original.transactionType
+      const type = row.original.transactionType;
       return (
-        <div className={`px-2 py-1 rounded-full text-xs font-medium inline-block ${type === "DEBIT" ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700"
-          }`}>
+        <div
+          className={`px-2 py-1 rounded-full text-xs font-medium inline-block ${type === "DEBIT"
+              ? "bg-red-100 text-red-700"
+              : "bg-green-100 text-green-700"
+            }`}
+        >
           {type}
         </div>
       );
@@ -175,7 +273,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "invoiceNo",
     header: "Invoice No",
     cell: ({ row }) => {
-      const invoiceNo = row.original.invoiceNo
+      const invoiceNo = row.original.invoiceNo;
       return <div className="font-mono text-xs">{invoiceNo || "—"}</div>;
     },
   },
@@ -183,7 +281,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "transactionNo",
     header: "Transaction No",
     cell: ({ row }) => {
-      const transactionNo = row.original.transactionNo
+      const transactionNo = row.original.transactionNo;
       return <div className="font-mono text-xs">{transactionNo || "—"}</div>;
     },
   },
@@ -213,7 +311,7 @@ const columns: ColumnDef<TransactionData>[] = [
     accessorKey: "date",
     header: "Date",
     cell: ({ row }) => {
-      const date = row.original.date
+      const date = row.original.date;
       return <div className="text-sm">{formatDateTime(date)}</div>;
     },
   },
@@ -256,7 +354,7 @@ export default function TransactionsTable({
   searchPlaceholder = "Search transactions...",
   onDownload,
   onInfo,
-  onDelete
+  onDelete,
 }: Readonly<TransactionsTableProps>) {
   return (
     <div className="bg-white rounded-2xl p-4 my-4">
