@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
+import { DateRangeOption } from "../utils/date-range-utils";
+import CategoryFilter, { CategoryOption } from "./category-filter";
 import DateRangeFilter from "./date-range-filter";
 import StatusFilter, { StatusOption } from "./status-filter";
-import CategoryFilter, { CategoryOption } from "./category-filter";
-import { DateRangeOption } from "../utils/date-range-utils";
 
 interface TransactionFiltersHeaderProps {
   selectedStatus: StatusOption;
@@ -21,16 +21,27 @@ export default function TransactionFiltersHeader({
   onStatusChange,
   onCategoryChange,
   onRangeChange,
-}: TransactionFiltersHeaderProps) {
+}: Readonly<TransactionFiltersHeaderProps>) {
   return (
     <div className="flex items-center justify-between mb-4">
-      <h1 className="text-lg font-semibold text-gray-900">Recent Transactions</h1>
+      <h1 className="text-lg font-semibold text-gray-900">
+        Recent Transactions
+      </h1>
+
       <div className="flex items-center gap-2">
-        <CategoryFilter selectedCategory={selectedCategory} onCategoryChange={onCategoryChange} />
-        <StatusFilter selectedStatus={selectedStatus} onStatusChange={onStatusChange} />
-        <DateRangeFilter selectedRange={selectedRange} onRangeChange={onRangeChange} />
+        <CategoryFilter
+          selectedCategory={selectedCategory}
+          onCategoryChange={onCategoryChange}
+        />
+        <StatusFilter
+          selectedStatus={selectedStatus}
+          onStatusChange={onStatusChange}
+        />
+        <DateRangeFilter
+          selectedRange={selectedRange}
+          onRangeChange={onRangeChange}
+        />
       </div>
     </div>
   );
 }
-
