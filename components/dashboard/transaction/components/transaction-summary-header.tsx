@@ -1,8 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import ExportTransaction from "../export-transaction";
 import SummaryDateRangeFilter, {
   SummaryDateRangeOption,
 } from "./summary-date-range-filter";
@@ -16,7 +13,6 @@ export default function TransactionSummaryHeader({
   selectedRange,
   onRangeChange,
 }: Readonly<TransactionSummaryHeaderProps>) {
-  const [openExportModal, setOpenExportModal] = useState<boolean>(false);
 
   return (
     <div className="flex items-center justify-between my-4">
@@ -24,23 +20,13 @@ export default function TransactionSummaryHeader({
         Transaction Summary
       </h2>
       <div className="flex gap-2">
-        <div>
-          <Button
-            className="bg-theme-dark-green"
-            onClick={() => setOpenExportModal(true)}
-          >
-            Export
-          </Button>
-        </div>
+
         <SummaryDateRangeFilter
           selectedRange={selectedRange}
           onRangeChange={onRangeChange}
         />
       </div>
-      <ExportTransaction
-        isOpen={openExportModal}
-        onClose={() => setOpenExportModal(false)}
-      />
+
     </div>
   );
 }
