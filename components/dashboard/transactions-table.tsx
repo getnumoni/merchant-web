@@ -17,9 +17,24 @@ const columns: ColumnDef<TransactionData>[] = [
     cell: ({ row }) => {
       const ref = row.original.transactionReferenceId;
       const truncatedRef = ref ? `${ref.substring(0, 8)}...` : "";
+      const handleCopyLink = async () => {
+        await navigator.clipboard.writeText(ref);
+        toast.success(" Transaction Reference copied to clipboard");
+      };
       return (
         <div className="font-mono text-sm" title={ref}>
           {truncatedRef || "—"}
+          {ref && (
+            <Button
+              type="button"
+              size="sm"
+              className="h-8 w-8 p-0 bg-theme-dark-green"
+              onClick={handleCopyLink}
+              title="Copy Transaction Reference"
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+          )}
         </div>
       );
     },
@@ -30,6 +45,36 @@ const columns: ColumnDef<TransactionData>[] = [
     cell: ({ row }) => {
       const customerName = row.original.customerName;
       return <div>{customerName || "—"}</div>;
+    },
+  },
+  {
+    accessorKey: "amountPaid",
+    header: "Amount Paid",
+    cell: ({ row }) => {
+      const amount = row.original.amountPaid;
+      return (
+        <div className="font-semibold">{formatCurrency(amount || 0)}</div>
+      );
+    },
+  },
+  {
+    accessorKey: "settledAmount",
+    header: "Settled Amount",
+    cell: ({ row }) => {
+      const amount = row.original.settledAmount;
+      return <div>{amount ? formatCurrency(amount) : "—"}</div>;
+    },
+  },
+  {
+    accessorKey: "transactionCategory",
+    header: "Category",
+    cell: ({ row }) => {
+      const category = row.original.transactionCategory;
+      return (
+        <div className="font-semibold text-sm">
+          {category?.replaceAll("_", " ") || "—"}
+        </div>
+      );
     },
   },
   {
@@ -60,14 +105,6 @@ const columns: ColumnDef<TransactionData>[] = [
     },
   },
   {
-    accessorKey: "posName",
-    header: "POS Name",
-    cell: ({ row }) => {
-      const posName = row.original.posName;
-      return <div>{posName || "—"}</div>;
-    },
-  },
-  {
     accessorKey: "posLocation",
     header: "POS Location",
     cell: ({ row }) => {
@@ -89,6 +126,14 @@ const columns: ColumnDef<TransactionData>[] = [
     cell: ({ row }) => {
       const posAccountNumber = row.original.posAccountNumber;
       return <div>{posAccountNumber || "—"}</div>;
+    },
+  },
+  {
+    accessorKey: "posName",
+    header: "POS Name",
+    cell: ({ row }) => {
+      const posName = row.original.posName;
+      return <div>{posName || "—"}</div>;
     },
   },
   {
@@ -120,30 +165,6 @@ const columns: ColumnDef<TransactionData>[] = [
     },
   },
   {
-    accessorKey: "operationType",
-    header: "Operation Type",
-    cell: ({ row }) => {
-      const operationType = row.original.operationType;
-      return (
-        <div className="text-sm">
-          {operationType?.replaceAll("_", " ") || "—"}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "transactionCategory",
-    header: "Category",
-    cell: ({ row }) => {
-      const category = row.original.transactionCategory;
-      return (
-        <div className="font-semibold text-sm">
-          {category?.replaceAll("_", " ") || "—"}
-        </div>
-      );
-    },
-  },
-  {
     accessorKey: "amount",
     header: "Amount",
     cell: ({ row }) => {
@@ -151,32 +172,6 @@ const columns: ColumnDef<TransactionData>[] = [
       return (
         <div className="font-semibold">{formatCurrency(amount || 0)}</div>
       );
-    },
-  },
-  {
-    accessorKey: "amountPaid",
-    header: "Amount Paid",
-    cell: ({ row }) => {
-      const amount = row.original.amountPaid;
-      return (
-        <div className="font-semibold">{formatCurrency(amount || 0)}</div>
-      );
-    },
-  },
-  {
-    accessorKey: "settledAmount",
-    header: "Settled Amount",
-    cell: ({ row }) => {
-      const amount = row.original.settledAmount;
-      return <div>{amount ? formatCurrency(amount) : "—"}</div>;
-    },
-  },
-  {
-    accessorKey: "fee",
-    header: "Fee",
-    cell: ({ row }) => {
-      const fee = row.original.fee;
-      return <div>{fee ? formatCurrency(fee) : "—"}</div>;
     },
   },
   {
@@ -216,22 +211,6 @@ const columns: ColumnDef<TransactionData>[] = [
     },
   },
   {
-    accessorKey: "amountByWallet",
-    header: "Amount By Wallet",
-    cell: ({ row }) => {
-      const amount = row.original.amountByWallet;
-      return <div>{amount ? formatCurrency(amount) : "—"}</div>;
-    },
-  },
-  {
-    accessorKey: "amountBrandWallet",
-    header: "Amount Brand Wallet",
-    cell: ({ row }) => {
-      const amount = row.original.amountBrandWallet;
-      return <div>{amount ? formatCurrency(amount) : "—"}</div>;
-    },
-  },
-  {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
@@ -260,8 +239,8 @@ const columns: ColumnDef<TransactionData>[] = [
       return (
         <div
           className={`px-2 py-1 rounded-full text-xs font-medium inline-block ${type === "DEBIT"
-              ? "bg-red-100 text-red-700"
-              : "bg-green-100 text-green-700"
+            ? "bg-red-100 text-red-700"
+            : "bg-green-100 text-green-700"
             }`}
         >
           {type}
