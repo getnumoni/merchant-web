@@ -1,7 +1,7 @@
 /**
  * Calculates the next automation payout time
- * Payouts happen daily between 7:00 PM and 11:00 PM
- * @returns Formatted string like "10th December 2025 : 7:00 PM - 11:00 PM"
+ * Payouts happen daily at 11:00 PM
+ * @returns Formatted string like "10th December 2025 : 11:00 PM"
  */
 export function getNextPayoutTime(): string {
   const now = new Date();
@@ -30,6 +30,6 @@ export function getNextPayoutTime(): string {
     }
   };
 
-  return `${day}${getOrdinalSuffix(day)} ${month} ${year} : 7:00 PM - 11:00 PM`;
+  return `${day}${getOrdinalSuffix(day)} ${month} ${year} : 11:00 PM`;
 }
 
