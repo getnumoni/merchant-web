@@ -58,6 +58,16 @@ const columns: ColumnDef<TransactionData>[] = [
     },
   },
   {
+    accessorKey: "amount",
+    header: "Amount",
+    cell: ({ row }) => {
+      const amount = row.original.amount;
+      return (
+        <div className="font-semibold">{formatCurrency(amount || 0)}</div>
+      );
+    },
+  },
+  {
     accessorKey: "settledAmount",
     header: "Settled Amount",
     cell: ({ row }) => {
@@ -137,41 +147,11 @@ const columns: ColumnDef<TransactionData>[] = [
     },
   },
   {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ row }) => {
-      const description = row.original.description;
-      return (
-        <div className="max-w-xs truncate" title={description}>
-          {description || "—"}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "title",
-    header: "Title",
-    cell: ({ row }) => {
-      const title = row.original.title;
-      return <div>{title || "—"}</div>;
-    },
-  },
-  {
     accessorKey: "branchName",
     header: "Branch",
     cell: ({ row }) => {
       const branchName = row.original.branchName;
       return <div>{branchName || "—"}</div>;
-    },
-  },
-  {
-    accessorKey: "amount",
-    header: "Amount",
-    cell: ({ row }) => {
-      const amount = row.original.amount;
-      return (
-        <div className="font-semibold">{formatCurrency(amount || 0)}</div>
-      );
     },
   },
   {
@@ -253,7 +233,27 @@ const columns: ColumnDef<TransactionData>[] = [
     header: "Invoice No",
     cell: ({ row }) => {
       const invoiceNo = row.original.invoiceNo;
-      return <div className="font-mono text-xs">{invoiceNo || "—"}</div>;
+      const truncatedRef = invoiceNo ? `${invoiceNo.substring(0, 8)}...` : "";
+      const handleCopyInvoiceNo = async () => {
+        await navigator.clipboard.writeText(invoiceNo);
+        toast.success("Invoice No copied to clipboard");
+      };
+      return (
+        <div className="flex items-center gap-2">
+          <div className="font-mono text-sm" title={invoiceNo}>{truncatedRef || "—"}</div>
+          {invoiceNo && (
+            <Button
+              type="button"
+              size="sm"
+              className="h-8 w-8 p-0 bg-theme-dark-green"
+              onClick={handleCopyInvoiceNo}
+              title="Copy Invoice No"
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+      );
     },
   },
   {
@@ -261,7 +261,27 @@ const columns: ColumnDef<TransactionData>[] = [
     header: "Transaction No",
     cell: ({ row }) => {
       const transactionNo = row.original.transactionNo;
-      return <div className="font-mono text-xs">{transactionNo || "—"}</div>;
+      const truncatedRef = transactionNo ? `${transactionNo.substring(0, 8)}...` : "";
+      const handleCopyTransactionNo = async () => {
+        await navigator.clipboard.writeText(transactionNo);
+        toast.success("Transaction No copied to clipboard");
+      };
+      return (
+        <div className="flex items-center gap-2">
+          <div className="font-mono text-sm" title={transactionNo}>{truncatedRef || "—"}</div>
+          {transactionNo && (
+            <Button
+              type="button"
+              size="sm"
+              className="h-8 w-8 p-0 bg-theme-dark-green"
+              onClick={handleCopyTransactionNo}
+              title="Copy Transaction No"
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+      );
     },
   },
   // {

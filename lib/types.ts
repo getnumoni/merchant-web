@@ -534,7 +534,7 @@ type TransactionData = {
   invoiceNo: string;
   transactionReferenceId: string;
   numoniTransactionRefId: string | null;
-  transactionNo: string | null;
+  transactionNo: string;
   amountByWallet: number | null;
   amountBrandWallet: number | null;
   numoniPoints: number | null;
