@@ -79,7 +79,7 @@ export default function ExportTransaction({
     resolver: zodResolver(exportTransactionSchema),
     defaultValues: {
       posId: "all",
-      transactionType: "",
+      transactionType: "SALES",
       startDate: todayDates?.start,
       endDate: todayDates?.end,
     },
